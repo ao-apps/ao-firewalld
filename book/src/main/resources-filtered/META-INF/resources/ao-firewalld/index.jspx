@@ -1,0 +1,81 @@
+<!--
+ao-firewalld - Java API for managing firewalld.
+Copyright (C) 2017  AO Industries, Inc.
+    support@aoindustries.com
+    7262 Bull Pen Cir
+    Mobile, AL 36695
+
+This file is part of ao-firewalld.
+
+ao-firewalld is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+ao-firewalld is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with ao-firewalld.  If not, see <http://www.gnu.org/licenses />.
+-->
+<jsp:root
+	xmlns:ao="https://aoindustries.com/ao-taglib/"
+	xmlns:core="https://semanticcms.com/core/taglib/"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:section="https://semanticcms.com/section/taglib/"
+	version="2.1"
+>
+	<jsp:directive.page language="java" pageEncoding="UTF-8" session="false" />
+	<core:page
+		title="@{documented.name}"
+		description="@{documented.description}"
+		datePublished="2017-03-17T00:08:15-0500"
+	>
+		<core:child page="changelog.jspx" />
+		<core:child page="apidocs/index.jspx" />
+		<p>
+			Java API for managing <ao:a href="http://www.firewalld.org/">firewalld</ao:a>.
+		</p>
+		<section:section label="Features">
+			<ul>
+				<li>Clean programmatic access to <ao:a href="http://www.firewalld.org/">firewalld</ao:a>.</li>
+				<li>Supports fine-grained control over specific port and IP address combinations.</li>
+				<li>Manages sets of services because firewalld is limited to only one &lt;destination /&gt; per service.</li>
+				<li>Optimizes arbitrary sets of ports and IP addresses into a minimal set of service files.</li>
+				<li>Small footprint, minimal dependencies - not part of a big monolithic package.</li>
+			</ul>
+		</section:section>
+		<section:section label="Motivation">
+			<p>
+				The <core:link book="/" page="/aoserv/index.jspx" /> allows opening ports on a per-IP basis.  <ao:a href="http://www.firewalld.org/">firewalld</ao:a>
+				service files are limited to a single &lt;destination /&gt; per service file.  To selectively open ports on a per-IP basis,
+				additional service files must be managed.  This is tedious if done manually.  We would rather <ao:a href="http://www.firewalld.org/">firewalld</ao:a>
+				support multiple &lt;service /&gt; tags with multiple &lt;destination /&gt; per service file, but this is not currently a feature.
+			</p>
+			<p>
+				Our server configuration process, <core:link book="/" page="/aoserv/daemon/index.jspx" />, is written in the Java programming language.
+				We desire a clean interface to <ao:a href="http://www.firewalld.org/">firewalld</ao:a> without having to operate with
+				<code>firewall-cmd</code> and other commands directly.
+			</p>
+		</section:section>
+		<section:section label="Evaluated Alternatives">
+			<p>
+				We were unable to find any existing implementations via
+				<ao:a href="https://github.com/search?utf8=%E2%9C%93&amp;q=java+firewalld&amp;type=Repositories&amp;ref=searchresults">GitHub</ao:a>,
+				<ao:a href="http://search.maven.org/#search%7Cga%7C1%7Cfirewalld">The Central Repository</ao:a>,
+				or <ao:a href="https://www.google.com/search?q=java+api+for+firewalld">Google Search</ao:a>.
+			</p>
+		</section:section>
+		<section:section label="Project Links">
+			<ul>
+				<li><core:link page="index.jspx">Project Home</core:link></li>
+				<li><core:link page="changelog.jspx">Changelog</core:link></li>
+				<li><core:link page="apidocs/index.jspx">API Docs</core:link></li>
+				<li><ao:a href="https://search.maven.org/#search%7Cgav%7C1%7Cg:%22@{documented.groupId}%22%20AND%20a:%22@{documented.artifactId}%22">Maven Central Repository</ao:a></li>
+				<li><ao:a href="@{documented.scm.url}">GitHub</ao:a></li>
+			</ul>
+		</section:section>
+	</core:page>
+</jsp:root>
