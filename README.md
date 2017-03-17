@@ -4,12 +4,12 @@ Java API for managing [firewalld](http://www.firewalld.org/).
 ## Features
 * Clean programmatic access to [firewalld](http://www.firewalld.org/).
 * Supports fine-grained control over specific port and IP address combinations.
-* Manages sets of services because firewalld is limited in only one <destination /> per service.
+* Manages sets of services because firewalld is limited to only one &lt;destination /&gt; per service.
 * Optimizes arbitrary sets of ports and IP addresses into a minimal set of service files.
 * Small footprint, minimal dependencies - not part of a big monolithic package.
 
 ## Motivation
-The [AOServ Platform](https://aoindustries.com/aoserv/) allows opening ports on a per-IP basis.  [firewalld](http://www.firewalld.org/) service files are limited to a single <destination /> per service file.  To selectively open ports on a per-IP basis, additional service files must be managed.  This is tedious if done manually.  We would rather [firewalld](http://www.firewalld.org/) support multiple <service /> tags with multiple <destination /> per service file, but this is not currently a feature.
+The [AOServ Platform](https://aoindustries.com/aoserv/) allows opening ports on a per-IP basis.  [firewalld](http://www.firewalld.org/) service files are limited to a single &lt;destination /&gt; per service file.  To selectively open ports on a per-IP basis, additional service files must be managed.  This is tedious if done manually.  We would rather [firewalld](http://www.firewalld.org/) support multiple &lt;service /&gt; tags with multiple &lt;destination /&gt; per service file, but this is not currently a feature.
 
 Our server configuration process, [AOServ Daemon](https://aoindustries.com/aoserv/daemon/), is written in the Java programming language.  We desire a clean interface to [firewalld](http://www.firewalld.org/) without having to operate with `firewall-cmd` and other commands directly.
 
