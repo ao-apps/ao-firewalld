@@ -40,7 +40,6 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import javax.xml.parsers.ParserConfigurationException;
@@ -101,7 +100,9 @@ public class Service {
 	static Protocol parseProtocol(String protocol) throws IllegalArgumentException {
 		NullArgumentException.checkNotNull(protocol);
 		// This might need some other type of conversion.  Do as-needed.
-		return Protocol.valueOf(protocol.toUpperCase(Locale.ROOT));
+		Protocol p = Protocol.getProtocolByKeyword(protocol);
+		if(p == null) throw new IllegalArgumentException("Protocol not found: " + protocol);
+		return p;
 	}
 
 	/**
@@ -302,8 +303,7 @@ public class Service {
 		InetAddressPrefix destinationIPv4,
 		InetAddressPrefix destinationIPv6
 	) {
-		NullArgumentException.checkNotNull(name, "name");
-		this.name = name;
+		this.name = NullArgumentException.checkNotNull(name, "name");
 		this.version = version==null || version.isEmpty() ? null : version;
 		this.shortName = shortName==null || shortName.isEmpty() ? null : shortName;
 		this.description = description==null || description.isEmpty() ? null : description;
