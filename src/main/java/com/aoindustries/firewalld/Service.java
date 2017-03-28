@@ -23,6 +23,7 @@
 package com.aoindustries.firewalld;
 
 import com.aoindustries.lang.NullArgumentException;
+import com.aoindustries.lang.ObjectUtils;
 import com.aoindustries.net.AddressFamily;
 import com.aoindustries.net.IPortRange;
 import com.aoindustries.net.InetAddressPrefix;
@@ -335,9 +336,31 @@ public class Service {
 	}
 
 	/**
-	 * The ordering of sets does not matter for the equality of services.
+	 * Compares two services for equality.
+	 * All fields must be equal, with ordering not mattering for sets.
 	 */
-	// TODO: add equals and hashCode
+	@Override
+	public boolean equals(Object obj) {
+		if(!(obj instanceof Service)) return false;
+		Service other = (Service)obj;
+		return
+			name.equals(other.name)
+			&& ObjectUtils.equals(version, other.version)
+			&& ObjectUtils.equals(shortName, other.shortName)
+			&& ObjectUtils.equals(description, other.description)
+			&& ports.equals(other.ports)
+			&& protocols.equals(other.protocols)
+			&& sourcePorts.equals(other.sourcePorts)
+			&& modules.equals(other.modules)
+			&& ObjectUtils.equals(destinationIPv4, other.destinationIPv4)
+			&& ObjectUtils.equals(destinationIPv6, other.destinationIPv6)
+		;
+	}
+
+	@Override
+	public int hashCode() {
+		return name.hashCode();
+	}
 
 	/**
 	 * The name as used by firewalld commands and XML filenames.

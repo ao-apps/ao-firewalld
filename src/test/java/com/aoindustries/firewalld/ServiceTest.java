@@ -22,12 +22,19 @@
  */
 package com.aoindustries.firewalld;
 
+import com.aoindustries.net.IPortRange;
+import com.aoindustries.net.InetAddressPrefixes;
 import com.aoindustries.net.Port;
 import com.aoindustries.net.PortRange;
 import com.aoindustries.net.Protocol;
 import com.aoindustries.validation.ValidationException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -183,19 +190,99 @@ public class ServiceTest {
 		"xmpp-local",
 		"xmpp-server"
 	};
-	@Test
-	public void testLoadService_InputStream() throws ValidationException, IOException {
-		for(String centos7TestService : centos7TestServices) {
-			String resourceName = "centos7/" + centos7TestService + Service.EXTENSION;
-			InputStream in = ServiceTest.class.getResourceAsStream(resourceName);
-			if(in==null) throw new IOException("Resource not found: " + resourceName);
-			try {
-				Service.loadService(centos7TestService, in);
-			} catch(IOException e) {
-				throw new IOException("Resource: " + resourceName, e);
-			} finally {
-				in.close();
-			}
+	private static Service loadCentos7TestService(String name) throws IOException {
+		String resourceName = "centos7/" + name + Service.EXTENSION;
+		InputStream in = ServiceTest.class.getResourceAsStream(resourceName);
+		if(in==null) throw new IOException("Resource not found: " + resourceName);
+		try {
+			return Service.loadService(name, in);
+		} catch(IOException e) {
+			throw new IOException("Resource: " + resourceName, e);
+		} finally {
+			in.close();
 		}
+	}
+
+	@Test
+	public void testLoadService_InputStream() throws IOException {
+		for(String centos7TestService : centos7TestServices) {
+			loadCentos7TestService(centos7TestService);
+		}
+	}
+
+	@Test
+	public void testToString1() throws IOException {
+		assertEquals(
+			"shortName must override name",
+			"Red Hat Satellite 6",
+			loadCentos7TestService("RH-Satellite-6").toString()
+		);
+	}
+
+	// Java 1.8: Can inline
+	private static final Set<? extends IPortRange> EMPTY_PORTS = Collections.emptySet();
+
+	// Java 1.8: Can inline
+	private static final Set<String> EMPTY_MODULES = Collections.emptySet();
+
+	@Test
+	public void testToString2() throws IOException {
+		assertEquals(
+			"name used when no shortName",
+			"test",
+			new Service(
+				"test",
+				null, // version
+				null, // shortName
+				null, // description
+				EMPTY_PORTS, // ports
+				EnumSet.noneOf(Protocol.class), // protocols
+				EMPTY_PORTS, // sourcePorts
+				EMPTY_MODULES, // modules
+				InetAddressPrefixes.UNSPECIFIED_IPV4,
+				InetAddressPrefixes.UNSPECIFIED_IPV6
+			).toString()
+		);
+	}
+
+	@Test
+	public void testEquals1() throws IOException, ValidationException {
+		assertEquals(
+			"port order must not matter",
+			new Service(
+				"test",
+				null, // version
+				null, // shortName
+				null, // description
+				new LinkedHashSet<IPortRange>(
+					Arrays.asList(
+						(IPortRange)PortRange.valueOf(80, 81, Protocol.TCP),
+						Port.valueOf(22, Protocol.TCP)
+					)
+				), // ports
+				EnumSet.noneOf(Protocol.class), // protocols
+				EMPTY_PORTS, // sourcePorts
+				EMPTY_MODULES, // modules
+				InetAddressPrefixes.UNSPECIFIED_IPV4,
+				InetAddressPrefixes.UNSPECIFIED_IPV6
+			),
+			new Service(
+				"test",
+				null, // version
+				null, // shortName
+				null, // description
+				new LinkedHashSet<IPortRange>(
+					Arrays.asList(
+						(IPortRange)Port.valueOf(22, Protocol.TCP),
+						PortRange.valueOf(80, 81, Protocol.TCP)
+					)
+				), // ports
+				EnumSet.noneOf(Protocol.class), // protocols
+				EMPTY_PORTS, // sourcePorts
+				EMPTY_MODULES, // modules
+				InetAddressPrefixes.UNSPECIFIED_IPV4,
+				InetAddressPrefixes.UNSPECIFIED_IPV6
+			)
+		);
 	}
 }
