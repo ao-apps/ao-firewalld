@@ -124,7 +124,7 @@ public class Service {
 	 *
 	 * @throws  IOException  when cannot read or parse the service file
 	 */
-	public static Service loadService(InputStream in) throws IOException {
+	public static Service loadService(String name, InputStream in) throws IOException {
 		try {
 			Element serviceElem = XmlUtils.parseXml(in).getDocumentElement();
 			{
@@ -181,6 +181,7 @@ public class Service {
 				destinationIPv4 = destinationIPv6 = null;
 			}
 			return new Service(
+				name,
 				version,
 				shortName,
 				description,
@@ -207,10 +208,10 @@ public class Service {
 	 *
 	 * @throws  IOException  when cannot read or parse the service file
 	 */
-	public static Service loadService(File file) throws IOException {
+	public static Service loadService(String name, File file) throws IOException {
 		InputStream in = new BufferedInputStream(new FileInputStream(file));
 		try {
-			return loadService(in);
+			return loadService(name, in);
 		} finally {
 			in.close();
 		}
@@ -223,9 +224,10 @@ public class Service {
 	 *
 	 * @throws  IOException  when cannot read or parse the service file
 	 */
+	//TODO: add cache
 	public static Service loadLocalService(String name) throws IOException {
 		File file = new File(LOCAL_SERVICES_DIRECTORY, name + EXTENSION);
-		return file.exists() ? loadService(file) : null;
+		return file.exists() ? loadService(name, file) : null;
 	}
 
 	/**
@@ -235,11 +237,13 @@ public class Service {
 	 *
 	 * @throws  IOException  when cannot read or parse the service file
 	 */
+	//TODO: add cache
 	public static Service loadSystemService(String name) throws IOException {
 		File file = new File(SYSTEM_SERVICES_DIRECTORY, name + EXTENSION);
-		return file.exists() ? loadService(file) : null;
+		return file.exists() ? loadService(name, file) : null;
 	}
 
+	private final String name;
 	private final String version;
 	private final String shortName;
 	private final String description;
@@ -251,6 +255,7 @@ public class Service {
 	private final InetAddressPrefix destinationIPv6;
 
 	public Service(
+		String name,
 		String version,
 		String shortName,
 		String description,
@@ -261,9 +266,11 @@ public class Service {
 		InetAddressPrefix destinationIPv4,
 		InetAddressPrefix destinationIPv6
 	) {
-		this.version = version;
-		this.shortName = shortName;
-		this.description = description;
+		NullArgumentException.checkNotNull(name, "name");
+		this.name = name;
+		this.version = version==null || version.isEmpty() ? null : version;
+		this.shortName = shortName==null || shortName.isEmpty() ? null : shortName;
+		this.description = description==null || description.isEmpty() ? null : description;
 		this.ports = AoCollections.unmodifiableCopySet(ports);
 		this.protocols = AoCollections.unmodifiableCopySet(protocols);
 		this.sourcePorts = AoCollections.unmodifiableCopySet(sourcePorts);
@@ -282,6 +289,20 @@ public class Service {
 			throw new IllegalArgumentException("Not an IPv6 destination: " + destinationIPv6);
 		}
 		this.destinationIPv6 = destinationIPv6;
+	}
+
+	@Override
+	public String toString() {
+		return shortName != null ? shortName : name;
+	}
+
+	// TODO: add equals and hashCode
+
+	/**
+	 * The name as used by firewalld commands and XML filenames.
+	 */
+	public String getName() {
+		return name;
 	}
 
 	/**
