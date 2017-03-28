@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>AOServ Daemon</short>
+  <description>AOServ Daemon system management process.</description>
+  <port protocol="tcp" port="984"/>
+</service>
