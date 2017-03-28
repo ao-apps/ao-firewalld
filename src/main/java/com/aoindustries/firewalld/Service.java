@@ -36,8 +36,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Element;
@@ -196,17 +198,59 @@ public class Service {
 		}
 	}
 
+	private static class FileCacheEntry {
+		private final long lastModified;
+		private final long length;
+		private final Service service;
+		private FileCacheEntry(long lastModified, long length, Service service) {
+			this.lastModified = lastModified;
+			this.length = length;
+			this.service = service;
+		}
+	}
+
+	private static final Map<File,FileCacheEntry> fileCache = new HashMap<File,FileCacheEntry>();
+
 	/**
 	 * Loads a service from the given {@link File}.
+	 *
+	 * @return  The {@link Service} or {@code null} if the service file does not exist.
 	 *
 	 * @throws  IOException  when cannot read or parse the service file
 	 */
 	public static Service loadService(String name, File file) throws IOException {
-		InputStream in = new BufferedInputStream(new FileInputStream(file));
-		try {
-			return loadService(name, in);
-		} finally {
-			in.close();
+		synchronized(fileCache) {
+			if(!file.exists()) {
+				fileCache.remove(file);
+				return null;
+			}
+			long lastModified = file.lastModified();
+			long length = file.length();
+			// Check for cache match
+			FileCacheEntry cacheEntry = fileCache.get(file);
+			if(
+				cacheEntry != null
+				&& lastModified == cacheEntry.lastModified
+				&& length == cacheEntry.length
+			) {
+				Service service = cacheEntry.service;
+				if(!name.equals(service.name)) throw new IllegalArgumentException("Service name mismatch: " + name + " != " + service.name);
+				return service;
+			}
+			// Load from file
+			Service service;
+			InputStream in = new BufferedInputStream(new FileInputStream(file));
+			try {
+				service = loadService(name, in);
+			} finally {
+				in.close();
+			}
+			// Store in cache
+			fileCache.put(
+				file,
+				new FileCacheEntry(lastModified, length, service)
+			);
+			return service;
 		}
 	}
 
@@ -217,10 +261,8 @@ public class Service {
 	 *
 	 * @throws  IOException  when cannot read or parse the service file
 	 */
-	//TODO: add cache
 	public static Service loadLocalService(String name) throws IOException {
-		File file = new File(LOCAL_SERVICES_DIRECTORY, name + EXTENSION);
-		return file.exists() ? loadService(name, file) : null;
+		return loadService(name, new File(LOCAL_SERVICES_DIRECTORY, name + EXTENSION));
 	}
 
 	/**
@@ -230,10 +272,8 @@ public class Service {
 	 *
 	 * @throws  IOException  when cannot read or parse the service file
 	 */
-	//TODO: add cache
 	public static Service loadSystemService(String name) throws IOException {
-		File file = new File(SYSTEM_SERVICES_DIRECTORY, name + EXTENSION);
-		return file.exists() ? loadService(name, file) : null;
+		return loadService(name, new File(SYSTEM_SERVICES_DIRECTORY, name + EXTENSION));
 	}
 
 	private final String name;
