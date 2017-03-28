@@ -29,6 +29,8 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A service set is one service opened on a set of specific IP and port combinations.
@@ -49,6 +51,8 @@ import java.util.Set;
  */
 public class ServiceSet {
 
+	private static final Logger logger = Logger.getLogger(ServiceSet.class.getName());
+
 	/**
 	 * Loads the currently configured service set for the given name.
 	 * The system service is used as the template.
@@ -56,6 +60,7 @@ public class ServiceSet {
 	 * @see  Service#loadSystemService(java.lang.String)
 	 */
 	public static ServiceSet loadServiceSet(String name) throws IOException {
+		if(logger.isLoggable(Level.FINE)) logger.fine("Loading service set: " + name);
 		Service template = Service.loadSystemService(name);
 		if(template == null) throw new IllegalArgumentException("System service not found: " + name);
 		return loadServiceSet(template);
@@ -72,6 +77,7 @@ public class ServiceSet {
 		if(list != null) {
 			String prefix = name + '-';
 			for(String filename : list) {
+				if(logger.isLoggable(Level.FINER)) logger.finer("Scanning for system service conflict: " + filename);
 				if(
 					filename.startsWith(prefix)
 					&& filename.endsWith(Service.EXTENSION)
@@ -87,6 +93,7 @@ public class ServiceSet {
 						throw new IllegalStateException("System service conflicts with service set names: " + filename);
 					} catch(NumberFormatException e) {
 						// Is not parseable as Integer, no conflict
+						if(logger.isLoggable(Level.FINE)) logger.fine("Skipping not int parseable: " + filename);
 					}
 				}
 			}
@@ -98,12 +105,14 @@ public class ServiceSet {
 	 */
 	public static ServiceSet loadServiceSet(Service template) throws IOException {
 		String templateName = template.getName();
+		if(logger.isLoggable(Level.FINE)) logger.fine("Loading service set: " + templateName);
 		checkForSystemServiceConflict(templateName);
 		Map<String,File> servicesToLoad = new LinkedHashMap<String,File>();
 		String[] list = new File(Service.LOCAL_SERVICES_DIRECTORY).list();
 		if(list != null) {
 			String prefix = templateName + '-';
 			for(String filename : list) {
+				if(logger.isLoggable(Level.FINER)) logger.finer("Scanning for service set: " + filename);
 				if(
 					filename.startsWith(prefix)
 					&& filename.endsWith(Service.EXTENSION)
@@ -116,12 +125,14 @@ public class ServiceSet {
 								filename.length() - Service.EXTENSION.length()
 							)
 						);
+						if(logger.isLoggable(Level.FINE)) logger.fine("Found local service: " + filename);
 						servicesToLoad.put(
 							prefix + num,
 							new File(Service.LOCAL_SERVICES_DIRECTORY, filename)
 						);
 					} catch(NumberFormatException e) {
 						// Is not parseable as Integer, ignore
+						if(logger.isLoggable(Level.FINE)) logger.fine("Skipping not int parseable: " + filename);
 					}
 				}
 			}
@@ -129,6 +140,7 @@ public class ServiceSet {
 		// Add template file if not found in local services
 		if(servicesToLoad.containsKey(templateName)) {
 			// No local override of system service, load the system service if exists
+			if(logger.isLoggable(Level.FINE)) logger.fine("Adding system service: " + templateName);
 			servicesToLoad.put(
 				templateName,
 				new File(Service.LOCAL_SERVICES_DIRECTORY, templateName + Service.EXTENSION)
@@ -137,9 +149,15 @@ public class ServiceSet {
 		// Load services
 		Set<Service> services = new LinkedHashSet<Service>(servicesToLoad.size()*4/3+1);
 		for(Map.Entry<String,File> entry : servicesToLoad.entrySet()) {
-			Service service = Service.loadService(entry.getKey(), entry.getValue());
+			File file = entry.getValue();
+			Service service = Service.loadService(entry.getKey(), file);
 			// Ignore if file removed or doesn't exist
-			if(service != null && !services.add(service)) throw new AssertionError("Duplicate service: " + service);
+			if(service != null) {
+				if(logger.isLoggable(Level.FINE)) logger.fine("Successfully loaded service: " + service + " from " + file);
+				if(!services.add(service)) throw new AssertionError("Duplicate service: " + service);
+			} else {
+				if(logger.isLoggable(Level.FINE)) logger.fine("Service file not found: " + file);
+			}
 		}
 		return new ServiceSet(template, services);
 	}
