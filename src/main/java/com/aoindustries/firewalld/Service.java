@@ -42,6 +42,8 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -291,6 +293,11 @@ public class Service {
 	private final InetAddressPrefix destinationIPv4;
 	private final InetAddressPrefix destinationIPv6;
 
+	/**
+	 * The computed targets.
+	 */
+	private final SortedSet<Target> targets;
+
 	public Service(
 		String name,
 		String version,
@@ -307,6 +314,9 @@ public class Service {
 		this.version = version==null || version.isEmpty() ? null : version;
 		this.shortName = shortName==null || shortName.isEmpty() ? null : shortName;
 		this.description = description==null || description.isEmpty() ? null : description;
+		if(ports.isEmpty() && protocols.isEmpty()) {
+			throw new IllegalArgumentException("Neither ports nor protocols provided.");
+		}
 		this.ports = AoCollections.unmodifiableCopySet(ports);
 		this.protocols = AoCollections.unmodifiableCopySet(protocols);
 		this.sourcePorts = AoCollections.unmodifiableCopySet(sourcePorts);
@@ -328,6 +338,30 @@ public class Service {
 			throw new IllegalArgumentException("Not an IPv6 destination: " + destinationIPv6);
 		}
 		this.destinationIPv6 = destinationIPv6;
+		// Find all the targets
+		SortedSet<Target> newTargets = new TreeSet<Target>();
+		for(IPortRange port : ports) {
+			if(destinationIPv4 != null) {
+				Target target = new Target(destinationIPv4, port);
+				if(!newTargets.add(target)) throw new IllegalStateException("Duplicate target: " + target);
+			}
+			if(destinationIPv6 != null) {
+				Target target = new Target(destinationIPv6, port);
+				if(!newTargets.add(target)) throw new IllegalStateException("Duplicate target: " + target);
+			}
+		}
+		for(Protocol protocol : protocols) {
+			if(destinationIPv4 != null) {
+				Target target = new Target(destinationIPv4, protocol);
+				if(!newTargets.add(target)) throw new IllegalStateException("Duplicate target: " + target);
+			}
+			if(destinationIPv6 != null) {
+				Target target = new Target(destinationIPv6, protocol);
+				if(!newTargets.add(target)) throw new IllegalStateException("Duplicate target: " + target);
+			}
+		}
+		if(newTargets.isEmpty()) throw new AssertionError();
+		this.targets = AoCollections.optimalUnmodifiableSortedSet(newTargets);
 	}
 
 	@Override
@@ -458,5 +492,19 @@ public class Service {
 			case INET6 : return destinationIPv6;
 			default : throw new AssertionError(addressFamily);
 		}
+	}
+
+	/**
+	 * Gets the set of all targets represented by this service.
+	 * This will not be an empty set.
+	 * <p>
+	 * This may have overlapping targets if the service was not previously optimized.
+	 * </p>
+	 *
+	 * @see  Target#compareTo(com.aoindustries.firewalld.Target)
+	 */
+	public SortedSet<Target> getTargets() {
+		assert !targets.isEmpty();
+		return targets;
 	}
 }

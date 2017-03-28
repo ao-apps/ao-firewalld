@@ -29,6 +29,8 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -164,6 +166,7 @@ public class ServiceSet {
 
 	private final Service template;
 	private final Set<Service> services;
+	private final SortedSet<Target> targets;
 
 	private ServiceSet(
 		Service template,
@@ -171,6 +174,11 @@ public class ServiceSet {
 	) {
 		this.template = template;
 		this.services = AoCollections.optimalUnmodifiableSet(services);
+		SortedSet<Target> newTargets = new TreeSet<Target>();
+		for(Service service : services) {
+			newTargets.addAll(service.getTargets());
+		}
+		this.targets = AoCollections.optimalUnmodifiableSortedSet(newTargets);
 	}
 
 	/**
@@ -188,5 +196,18 @@ public class ServiceSet {
 	 */
 	public Set<Service> getServices() {
 		return services;
+	}
+
+	/**
+	 * Gets the set of all targets represented by all services in this set.
+	 * This may be an empty set when a template has no existing configuration.
+	 * <p>
+	 * This may have overlapping destinations if the service set was not previously optimized.
+	 * </p>
+	 *
+	 * @see  Target#compareTo(com.aoindustries.firewalld.Target)
+	 */
+	public SortedSet<Target> getTargets() {
+		return targets;
 	}
 }
