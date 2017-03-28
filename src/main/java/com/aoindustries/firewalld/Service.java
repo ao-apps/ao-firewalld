@@ -26,6 +26,7 @@ import com.aoindustries.lang.NullArgumentException;
 import com.aoindustries.net.AddressFamily;
 import com.aoindustries.net.IPortRange;
 import com.aoindustries.net.InetAddressPrefix;
+import com.aoindustries.net.InetAddressPrefixes;
 import com.aoindustries.net.Protocol;
 import com.aoindustries.util.AoCollections;
 import com.aoindustries.validation.ValidationException;
@@ -173,7 +174,8 @@ public class Service {
 					throw new IOException(DESTINATION_ELEM + " has neither " + IPV4_ATTR + " nor " + IPV6_ATTR);
 				}
 			} else {
-				destinationIPv4 = destinationIPv6 = null;
+				destinationIPv4 = InetAddressPrefixes.UNSPECIFIED_IPV4;
+				destinationIPv6 = InetAddressPrefixes.UNSPECIFIED_IPV6;
 			}
 			return new Service(
 				name,
@@ -308,6 +310,9 @@ public class Service {
 		this.protocols = AoCollections.unmodifiableCopySet(protocols);
 		this.sourcePorts = AoCollections.unmodifiableCopySet(sourcePorts);
 		this.modules = AoCollections.unmodifiableCopySet(modules);
+		if(destinationIPv4 == null && destinationIPv6 == null) {
+			throw new IllegalArgumentException("Neither destinationIPv4 nor destinationIPv6 provided.  To match all, use \"0.0.0.0/0\" or \"::/0\".");
+		}
 		if(
 			destinationIPv4 != null
 			&& destinationIPv4.getAddress().getAddressFamily() != AddressFamily.INET
@@ -329,6 +334,9 @@ public class Service {
 		return shortName != null ? shortName : name;
 	}
 
+	/**
+	 * The ordering of sets does not matter for the equality of services.
+	 */
 	// TODO: add equals and hashCode
 
 	/**
@@ -398,6 +406,8 @@ public class Service {
 	/**
 	 * The optional IPv4 destination network.
 	 *
+	 * @return  the IPv4 address and prefix or {@code null} for no IPv4 destination.
+	 *
 	 * @see  #getDestinationIPv6()  for IPv6
 	 */
 	public InetAddressPrefix getDestinationIPv4() {
@@ -406,6 +416,8 @@ public class Service {
 
 	/**
 	 * The optional IPv6 destination network.
+	 *
+	 * @return  the IPv6 address and prefix or {@code null} for no IPv6 destination.
 	 *
 	 * @see  #getDestinationIPv4()  for IPv4
 	 */
