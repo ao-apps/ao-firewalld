@@ -131,13 +131,6 @@ public class Service {
 				String rootNodeName = serviceElem.getNodeName();
 				if(!rootNodeName.equals(SERVICE_ELEM)) throw new IOException("Root node is not a " + SERVICE_ELEM + ": " + rootNodeName);
 			}
-			String version;
-			{
-				String versionAttr = serviceElem.getAttribute(VERSION_ATTR);
-				version = versionAttr.isEmpty() ? null : versionAttr;
-			}
-			String shortName = XmlUtils.getChildTextContent(serviceElem, SHORT_ELEM);
-			String description = XmlUtils.getChildTextContent(serviceElem, DESCRIPTION_ELEM);
 			Set<IPortRange> ports = new LinkedHashSet<IPortRange>();
 			Set<Protocol> protocols = new LinkedHashSet<Protocol>(); // Not using EnumSet to maintain source order
 			for(Element portElem : XmlUtils.iterableChildElementsByTagName(serviceElem, PORT_ELEM)) {
@@ -182,9 +175,9 @@ public class Service {
 			}
 			return new Service(
 				name,
-				version,
-				shortName,
-				description,
+				serviceElem.getAttribute(VERSION_ATTR),
+				XmlUtils.getChildTextContent(serviceElem, SHORT_ELEM),
+				XmlUtils.getChildTextContent(serviceElem, DESCRIPTION_ELEM),
 				ports,
 				protocols,
 				sourcePorts,
