@@ -314,8 +314,8 @@ public class Service {
 		this.version = version==null || version.isEmpty() ? null : version;
 		this.shortName = shortName==null || shortName.isEmpty() ? null : shortName;
 		this.description = description==null || description.isEmpty() ? null : description;
-		if(ports.isEmpty() && protocols.isEmpty()) {
-			throw new IllegalArgumentException("Neither ports nor protocols provided.");
+		if(ports.isEmpty() && protocols.isEmpty() && modules.isEmpty()) {
+			throw new IllegalArgumentException("Neither ports nor protocols nor modules provided.");
 		}
 		this.ports = AoCollections.unmodifiableCopySet(ports);
 		this.protocols = AoCollections.unmodifiableCopySet(protocols);
@@ -360,7 +360,6 @@ public class Service {
 				if(!newTargets.add(target)) throw new IllegalStateException("Duplicate target: " + target);
 			}
 		}
-		if(newTargets.isEmpty()) throw new AssertionError();
 		this.targets = AoCollections.optimalUnmodifiableSortedSet(newTargets);
 	}
 
@@ -496,9 +495,9 @@ public class Service {
 
 	/**
 	 * Gets the set of all targets represented by this service.
-	 * This will not be an empty set.
+	 * This may be an empty set when a service is modules-only (like tftp-client).
 	 * <p>
-	 * This may have overlapping targets if the service was not previously optimized.
+	 * This may have overlapping targets if the service was not previously {@link ServiceSet#optimize() optimized}.
 	 * </p>
 	 *
 	 * @see  Target#compareTo(com.aoindustries.firewalld.Target)

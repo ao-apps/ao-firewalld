@@ -22,9 +22,14 @@
  */
 package com.aoindustries.firewalld;
 
+import com.aoindustries.lang.NotImplementedException;
+import com.aoindustries.net.InetAddressPrefix;
+import com.aoindustries.net.InetAddressPrefixes;
 import com.aoindustries.util.AoCollections;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -60,6 +65,7 @@ public class ServiceSet {
 	 * The system service is used as the template.
 	 *
 	 * @see  Service#loadSystemService(java.lang.String)
+	 * @see  #loadServiceSet(com.aoindustries.firewalld.Service)
 	 */
 	public static ServiceSet loadServiceSet(String name) throws IOException {
 		if(logger.isLoggable(Level.FINE)) logger.fine("Loading service set: " + name);
@@ -104,6 +110,8 @@ public class ServiceSet {
 
 	/**
 	 * Loads the currently configured service set for the given template.
+	 *
+	 * @see #loadServiceSet(java.lang.String)
 	 */
 	public static ServiceSet loadServiceSet(Service template) throws IOException {
 		String templateName = template.getName();
@@ -164,8 +172,98 @@ public class ServiceSet {
 		return new ServiceSet(template, services);
 	}
 
+	/**
+	 * Creates an optimized service set for the given name and targets.
+	 * The system service is used as the template.
+	 * The service set is not {@link #commit() committed}.
+	 *
+	 * @see Service#loadSystemService(java.lang.String)
+	 * @see #createOptimizedServiceSet(com.aoindustries.firewalld.Service, java.lang.Iterable)
+	 * @see #optimize()
+	 */
+	public static ServiceSet createOptimizedServiceSet(String name, Iterable<? extends Target> targets) throws IOException {
+		if(logger.isLoggable(Level.FINE)) logger.fine("Loading service set: " + name);
+		Service template = Service.loadSystemService(name);
+		if(template == null) throw new IllegalArgumentException("System service not found: " + name);
+		return createOptimizedServiceSet(template, targets);
+	}
+
+	/**
+	 * Creates an optimized service set for the given template and targets.
+	 * The service set is not {@link #commit() committed}.
+	 * <p>
+	 * First, ports are coalesced into port ranges within matching destinations.
+	 * Protocol-only is considered to match all ports of that protocol.
+	 * </p>
+	 * <p>
+	 * Second, destinations are combined within network prefixes within matching port ranges.
+	 * {@link InetAddressPrefixes#UNSPECIFIED_IPV4} and {@link InetAddressPrefixes#UNSPECIFIED_IPV6}
+	 * are considered to match all addresses of the same family (this is a natural consequence of
+	 * the way the unspecified prefixes are defined with prefix of zero).
+	 * </p>
+	 * <p>
+	 * Third, a set of services are generated based on the template.  All fields
+	 * except {@link Service#getDestinationIPv4()} and {@link Service#getDestinationIPv6()}
+	 * are copied from the template.  The template destinations are not used.
+	 * </p>
+	 *
+	 * @see #createOptimizedServiceSet(java.lang.String, java.lang.Iterable)
+	 * @see #optimize()
+	 */
+	public static ServiceSet createOptimizedServiceSet(Service template, Iterable<? extends Target> targets) {
+		if(logger.isLoggable(Level.FINE)) logger.fine("Optimizing service set: " + template + "->" + targets);
+		// TODO: Should we optimize the set of targets in a separate method?
+		// Coalesce ports by destination
+		Map<InetAddressPrefix,SortedSet<Target>> coalescedTargetsByDestination = new HashMap<InetAddressPrefix,SortedSet<Target>>();
+		{
+			SortedSet<Target> toAdd = new TreeSet<Target>();
+			for(Target target : targets) toAdd.add(target);
+			if(logger.isLoggable(Level.FINE)) logger.fine("Combined into toAdd: " + template + "->" + toAdd);
+			while(!toAdd.isEmpty()) {
+				// Get and remove the first element
+				Target target;
+				{
+					Iterator<Target> toAddIter = toAdd.iterator();
+					target = toAddIter.next();
+					if(logger.isLoggable(Level.FINER)) logger.finer(toAdd.size() + " more to add: " + template + "->" + target);
+					toAddIter.remove();
+				}
+				InetAddressPrefix destination = target.getDestination();
+				SortedSet<Target> coalescedTargets = coalescedTargetsByDestination.get(destination);
+				if(coalescedTargets == null) {
+					coalescedTargets = new TreeSet<Target>();
+					coalescedTargets.add(target);
+					coalescedTargetsByDestination.put(destination, coalescedTargets);
+				} else {
+					// TODO: Test 1, 3, 2 coalesced correctly, or 1-3, 2-4, 3-5?
+					Iterator<Target> coalescedIter = coalescedTargets.iterator();
+					boolean wasCoalesced = false;
+					while(coalescedIter.hasNext()) {
+						Target coalesced = coalescedIter.next();
+						Target newCoalesced = target.coalesce(coalesced);
+						if(newCoalesced != null) {
+							toAdd.add(newCoalesced);
+							coalescedIter.remove();
+							wasCoalesced = true;
+						}
+					}
+					if(!wasCoalesced) {
+						coalescedTargets.add(target);
+					}
+				}
+			}
+		}
+		if(logger.isLoggable(Level.FINE)) logger.fine("After coalesce port ranges: " + template + "->" + coalescedTargetsByDestination);
+		// TODO
+		throw new NotImplementedException("TODO: Finish method");
+	}
+
 	private final Service template;
 	private final Set<Service> services;
+
+	/**
+	 * The computed targets.
+	 */
 	private final SortedSet<Target> targets;
 
 	private ServiceSet(
@@ -179,6 +277,27 @@ public class ServiceSet {
 			newTargets.addAll(service.getTargets());
 		}
 		this.targets = AoCollections.optimalUnmodifiableSortedSet(newTargets);
+	}
+
+	@Override
+	public String toString() {
+		return template + "->" + targets;
+	}
+
+	/**
+	 * Two service sets are equal when they have the same services.
+	 * The template is <em>not</em> compared for equality.
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if(!(obj instanceof ServiceSet)) return false;
+		ServiceSet other = (ServiceSet)obj;
+		return services.equals(other.services);
+	}
+
+	@Override
+	public int hashCode() {
+		return services.hashCode();
 	}
 
 	/**
@@ -200,14 +319,35 @@ public class ServiceSet {
 
 	/**
 	 * Gets the set of all targets represented by all services in this set.
-	 * This may be an empty set when a template has no existing configuration.
+	 * This may be an empty set when a template has no existing configuration or is modules-only (like tftp-client).
 	 * <p>
-	 * This may have overlapping destinations if the service set was not previously optimized.
+	 * This may have overlapping destinations if the service set was not previously {@link #optimize() optimized}.
 	 * </p>
 	 *
 	 * @see  Target#compareTo(com.aoindustries.firewalld.Target)
 	 */
 	public SortedSet<Target> getTargets() {
 		return targets;
+	}
+
+	/**
+	 * Returns an optimized version of this set.
+	 *
+	 * @return  {@code this} if already optimized, or new {@link ServiceSet} it optimal form is different.
+	 *
+	 * @see #createOptimizedServiceSet(java.lang.String, java.util.Set)
+	 * @see #createOptimizedServiceSet(com.aoindustries.firewalld.Service, java.util.Set)
+	 */
+	public ServiceSet optimize() {
+		ServiceSet optimized = createOptimizedServiceSet(template, targets);
+		return this.equals(optimized) ? this : optimized;
+	}
+
+	/**
+	 * Commits this service set to the system configuration, reconfiguring and
+	 * reloading the firewall as necessary.
+	 */
+	public void commit() {
+		throw new NotImplementedException("TODO: Implement method");
 	}
 }

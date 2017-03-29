@@ -236,7 +236,7 @@ public class ServiceTest {
 				null, // shortName
 				null, // description
 				EMPTY_PORTS, // ports
-				EnumSet.noneOf(Protocol.class), // protocols
+				EnumSet.of(Protocol.ESP), // protocols
 				EMPTY_PORTS, // sourcePorts
 				EMPTY_MODULES, // modules
 				InetAddressPrefixes.UNSPECIFIED_IPV4,

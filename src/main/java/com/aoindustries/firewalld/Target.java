@@ -53,14 +53,31 @@ public class Target implements Comparable<Target> {
 	private final Protocol protocol;
 	private final IPortRange portRange;
 
-	public Target(InetAddressPrefix destination, IPortRange portRange) {
+	/**
+	 * @param destination  The destination is {@link InetAddressPrefix#normalize() normalized}
+	 */
+	private Target(InetAddressPrefix destination, Protocol protocol, IPortRange portRange) {
 		this.destination = NullArgumentException.checkNotNull(destination, "destination");
+		assert destination == destination.normalize();
+		this.protocol = NullArgumentException.checkNotNull(protocol, "protocol");
+		this.portRange = portRange;
+		assert portRange == null || portRange.getProtocol() == protocol;
+	}
+
+	/**
+	 * @param destination  The destination is {@link InetAddressPrefix#normalize() normalized}
+	 */
+	public Target(InetAddressPrefix destination, IPortRange portRange) {
+		this.destination = NullArgumentException.checkNotNull(destination, "destination").normalize();
 		this.portRange = NullArgumentException.checkNotNull(portRange, "portRange");
 		this.protocol = portRange.getProtocol();
 	}
 
+	/**
+	 * @param destination  The destination is {@link InetAddressPrefix#normalize() normalized}
+	 */
 	public Target(InetAddressPrefix destination, Protocol protocol) {
-		this.destination = NullArgumentException.checkNotNull(destination, "destination");
+		this.destination = NullArgumentException.checkNotNull(destination, "destination").normalize();
 		this.protocol = NullArgumentException.checkNotNull(protocol, "protocol");
 		this.portRange = null;
 	}
@@ -130,6 +147,8 @@ public class Target implements Comparable<Target> {
 
 	/**
 	 * Gets the destination network range for this target.
+	 *
+	 * @return The {@link InetAddressPrefix#normalize() normalized} destination
 	 */
 	public InetAddressPrefix getDestination() {
 		return destination;
@@ -147,5 +166,62 @@ public class Target implements Comparable<Target> {
 	 */
 	public IPortRange getPortRange() {
 		return portRange;
+	}
+
+	/**
+	 * Combines this target with the given target if possible.
+	 * <p>
+	 * If have the same destination, combines by protocol and port range.
+	 * If have the same protocol and port range, tries to combine by destination network prefixes.
+	 * </p>
+	 * <p>
+	 * When combining by protocol and port range, a target with no port range
+	 * matches all ports on that protocol.
+	 * </p>
+	 *
+	 * @return  The new target that represents the union of this and the other target or {@code null}
+	 *          when they cannot be combined.
+	 */
+	public Target coalesce(Target other) {
+		if(this.protocol != other.protocol) {
+			// Different protocols
+			return null;
+		}
+		if(this.destination.equals(other.destination)) {
+			if(this.portRange == null) {
+				// This has no port range, use for all ports
+				return this;
+			} else if(other.portRange == null) {
+				// Other has no port range, use for all ports
+				return other;
+			} else {
+				IPortRange coalescedRange = this.portRange.coalesce(other.portRange);
+				if(coalescedRange == null) {
+					// Not combinable
+					return null;
+				} else if(coalescedRange == this.portRange) {
+					return this;
+				} else if(coalescedRange == other.portRange) {
+					return other;
+				} else {
+					return new Target(destination, protocol, coalescedRange);
+				}
+			}
+		} else if(ObjectUtils.equals(this.portRange, other.portRange)) {
+			InetAddressPrefix coalescedDestination = this.destination.coalesce(other.destination);
+			if(coalescedDestination == null) {
+				// Not combinable
+				return null;
+			} else if(coalescedDestination == this.destination) {
+				return this;
+			} else if(coalescedDestination == other.destination) {
+				return other;
+			} else {
+				return new Target(coalescedDestination, protocol, portRange);
+			}
+		} else {
+			// Cannot combine by port range or destination
+			return null;
+		}
 	}
 }
