@@ -553,7 +553,7 @@ public class Service {
 	public void saveLocalService() throws IOException {
 		try {
 			File serviceFile = getLocalServiceFile(name);
-			File newServiceFile = File.createTempFile(name + EXTENSION, ".tmp", new File(LOCAL_SERVICES_DIRECTORY));
+			File newServiceFile = File.createTempFile(name + '-', ".tmp", new File(LOCAL_SERVICES_DIRECTORY));
 			// Should we use ao-encoding here?  Java XML is just so tedious
 			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -597,18 +597,17 @@ public class Service {
 				!InetAddressPrefixes.UNSPECIFIED_IPV4.equals(destinationIPv4)
 				|| !InetAddressPrefixes.UNSPECIFIED_IPV6.equals(destinationIPv6)
 			) {
-				// TODO: What to do about unspecified one family with specified other family?
-				// TODO: is ipv4="1.2.3.4" ipv6="::/0" acceptable as would be generated now?
 				Element destinationElem = document.createElement(DESTINATION_ELEM);
 				if(destinationIPv4 != null) destinationElem.setAttribute(IPV4_ATTR, destinationIPv4.toString());
 				if(destinationIPv6 != null) destinationElem.setAttribute(IPV6_ATTR, destinationIPv6.toString());
 				serviceElem.appendChild(destinationElem);
 			}
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			transformerFactory.setAttribute("indent-number", 4);
 			Transformer transformer = transformerFactory.newTransformer();
 			transformer.setOutputProperty(OutputKeys.VERSION, "1.0");
-			transformer.setOutputProperty(OutputKeys.ENCODING,"UTF-8");
-			transformer.setOutputProperty(OutputKeys.STANDALONE, "yes");
+			transformer.setOutputProperty(OutputKeys.ENCODING,"utf-8");
+			//transformer.setOutputProperty(OutputKeys.STANDALONE, "no");
 			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 			DOMSource source = new DOMSource(document);
 			if(logger.isLoggable(Level.FINE)) logger.fine("Writing new local service file: " + newServiceFile);
