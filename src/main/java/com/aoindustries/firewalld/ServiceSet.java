@@ -260,7 +260,6 @@ public class ServiceSet {
 					coalescedPorts.add(target.protocolOrPortRange);
 					coalescedPortsByDestination.put(destination, coalescedPorts);
 				} else {
-					// TODO: Test 1, 3, 2 coalesced correctly, or 1-3, 2-4, 3-5?
 					Iterator<ProtocolOrPortRange> coalescedIter = coalescedPorts.iterator();
 					boolean wasCoalesced = false;
 					while(coalescedIter.hasNext()) {
@@ -279,7 +278,7 @@ public class ServiceSet {
 			}
 		}
 		if(logger.isLoggable(Level.FINE)) logger.fine("After coalesce port ranges: " + template + "->" + coalescedPortsByDestination);
-		// Coalesce destinations by protocol and ports (TODO: test for adjacent network ranges in 1, 3, 4, 2 order added)
+		// Coalesce destinations by protocol and ports
 		SortedMap<SortedSet<ProtocolOrPortRange>,SortedSet<InetAddressPrefix>> coalescedDestinationsByPorts = new TreeMap<SortedSet<ProtocolOrPortRange>,SortedSet<InetAddressPrefix>>(portSetComparator);
 		{
 			SortedMap<InetAddressPrefix,SortedSet<ProtocolOrPortRange>> toAdd = new TreeMap<InetAddressPrefix,SortedSet<ProtocolOrPortRange>>(coalescedPortsByDestination);
@@ -489,8 +488,10 @@ public class ServiceSet {
 	/**
 	 * Commits this service set to the system configuration, reconfiguring and
 	 * reloading the firewall as necessary.
+	 *
+	 * @param  zones  the zones that that the service set should be activated in
 	 */
-	public void commit() {
+	public void commit(Set<String> zones) {
 		throw new NotImplementedException("TODO: Implement method");
 	}
 }
