@@ -242,4 +242,31 @@ public class TargetTest {
 		);
 	}
 
+	@Test
+	public void test_destination_autoNormalized_protocolOnly() throws ValidationException {
+		assertEquals(
+			"UDP@192.0.2.0/24",
+			new Target(
+				InetAddressPrefix.valueOf(
+					InetAddress.valueOf("192.0.2.123"),
+					24
+				),
+				Protocol.UDP
+			).toString()
+		);
+	}
+
+	@Test
+	public void test_destination_autoNormalized_portRange() throws ValidationException {
+		assertEquals(
+			"80-81/TCP@192.0.2.0/24",
+			new Target(
+				InetAddressPrefix.valueOf(
+					InetAddress.valueOf("192.0.2.123"),
+					24
+				),
+				PortRange.valueOf(80, 81, Protocol.TCP)
+			).toString()
+		);
+	}
 }
