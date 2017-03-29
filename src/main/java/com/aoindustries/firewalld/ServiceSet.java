@@ -31,6 +31,7 @@ import com.aoindustries.net.Protocol;
 import com.aoindustries.util.AoCollections;
 import java.io.File;
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -193,6 +194,22 @@ public class ServiceSet {
 		return createOptimizedServiceSet(template, targets);
 	}
 
+	private static final Comparator<SortedSet<ProtocolOrPortRange>> portSetComparator = new Comparator<SortedSet<ProtocolOrPortRange>>() {
+		@Override
+		public int compare(SortedSet<ProtocolOrPortRange> ports1, SortedSet<ProtocolOrPortRange> ports2) {
+			// Put shorter sets of ports before longer when they are otherwise not sorted
+			Iterator<ProtocolOrPortRange> iter1 = ports1.iterator();
+			Iterator<ProtocolOrPortRange> iter2 = ports2.iterator();
+			while(iter1.hasNext()) {
+				if(!iter2.hasNext()) return 1; // ports2 shorter list than ports1
+				int diff = iter1.next().compareTo(iter2.next());
+				if(diff != 0) return diff;
+			}
+			if(iter2.hasNext()) return -1; // ports1 shorter list than ports2
+			return 0;
+		}
+	};
+
 	/**
 	 * Creates an optimized service set for the given template and targets.
 	 * The service set is not {@link #commit() committed}.
@@ -215,6 +232,10 @@ public class ServiceSet {
 	 * @see #createOptimizedServiceSet(java.lang.String, java.lang.Iterable)
 	 * @see #optimize()
 	 */
+	// TODO: An initial coalesce pass on all targets could reduce this set further
+	// TODO: And target-level coalesce needs to consider with *both* destination and ports are widening conversions
+	// TODO: Specifically, 22/TCP@1.2.3.4 overlaps 22-23/TCP@1.2.3.4/31
+	// TODO: No rush on this, though, since we'll tend to feed individual IPs, which should group reasonably well with current algorithm
 	public static ServiceSet createOptimizedServiceSet(Service template, Iterable<? extends Target> targets) {
 		if(logger.isLoggable(Level.FINE)) logger.fine("Optimizing service set: " + template + "->" + targets);
 		// Coalesce ports by destination
@@ -259,7 +280,7 @@ public class ServiceSet {
 		}
 		if(logger.isLoggable(Level.FINE)) logger.fine("After coalesce port ranges: " + template + "->" + coalescedPortsByDestination);
 		// Coalesce destinations by protocol and ports (TODO: test for adjacent network ranges in 1, 3, 4, 2 order added)
-		SortedMap<SortedSet<ProtocolOrPortRange>,SortedSet<InetAddressPrefix>> coalescedDestinationsByPorts = new TreeMap<SortedSet<ProtocolOrPortRange>,SortedSet<InetAddressPrefix>>();
+		SortedMap<SortedSet<ProtocolOrPortRange>,SortedSet<InetAddressPrefix>> coalescedDestinationsByPorts = new TreeMap<SortedSet<ProtocolOrPortRange>,SortedSet<InetAddressPrefix>>(portSetComparator);
 		{
 			SortedMap<InetAddressPrefix,SortedSet<ProtocolOrPortRange>> toAdd = new TreeMap<InetAddressPrefix,SortedSet<ProtocolOrPortRange>>(coalescedPortsByDestination);
 			while(!toAdd.isEmpty()) {
@@ -301,7 +322,7 @@ public class ServiceSet {
 		}
 		if(logger.isLoggable(Level.FINE)) logger.fine("After coalesce destinations: " + template + "->" + coalescedDestinationsByPorts);
 		// Split by destinations by family
-		SortedMap<SortedSet<ProtocolOrPortRange>,EnumMap<AddressFamily,SortedSet<InetAddressPrefix>>> splitByFamily = new TreeMap<SortedSet<ProtocolOrPortRange>,EnumMap<AddressFamily,SortedSet<InetAddressPrefix>>>();
+		SortedMap<SortedSet<ProtocolOrPortRange>,EnumMap<AddressFamily,SortedSet<InetAddressPrefix>>> splitByFamily = new TreeMap<SortedSet<ProtocolOrPortRange>,EnumMap<AddressFamily,SortedSet<InetAddressPrefix>>>(portSetComparator);
 		for(Map.Entry<SortedSet<ProtocolOrPortRange>,SortedSet<InetAddressPrefix>> entry : coalescedDestinationsByPorts.entrySet()) {
 			SortedSet<ProtocolOrPortRange> portsToSplit = entry.getKey();
 			EnumMap<AddressFamily,SortedSet<InetAddressPrefix>> destinationsByFamily = splitByFamily.get(portsToSplit);

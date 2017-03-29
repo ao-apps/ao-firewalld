@@ -190,7 +190,7 @@ public class ServiceTest {
 		"xmpp-local",
 		"xmpp-server"
 	};
-	private static Service loadCentos7TestService(String name) throws IOException {
+	static Service loadCentos7TestService(String name) throws IOException {
 		String resourceName = "centos7/" + name + Service.EXTENSION;
 		InputStream in = ServiceTest.class.getResourceAsStream(resourceName);
 		if(in==null) throw new IOException("Resource not found: " + resourceName);
@@ -220,10 +220,10 @@ public class ServiceTest {
 	}
 
 	// Java 1.8: Can inline
-	private static final Set<? extends IPortRange> EMPTY_PORTS = Collections.emptySet();
+	static final Set<? extends IPortRange> EMPTY_PORTS = Collections.emptySet();
 
 	// Java 1.8: Can inline
-	private static final Set<String> EMPTY_MODULES = Collections.emptySet();
+	static final Set<String> EMPTY_MODULES = Collections.emptySet();
 
 	@Test
 	public void testToString2() throws IOException {
