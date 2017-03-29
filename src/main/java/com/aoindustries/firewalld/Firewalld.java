@@ -30,8 +30,7 @@ import java.io.IOException;
  *
  * @author  AO Industries, Inc.
  */
-// TODO: Not public once another class exists for javadocs
-public class Firewalld {
+class Firewalld {
 
 	/**
 	 * The full path to the <code>firewall-cmd</code> executable.
