@@ -50,18 +50,15 @@ import com.aoindustries.net.Protocol;
 public class Target implements Comparable<Target> {
 
 	private final InetAddressPrefix destination;
-	private final Protocol protocol;
-	private final IPortRange portRange;
+	final ProtocolOrPortRange protocolOrPortRange;
 
 	/**
 	 * @param destination  The destination is {@link InetAddressPrefix#normalize() normalized}
 	 */
-	private Target(InetAddressPrefix destination, Protocol protocol, IPortRange portRange) {
+	Target(InetAddressPrefix destination, ProtocolOrPortRange protocolOrPortRange) {
 		this.destination = NullArgumentException.checkNotNull(destination, "destination");
 		assert destination == destination.normalize();
-		this.protocol = NullArgumentException.checkNotNull(protocol, "protocol");
-		this.portRange = portRange;
-		assert portRange == null || portRange.getProtocol() == protocol;
+		this.protocolOrPortRange = protocolOrPortRange;
 	}
 
 	/**
@@ -69,8 +66,7 @@ public class Target implements Comparable<Target> {
 	 */
 	public Target(InetAddressPrefix destination, IPortRange portRange) {
 		this.destination = NullArgumentException.checkNotNull(destination, "destination").normalize();
-		this.portRange = NullArgumentException.checkNotNull(portRange, "portRange");
-		this.protocol = portRange.getProtocol();
+		this.protocolOrPortRange = new ProtocolOrPortRange(portRange);
 	}
 
 	/**
@@ -78,8 +74,7 @@ public class Target implements Comparable<Target> {
 	 */
 	public Target(InetAddressPrefix destination, Protocol protocol) {
 		this.destination = NullArgumentException.checkNotNull(destination, "destination").normalize();
-		this.protocol = NullArgumentException.checkNotNull(protocol, "protocol");
-		this.portRange = null;
+		this.protocolOrPortRange = new ProtocolOrPortRange(protocol);
 	}
 
 	/**
@@ -91,11 +86,7 @@ public class Target implements Comparable<Target> {
 	 */
 	@Override
 	public String toString() {
-		if(portRange == null) {
-			return protocol.toString() + '@' + destination;
-		} else {
-			return portRange.toString() + '@' + destination;
-		}
+		return protocolOrPortRange.toString() + '@' + destination;
 	}
 
 	@Override
@@ -103,20 +94,14 @@ public class Target implements Comparable<Target> {
 		if(!(obj instanceof Target)) return false;
 		Target other = (Target)obj;
 		return
-			protocol == other.protocol
-			&& ObjectUtils.equals(portRange, other.portRange)
+			protocolOrPortRange.equals(other.protocolOrPortRange)
 			&& destination.equals(other.destination)
 		;
 	}
 
 	@Override
 	public int hashCode() {
-		int hash = destination.hashCode();
-		if(portRange == null) {
-			return hash * 31 + protocol.hashCode();
-		} else {
-			return hash * 31 + portRange.hashCode();
-		}
+		return destination.hashCode() * 31 + protocolOrPortRange.hashCode();
 	}
 
 	/**
@@ -130,19 +115,7 @@ public class Target implements Comparable<Target> {
 	public int compareTo(Target other) {
 		int diff = destination.compareTo(other.destination);
 		if(diff != 0) return diff;
-		if(portRange == null) {
-			if(other.portRange == null) {
-				return protocol.compareTo(other.protocol);
-			} else {
-				return 1;
-			}
-		} else {
-			if(other.portRange == null) {
-				return -1;
-			} else {
-				return portRange.compareTo(other.portRange);
-			}
-		}
+		return protocolOrPortRange.compareTo(other.protocolOrPortRange);
 	}
 
 	/**
@@ -158,20 +131,20 @@ public class Target implements Comparable<Target> {
 	 * Gets the protocol for this target.
 	 */
 	public Protocol getProtocol() {
-		return protocol;
+		return protocolOrPortRange.getProtocol();
 	}
 
 	/**
 	 * Gets the optional port range for this target.
 	 */
 	public IPortRange getPortRange() {
-		return portRange;
+		return protocolOrPortRange.getPortRange();
 	}
 
 	/**
 	 * Combines this target with the given target if possible.
 	 * <p>
-	 * If have the same destination, combines by protocol and port range.
+	 * If have the same destination, tries to combine by protocol and port range.
 	 * If have the same protocol and port range, tries to combine by destination network prefixes.
 	 * </p>
 	 * <p>
@@ -183,31 +156,19 @@ public class Target implements Comparable<Target> {
 	 *          when they cannot be combined.
 	 */
 	public Target coalesce(Target other) {
-		if(this.protocol != other.protocol) {
-			// Different protocols
-			return null;
-		}
 		if(this.destination.equals(other.destination)) {
-			if(this.portRange == null) {
-				// This has no port range, use for all ports
+			ProtocolOrPortRange coalesced = protocolOrPortRange.coalesce(other.protocolOrPortRange);
+			if(coalesced == null) {
+				// Not combinable
+				return null;
+			} else if(coalesced == this.protocolOrPortRange) {
 				return this;
-			} else if(other.portRange == null) {
-				// Other has no port range, use for all ports
+			} else if(coalesced == other.protocolOrPortRange) {
 				return other;
 			} else {
-				IPortRange coalescedRange = this.portRange.coalesce(other.portRange);
-				if(coalescedRange == null) {
-					// Not combinable
-					return null;
-				} else if(coalescedRange == this.portRange) {
-					return this;
-				} else if(coalescedRange == other.portRange) {
-					return other;
-				} else {
-					return new Target(this.destination, protocol, coalescedRange);
-				}
+				return new Target(this.destination, coalesced);
 			}
-		} else if(ObjectUtils.equals(this.portRange, other.portRange)) {
+		} else if(this.protocolOrPortRange.equals(other.protocolOrPortRange)) {
 			InetAddressPrefix coalescedDestination = this.destination.coalesce(other.destination);
 			if(coalescedDestination == null) {
 				// Not combinable
@@ -217,7 +178,7 @@ public class Target implements Comparable<Target> {
 			} else if(coalescedDestination == other.destination) {
 				return other;
 			} else {
-				return new Target(coalescedDestination, protocol, portRange);
+				return new Target(coalescedDestination, protocolOrPortRange);
 			}
 		} else {
 			// Cannot combine by port range or destination

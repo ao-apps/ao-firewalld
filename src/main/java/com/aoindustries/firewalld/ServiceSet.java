@@ -23,18 +23,23 @@
 package com.aoindustries.firewalld;
 
 import com.aoindustries.lang.NotImplementedException;
+import com.aoindustries.net.AddressFamily;
+import com.aoindustries.net.IPortRange;
 import com.aoindustries.net.InetAddressPrefix;
 import com.aoindustries.net.InetAddressPrefixes;
+import com.aoindustries.net.Protocol;
 import com.aoindustries.util.AoCollections;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
 import java.util.SortedSet;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -196,7 +201,7 @@ public class ServiceSet {
 	 * Protocol-only is considered to match all ports of that protocol.
 	 * </p>
 	 * <p>
-	 * Second, destinations are combined within network prefixes within matching port ranges.
+	 * Second, destinations are combined within network prefixes when have equal port ranges.
 	 * {@link InetAddressPrefixes#UNSPECIFIED_IPV4} and {@link InetAddressPrefixes#UNSPECIFIED_IPV6}
 	 * are considered to match all addresses of the same family (this is a natural consequence of
 	 * the way the unspecified prefixes are defined with prefix of zero).
@@ -212,9 +217,8 @@ public class ServiceSet {
 	 */
 	public static ServiceSet createOptimizedServiceSet(Service template, Iterable<? extends Target> targets) {
 		if(logger.isLoggable(Level.FINE)) logger.fine("Optimizing service set: " + template + "->" + targets);
-		// TODO: Should we optimize the set of targets in a separate method?
 		// Coalesce ports by destination
-		Map<InetAddressPrefix,SortedSet<Target>> coalescedTargetsByDestination = new HashMap<InetAddressPrefix,SortedSet<Target>>();
+		SortedMap<InetAddressPrefix,SortedSet<ProtocolOrPortRange>> coalescedPortsByDestination = new TreeMap<InetAddressPrefix,SortedSet<ProtocolOrPortRange>>();
 		{
 			SortedSet<Target> toAdd = new TreeSet<Target>();
 			for(Target target : targets) toAdd.add(target);
@@ -229,33 +233,151 @@ public class ServiceSet {
 					toAddIter.remove();
 				}
 				InetAddressPrefix destination = target.getDestination();
-				SortedSet<Target> coalescedTargets = coalescedTargetsByDestination.get(destination);
-				if(coalescedTargets == null) {
-					coalescedTargets = new TreeSet<Target>();
-					coalescedTargets.add(target);
-					coalescedTargetsByDestination.put(destination, coalescedTargets);
+				SortedSet<ProtocolOrPortRange> coalescedPorts = coalescedPortsByDestination.get(destination);
+				if(coalescedPorts == null) {
+					coalescedPorts = new TreeSet<ProtocolOrPortRange>();
+					coalescedPorts.add(target.protocolOrPortRange);
+					coalescedPortsByDestination.put(destination, coalescedPorts);
 				} else {
 					// TODO: Test 1, 3, 2 coalesced correctly, or 1-3, 2-4, 3-5?
-					Iterator<Target> coalescedIter = coalescedTargets.iterator();
+					Iterator<ProtocolOrPortRange> coalescedIter = coalescedPorts.iterator();
 					boolean wasCoalesced = false;
 					while(coalescedIter.hasNext()) {
-						Target coalesced = coalescedIter.next();
-						Target newCoalesced = target.coalesce(coalesced);
+						ProtocolOrPortRange coalesced = coalescedIter.next();
+						ProtocolOrPortRange newCoalesced = target.protocolOrPortRange.coalesce(coalesced);
 						if(newCoalesced != null) {
-							toAdd.add(newCoalesced);
+							if(!toAdd.add(new Target(destination, newCoalesced))) throw new AssertionError();
 							coalescedIter.remove();
 							wasCoalesced = true;
 						}
 					}
 					if(!wasCoalesced) {
-						coalescedTargets.add(target);
+						coalescedPorts.add(target.protocolOrPortRange);
 					}
 				}
 			}
 		}
-		if(logger.isLoggable(Level.FINE)) logger.fine("After coalesce port ranges: " + template + "->" + coalescedTargetsByDestination);
-		// TODO
-		throw new NotImplementedException("TODO: Finish method");
+		if(logger.isLoggable(Level.FINE)) logger.fine("After coalesce port ranges: " + template + "->" + coalescedPortsByDestination);
+		// Coalesce destinations by protocol and ports (TODO: test for adjacent network ranges in 1, 3, 4, 2 order added)
+		SortedMap<SortedSet<ProtocolOrPortRange>,SortedSet<InetAddressPrefix>> coalescedDestinationsByPorts = new TreeMap<SortedSet<ProtocolOrPortRange>,SortedSet<InetAddressPrefix>>();
+		{
+			SortedMap<InetAddressPrefix,SortedSet<ProtocolOrPortRange>> toAdd = new TreeMap<InetAddressPrefix,SortedSet<ProtocolOrPortRange>>(coalescedPortsByDestination);
+			while(!toAdd.isEmpty()) {
+				// Get and remove the first element
+				InetAddressPrefix destinationToAdd;
+				SortedSet<ProtocolOrPortRange> portsToAdd;
+				{
+					Iterator<Map.Entry<InetAddressPrefix,SortedSet<ProtocolOrPortRange>>> toAddIter = toAdd.entrySet().iterator();
+					Map.Entry<InetAddressPrefix,SortedSet<ProtocolOrPortRange>> entry = toAddIter.next();
+					destinationToAdd = entry.getKey();
+					portsToAdd = entry.getValue();
+					if(logger.isLoggable(Level.FINER)) logger.finer(toAdd.size() + " more to add: " + template + "->" + destinationToAdd);
+					toAddIter.remove();
+				}
+				SortedSet<InetAddressPrefix> coalescedDestinations = coalescedDestinationsByPorts.get(portsToAdd);
+				if(coalescedDestinations == null) {
+					coalescedDestinations = new TreeSet<InetAddressPrefix>();
+					coalescedDestinations.add(destinationToAdd);
+					coalescedDestinationsByPorts.put(portsToAdd, coalescedDestinations);
+				} else {
+					Iterator<InetAddressPrefix> coalescedIter = coalescedDestinations.iterator();
+					boolean wasCoalesced = false;
+					while(coalescedIter.hasNext()) {
+						InetAddressPrefix coalesced = coalescedIter.next();
+						InetAddressPrefix newCoalesced = destinationToAdd.coalesce(coalesced);
+						if(newCoalesced != null) {
+							if(toAdd.put(newCoalesced, portsToAdd) != null) throw new AssertionError();
+							coalescedIter.remove();
+							wasCoalesced = true;
+							// Can only coalesce with one existing destination per pass, break now
+							break;
+						}
+					}
+					if(!wasCoalesced) {
+						coalescedDestinations.add(destinationToAdd);
+					}
+				}
+			}
+		}
+		if(logger.isLoggable(Level.FINE)) logger.fine("After coalesce destinations: " + template + "->" + coalescedDestinationsByPorts);
+		// Split by destinations by family
+		SortedMap<SortedSet<ProtocolOrPortRange>,EnumMap<AddressFamily,SortedSet<InetAddressPrefix>>> splitByFamily = new TreeMap<SortedSet<ProtocolOrPortRange>,EnumMap<AddressFamily,SortedSet<InetAddressPrefix>>>();
+		for(Map.Entry<SortedSet<ProtocolOrPortRange>,SortedSet<InetAddressPrefix>> entry : coalescedDestinationsByPorts.entrySet()) {
+			SortedSet<ProtocolOrPortRange> portsToSplit = entry.getKey();
+			EnumMap<AddressFamily,SortedSet<InetAddressPrefix>> destinationsByFamily = splitByFamily.get(portsToSplit);
+			if(destinationsByFamily == null) {
+				destinationsByFamily = new EnumMap<AddressFamily,SortedSet<InetAddressPrefix>>(AddressFamily.class);
+				splitByFamily.put(portsToSplit, destinationsByFamily);
+			}
+			SortedSet<InetAddressPrefix> destinationsToSplit = entry.getValue();
+			for(InetAddressPrefix destinationToSplit : destinationsToSplit) {
+				AddressFamily family = destinationToSplit.getAddress().getAddressFamily();
+				SortedSet<InetAddressPrefix> destinationsForFamily = destinationsByFamily.get(family);
+				if(destinationsForFamily == null) {
+					destinationsForFamily = new TreeSet<InetAddressPrefix>();
+					destinationsByFamily.put(family, destinationsForFamily);
+				}
+				if(!destinationsForFamily.add(destinationToSplit)) throw new AssertionError();
+			}
+		}
+		if(logger.isLoggable(Level.FINE)) logger.fine("After split by family: " + template + "->" + splitByFamily);
+
+		// Build service set
+		// Note: The natural ordering of InetAddressPrefix puts unspecified first, which has the best chance to match default system services
+		Set<Service> services = new LinkedHashSet<Service>();
+		for(Map.Entry<SortedSet<ProtocolOrPortRange>,EnumMap<AddressFamily,SortedSet<InetAddressPrefix>>> entry : splitByFamily.entrySet()) {
+			// Split protocols and ports
+			SortedSet<IPortRange> ports = new TreeSet<IPortRange>();
+			SortedSet<Protocol> protocols = new TreeSet<Protocol>();
+			{
+				SortedSet<ProtocolOrPortRange> protocolsAndPorts = entry.getKey();
+				for(ProtocolOrPortRange protocolAndPort : protocolsAndPorts) {
+					IPortRange portRange = protocolAndPort.getPortRange();
+					if(portRange != null) ports.add(portRange);
+					else protocols.add(protocolAndPort.getProtocol());
+				}
+			}
+			EnumMap<AddressFamily,SortedSet<InetAddressPrefix>> destinationsByFamily = entry.getValue();
+			SortedSet<InetAddressPrefix> ipv4Destinations = destinationsByFamily.get(AddressFamily.INET);
+			SortedSet<InetAddressPrefix> ipv6Destinations = destinationsByFamily.get(AddressFamily.INET6);
+			Iterator<InetAddressPrefix> ipv4Iter;
+			if(ipv4Destinations==null) ipv4Iter = AoCollections.emptyIterator();
+			else ipv4Iter = ipv4Destinations.iterator();
+			Iterator<InetAddressPrefix> ipv6Iter;
+			if(ipv6Destinations==null) ipv6Iter = AoCollections.emptyIterator();
+			else ipv6Iter = ipv6Destinations.iterator();
+			while(ipv4Iter.hasNext() || ipv6Iter.hasNext()) {
+				InetAddressPrefix destinationIPv4 = ipv4Iter.hasNext() ? ipv4Iter.next() : null;
+				InetAddressPrefix destinationIPv6 = ipv6Iter.hasNext() ? ipv6Iter.next() : null;
+				String name;
+				String shortName;
+				if(services.isEmpty()) {
+					name = template.getName();
+					shortName = template.getShortName();
+				} else {
+					int num = services.size() + 1;
+					name = template.getName() + '-' + num;
+					shortName = template.getShortName() == null ? null : (template.getShortName() + " #" + num);
+				}
+				if(logger.isLoggable(Level.FINE)) logger.fine("Adding service: " + name + "->ports(" + ports + ") and protocols(" + protocols + ')');
+				services.add(
+					new Service(
+						name,
+						template.getVersion(),
+						shortName,
+						template.getDescription(),
+						ports,
+						protocols,
+						template.getSourcePorts(),
+						template.getModules(),
+						destinationIPv4,
+						destinationIPv6
+					)
+				);
+			}
+		}
+		if(logger.isLoggable(Level.FINE)) logger.fine("Finished " + services.size() + (services.size()==1 ? " service." : " services."));
+		return new ServiceSet(template, services);
 	}
 
 	private final Service template;
