@@ -204,7 +204,7 @@ public class Target implements Comparable<Target> {
 				} else if(coalescedRange == other.portRange) {
 					return other;
 				} else {
-					return new Target(destination, protocol, coalescedRange);
+					return new Target(this.destination, protocol, coalescedRange);
 				}
 			}
 		} else if(ObjectUtils.equals(this.portRange, other.portRange)) {

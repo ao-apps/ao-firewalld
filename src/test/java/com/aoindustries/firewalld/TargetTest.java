@@ -269,4 +269,112 @@ public class TargetTest {
 			).toString()
 		);
 	}
+
+	@Test
+	public void test_coalesce_sameDestination_tcpRange() throws ValidationException {
+		assertEquals(
+			"80-83/TCP@192.0.2.0/24",
+			new Target(
+				InetAddressPrefix.valueOf("192.0.2.123/24"),
+				PortRange.valueOf(80, 81, Protocol.TCP)
+			).coalesce(new Target(
+				InetAddressPrefix.valueOf("192.0.2.123/24"),
+				PortRange.valueOf(81, 83, Protocol.TCP)
+			)).toString()
+		);
+	}
+
+	@Test
+	public void test_coalesce_sameDestination_tcpAll_1() throws ValidationException {
+		assertEquals(
+			"TCP@192.0.2.0/24",
+			new Target(
+				InetAddressPrefix.valueOf("192.0.2.123/24"),
+				PortRange.valueOf(80, 81, Protocol.TCP)
+			).coalesce(new Target(
+				InetAddressPrefix.valueOf("192.0.2.123/24"),
+				Protocol.TCP
+			)).toString()
+		);
+	}
+
+	@Test
+	public void test_coalesce_sameDestination_tcpAll_2() throws ValidationException {
+		assertEquals(
+			"TCP@192.0.2.0/24",
+			new Target(
+				InetAddressPrefix.valueOf("192.0.2.123/24"),
+				Protocol.TCP
+			).coalesce(new Target(
+				InetAddressPrefix.valueOf("192.0.2.123/24"),
+				PortRange.valueOf(80, 81, Protocol.TCP)
+			)).toString()
+		);
+	}
+
+	@Test
+	public void test_noCoalesce_sameDestination_tcpRange_gap_1() throws ValidationException {
+		assertNull(
+			new Target(
+				InetAddressPrefix.valueOf("192.0.2.123/24"),
+				PortRange.valueOf(80, 81, Protocol.TCP)
+			).coalesce(new Target(
+				InetAddressPrefix.valueOf("192.0.2.123/24"),
+				PortRange.valueOf(83, 85, Protocol.TCP)
+			))
+		);
+	}
+
+	@Test
+	public void test_noCoalesce_sameDestination_tcpRange_gap_2() throws ValidationException {
+		assertNull(
+			new Target(
+				InetAddressPrefix.valueOf("192.0.2.123/24"),
+				PortRange.valueOf(83, 85, Protocol.TCP)
+			).coalesce(new Target(
+				InetAddressPrefix.valueOf("192.0.2.123/24"),
+				PortRange.valueOf(80, 81, Protocol.TCP)
+			))
+		);
+	}
+
+	@Test
+	public void test_noCoalesce_sameDestination_samePort_diffProtocol() throws ValidationException {
+		assertNull(
+			new Target(
+				InetAddressPrefix.valueOf("192.0.2.123/24"),
+				Port.valueOf(80, Protocol.TCP)
+			).coalesce(new Target(
+				InetAddressPrefix.valueOf("192.0.2.123/24"),
+				Port.valueOf(80, Protocol.UDP)
+			))
+		);
+	}
+
+	@Test
+	public void test_coalesce_samePorts() throws ValidationException {
+		assertEquals(
+			"80/TCP@192.0.2.0/24",
+			new Target(
+				InetAddressPrefix.valueOf("192.0.2.1/25"),
+				Port.valueOf(80, Protocol.TCP)
+			).coalesce(new Target(
+				InetAddressPrefix.valueOf("192.0.2.221/25"),
+				Port.valueOf(80, Protocol.TCP)
+			)).toString()
+		);
+	}
+
+	@Test
+	public void test_noCoalesce_samePorts() throws ValidationException {
+		assertNull(
+			new Target(
+				InetAddressPrefix.valueOf("192.0.2.1/25"),
+				Port.valueOf(80, Protocol.TCP)
+			).coalesce(new Target(
+				InetAddressPrefix.valueOf("192.0.1.221/25"),
+				Port.valueOf(80, Protocol.TCP)
+			))
+		);
+	}
 }
