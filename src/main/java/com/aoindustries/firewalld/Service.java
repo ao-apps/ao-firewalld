@@ -573,8 +573,8 @@ public class Service {
 			}
 			for(IPortRange port : ports) {
 				Element portElem = document.createElement(PORT_ELEM);
-				portElem.setAttribute(PORT_ATTR, toPortAttr(port));
 				portElem.setAttribute(PROTOCOL_ATTR, toProtocolAttr(port.getProtocol()));
+				portElem.setAttribute(PORT_ATTR, toPortAttr(port));
 				serviceElem.appendChild(portElem);
 			}
 			for(Protocol protocol : protocols) {
@@ -584,8 +584,8 @@ public class Service {
 			}
 			for(IPortRange sourcePort : sourcePorts) {
 				Element sourcePortElem = document.createElement(SOURCE_PORT_ELEM);
-				sourcePortElem.setAttribute(PORT_ATTR, toPortAttr(sourcePort));
 				sourcePortElem.setAttribute(PROTOCOL_ATTR, toProtocolAttr(sourcePort.getProtocol()));
+				sourcePortElem.setAttribute(PORT_ATTR, toPortAttr(sourcePort));
 				serviceElem.appendChild(sourcePortElem);
 			}
 			for(String module : modules) {
