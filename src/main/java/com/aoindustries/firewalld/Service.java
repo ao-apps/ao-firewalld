@@ -22,6 +22,7 @@
  */
 package com.aoindustries.firewalld;
 
+import com.aoindustries.io.FileUtils;
 import com.aoindustries.lang.NullArgumentException;
 import com.aoindustries.lang.ObjectUtils;
 import com.aoindustries.net.AddressFamily;
@@ -40,11 +41,23 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
@@ -59,6 +72,8 @@ import org.xml.sax.SAXException;
  * @author  AO Industries, Inc.
  */
 public class Service {
+
+	private static final Logger logger = Logger.getLogger(Service.class.getName());
 
 	/**
 	 * The directory containing local service files.
@@ -261,6 +276,13 @@ public class Service {
 	}
 
 	/**
+	 * Gets the file to use for local service.
+	 */
+	public static File getLocalServiceFile(String name) {
+		return new File(LOCAL_SERVICES_DIRECTORY, name + EXTENSION);
+	}
+
+	/**
 	 * Loads a local service from {@link #LOCAL_SERVICES_DIRECTORY}.
 	 *
 	 * @return  The {@link Service} or {@code null} if the service file does not exist.
@@ -268,7 +290,14 @@ public class Service {
 	 * @throws  IOException  when cannot read or parse the service file
 	 */
 	public static Service loadLocalService(String name) throws IOException {
-		return loadService(name, new File(LOCAL_SERVICES_DIRECTORY, name + EXTENSION));
+		return loadService(name, getLocalServiceFile(name));
+	}
+
+	/**
+	 * Gets the file to use for system service.
+	 */
+	public static File getSystemServiceFile(String name) {
+		return new File(SYSTEM_SERVICES_DIRECTORY, name + EXTENSION);
 	}
 
 	/**
@@ -279,7 +308,7 @@ public class Service {
 	 * @throws  IOException  when cannot read or parse the service file
 	 */
 	public static Service loadSystemService(String name) throws IOException {
-		return loadService(name, new File(SYSTEM_SERVICES_DIRECTORY, name + EXTENSION));
+		return loadService(name, getSystemServiceFile(name));
 	}
 
 	private final String name;
@@ -505,5 +534,93 @@ public class Service {
 	public SortedSet<Target> getTargets() {
 		assert !targets.isEmpty();
 		return targets;
+	}
+
+	private static String toPortAttr(IPortRange port) {
+		int from = port.getFrom();
+		int to = port.getTo();
+		if(from == to) return Integer.toString(from);
+		else return (from + "-" + to);
+	}
+
+	private static String toProtocolAttr(Protocol protocol) {
+		return protocol.toString().toLowerCase(Locale.ROOT);
+	}
+
+	/**
+	 * Write this service to its local service file.
+	 */
+	public void saveLocalService() throws IOException {
+		try {
+			File serviceFile = getLocalServiceFile(name);
+			File newServiceFile = File.createTempFile(name + EXTENSION, ".tmp", new File(LOCAL_SERVICES_DIRECTORY));
+			// Should we use ao-encoding here?  Java XML is just so tedious
+			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+			Document document = docBuilder.newDocument();
+			Element serviceElem = document.createElement(SERVICE_ELEM);
+			document.appendChild(serviceElem);
+			if(version != null) serviceElem.setAttribute(VERSION_ATTR, version);
+			if(shortName != null) {
+				Element shortElem = document.createElement(SHORT_ELEM);
+				shortElem.appendChild(document.createTextNode(shortName));
+				serviceElem.appendChild(shortElem);
+			}
+			if(description != null) {
+				Element descriptionElem = document.createElement(DESCRIPTION_ELEM);
+				descriptionElem.appendChild(document.createTextNode(description));
+				serviceElem.appendChild(descriptionElem);
+			}
+			for(IPortRange port : ports) {
+				Element portElem = document.createElement(PORT_ELEM);
+				portElem.setAttribute(PORT_ATTR, toPortAttr(port));
+				portElem.setAttribute(PROTOCOL_ATTR, toProtocolAttr(port.getProtocol()));
+				serviceElem.appendChild(portElem);
+			}
+			for(Protocol protocol : protocols) {
+				Element protocolElem = document.createElement(PROTOCOL_ELEM);
+				protocolElem.setAttribute(VALUE_ATTR, toProtocolAttr(protocol));
+				serviceElem.appendChild(protocolElem);
+			}
+			for(IPortRange sourcePort : sourcePorts) {
+				Element sourcePortElem = document.createElement(SOURCE_PORT_ELEM);
+				sourcePortElem.setAttribute(PORT_ATTR, toPortAttr(sourcePort));
+				sourcePortElem.setAttribute(PROTOCOL_ATTR, toProtocolAttr(sourcePort.getProtocol()));
+				serviceElem.appendChild(sourcePortElem);
+			}
+			for(String module : modules) {
+				Element moduleElem = document.createElement(MODULE_ELEM);
+				moduleElem.setAttribute(NAME_ATTR, module);
+				serviceElem.appendChild(moduleElem);
+			}
+			if(
+				!InetAddressPrefixes.UNSPECIFIED_IPV4.equals(destinationIPv4)
+				|| !InetAddressPrefixes.UNSPECIFIED_IPV6.equals(destinationIPv6)
+			) {
+				// TODO: What to do about unspecified one family with specified other family?
+				// TODO: is ipv4="1.2.3.4" ipv6="::/0" acceptable as would be generated now?
+				Element destinationElem = document.createElement(DESTINATION_ELEM);
+				if(destinationIPv4 != null) destinationElem.setAttribute(IPV4_ATTR, destinationIPv4.toString());
+				if(destinationIPv6 != null) destinationElem.setAttribute(IPV6_ATTR, destinationIPv6.toString());
+				serviceElem.appendChild(destinationElem);
+			}
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			Transformer transformer = transformerFactory.newTransformer();
+			transformer.setOutputProperty(OutputKeys.VERSION, "1.0");
+			transformer.setOutputProperty(OutputKeys.ENCODING,"UTF-8");
+			transformer.setOutputProperty(OutputKeys.STANDALONE, "yes");
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			DOMSource source = new DOMSource(document);
+			if(logger.isLoggable(Level.FINE)) logger.fine("Writing new local service file: " + newServiceFile);
+			StreamResult result = new StreamResult(newServiceFile);
+			transformer.transform(source, result);
+			// Move successful file into place
+			if(logger.isLoggable(Level.FINE)) logger.fine("Moving new local service file into place: " + newServiceFile + "->" + serviceFile);
+			FileUtils.rename(newServiceFile, serviceFile);
+		} catch(ParserConfigurationException e) {
+			throw new IOException(e);
+		} catch(TransformerException e) {
+			throw new IOException(e);
+		}
 	}
 }

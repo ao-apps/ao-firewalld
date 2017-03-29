@@ -22,7 +22,7 @@
  */
 package com.aoindustries.firewalld;
 
-import com.aoindustries.lang.NotImplementedException;
+import com.aoindustries.io.FileUtils;
 import com.aoindustries.net.AddressFamily;
 import com.aoindustries.net.IPortRange;
 import com.aoindustries.net.InetAddressPrefix;
@@ -31,6 +31,7 @@ import com.aoindustries.net.Protocol;
 import com.aoindustries.util.AoCollections;
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.Iterator;
@@ -159,7 +160,7 @@ public class ServiceSet {
 			if(logger.isLoggable(Level.FINE)) logger.fine("Adding system service: " + templateName);
 			servicesToLoad.put(
 				templateName,
-				new File(Service.LOCAL_SERVICES_DIRECTORY, templateName + Service.EXTENSION)
+				Service.getLocalServiceFile(templateName)
 			);
 		}
 		// Load services
@@ -486,12 +487,126 @@ public class ServiceSet {
 	}
 
 	/**
+	 * Check if a service name is part of ths service set.
+	 */
+	private boolean isInThisServiceSet(String service) {
+		String prefix = template.getName() + '-';
+		// Must be service name or parseable as service-integer
+		if(service.equals(template.getName())) {
+			return true;
+		} else {
+			if(service.startsWith(prefix)) {
+				try {
+					Integer.parseInt(service.substring(prefix.length()));
+					return true;
+				} catch(NumberFormatException e) {
+					// Not parseable as int, ignore
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Commits this service set to the system configuration, reconfiguring and
 	 * reloading the firewall as necessary.
+	 * <p>
+	 * Probably worth {@link #optimize() optimizing} before committing.
+	 * </p>
 	 *
-	 * @param  zones  the zones that that the service set should be activated in
+	 * @param  zones  the zones that that the service set should be activated in, this can generally be just "public"
 	 */
-	public void commit(Set<String> zones) {
-		throw new NotImplementedException("TODO: Implement method");
+	public void commit(Set<String> zones) throws IOException {
+		synchronized(Firewalld.firewallCmdLock) {
+			// Get the set of all service names that should exist
+			Set<String> serviceNames = new LinkedHashSet<String>(services.size()*4/3+1);
+			for(Service service : services) {
+				serviceNames.add(service.getName());
+			}
+			// Get listing of all zones and services (firewall-cmd --permanent --list-all-zones)
+			String prefix = template.getName() + '-';
+			Map<String,Set<String>> servicesByZone = Firewalld.listAllServices();
+			// Remove any extra services from all zones
+			{
+				for(Map.Entry<String,Set<String>> entry : servicesByZone.entrySet()) {
+					String zone = entry.getKey();
+					Set<String> expected;
+					if(zones.contains(zone)) expected = serviceNames;
+					else expected = Collections.emptySet();
+					Set<String> toRemove = new LinkedHashSet<String>();
+					for(String service : entry.getValue()) {
+						if(
+							!expected.contains(service)
+							&& isInThisServiceSet(service)
+						) {
+							toRemove.add(service);
+						}
+					}
+					if(!toRemove.isEmpty()) {
+						Firewalld.removeServices(zone, toRemove);
+					}
+				}
+			}
+			// Remove any extra local service files
+			File localServicesDir = new File(Service.LOCAL_SERVICES_DIRECTORY);
+			boolean modified = false;
+			{
+				String[] list = localServicesDir.list();
+				if(list != null) {
+					for(String filename : list) {
+						if(filename.endsWith(Service.EXTENSION)) {
+							String service = filename.substring(0, filename.length() - Service.EXTENSION.length());
+							if(
+								!serviceNames.contains(service)
+								&& isInThisServiceSet(service)
+							) {
+								File serviceFile = new File(localServicesDir, filename);
+								if(logger.isLoggable(Level.FINE)) logger.fine("Deleting extra local service file: " + serviceFile);
+								FileUtils.delete(serviceFile);
+								modified = true;
+							}
+						}
+					}
+				}
+			}
+			// Rewrite any changed or missing service files
+			for(Service service : services) {
+				String serviceName = service.getName();
+				if(serviceName.equals(template.getName())) {
+					// When the first service file equals the system default, do not write and delete if present
+					Service systemService = Service.loadSystemService(serviceName);
+					if(systemService != null && service.equals(systemService)) {
+						// Delete any local service file, if present
+						File serviceFile = Service.getLocalServiceFile(serviceName);
+						if(serviceFile.exists()) {
+							if(logger.isLoggable(Level.FINE)) logger.fine("Deleting local service file handled by system file: " + serviceFile);
+							FileUtils.delete(serviceFile);
+							modified = true;
+						}
+						continue;
+					}
+				}
+				Service localService = Service.loadLocalService(serviceName);
+				if(localService == null || !service.equals(localService)) {
+					service.saveLocalService();
+					modified = true;
+				}
+			}
+			// Reload firewall if any file changed
+			if(modified) Firewalld.reload();
+			// Add any services missing from zones
+			for(String zone : zones) {
+				Set<String> servicesForZone = servicesByZone.get(zone);
+				if(servicesByZone == null) throw new IOException("Zone not found: " + zone);
+				Set<String> toAdd = new TreeSet<String>();
+				for(Service service : services) {
+					String serviceName = service.getName();
+					if(!servicesForZone.contains(serviceName)) toAdd.add(serviceName);
+				}
+				if(!toAdd.isEmpty()) {
+					Firewalld.addServices(zone, toAdd);
+				}
+			}
+		}
 	}
 }
