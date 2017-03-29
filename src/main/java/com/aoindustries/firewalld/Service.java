@@ -602,13 +602,15 @@ public class Service {
 				if(destinationIPv6 != null) destinationElem.setAttribute(IPV6_ATTR, destinationIPv6.toString());
 				serviceElem.appendChild(destinationElem);
 			}
+			int indent = 2;
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
-			transformerFactory.setAttribute("indent-number", 4);
+			transformerFactory.setAttribute("indent-number", indent); // Required by older java?
 			Transformer transformer = transformerFactory.newTransformer();
 			transformer.setOutputProperty(OutputKeys.VERSION, "1.0");
 			transformer.setOutputProperty(OutputKeys.ENCODING,"utf-8");
 			//transformer.setOutputProperty(OutputKeys.STANDALONE, "no");
 			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", Integer.toString(indent));
 			DOMSource source = new DOMSource(document);
 			if(logger.isLoggable(Level.FINE)) logger.fine("Writing new local service file: " + newServiceFile);
 			StreamResult result = new StreamResult(newServiceFile);
