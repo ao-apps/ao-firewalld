@@ -518,13 +518,13 @@ public class ServiceSet {
 	 */
 	public void commit(Set<String> zones) throws IOException {
 		synchronized(Firewalld.firewallCmdLock) {
+			boolean modified = false;
 			// Get the set of all service names that should exist
 			Set<String> serviceNames = new LinkedHashSet<String>(services.size()*4/3+1);
 			for(Service service : services) {
 				serviceNames.add(service.getName());
 			}
 			// Get listing of all zones and services (firewall-cmd --permanent --list-all-zones)
-			String prefix = template.getName() + '-';
 			Map<String,Set<String>> servicesByZone = Firewalld.listAllServices();
 			// Remove any extra services from all zones
 			{
@@ -544,12 +544,12 @@ public class ServiceSet {
 					}
 					if(!toRemove.isEmpty()) {
 						Firewalld.removeServices(zone, toRemove);
+						modified = true;
 					}
 				}
 			}
 			// Remove any extra local service files
 			File localServicesDir = new File(Service.LOCAL_SERVICES_DIRECTORY);
-			boolean modified = false;
 			{
 				String[] list = localServicesDir.list();
 				if(list != null) {
@@ -592,8 +592,6 @@ public class ServiceSet {
 					modified = true;
 				}
 			}
-			// Reload firewall if any file changed
-			if(modified) Firewalld.reload();
 			// Add any services missing from zones
 			for(String zone : zones) {
 				Set<String> servicesForZone = servicesByZone.get(zone);
@@ -605,8 +603,11 @@ public class ServiceSet {
 				}
 				if(!toAdd.isEmpty()) {
 					Firewalld.addServices(zone, toAdd);
+					modified = true;
 				}
 			}
+			// Reload firewall if any file changed
+			if(modified) Firewalld.reload();
 		}
 	}
 }
