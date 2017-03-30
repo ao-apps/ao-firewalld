@@ -513,12 +513,16 @@ public class ServiceSet {
 	 * <p>
 	 * Probably worth {@link #optimize() optimizing} before committing.
 	 * </p>
+	 * <p>
+	 * TODO: Should we use <code>firewall-cmd --permanent --new-service-from-file=filename [--name=service]</code>
+	 *       instead of manipulating service XML files directly?
+	 * </p>
 	 *
 	 * @param  zones  the zones that that the service set should be activated in, this can generally be just "public"
 	 */
 	public void commit(Set<String> zones) throws IOException {
 		synchronized(Firewalld.firewallCmdLock) {
-			boolean modified = false;
+			boolean needsReload = false;
 			// Get the set of all service names that should exist
 			Set<String> serviceNames = new LinkedHashSet<String>(services.size()*4/3+1);
 			for(Service service : services) {
@@ -544,7 +548,7 @@ public class ServiceSet {
 					}
 					if(!toRemove.isEmpty()) {
 						Firewalld.removeServices(zone, toRemove);
-						modified = true;
+						needsReload = true;
 					}
 				}
 			}
@@ -563,7 +567,7 @@ public class ServiceSet {
 								File serviceFile = new File(localServicesDir, filename);
 								if(logger.isLoggable(Level.FINE)) logger.fine("Deleting extra local service file: " + serviceFile);
 								FileUtils.delete(serviceFile);
-								modified = true;
+								needsReload = true;
 							}
 						}
 					}
@@ -581,7 +585,7 @@ public class ServiceSet {
 						if(serviceFile.exists()) {
 							if(logger.isLoggable(Level.FINE)) logger.fine("Deleting local service file handled by system file: " + serviceFile);
 							FileUtils.delete(serviceFile);
-							modified = true;
+							needsReload = true;
 						}
 						continue;
 					}
@@ -589,8 +593,14 @@ public class ServiceSet {
 				Service localService = Service.loadLocalService(serviceName);
 				if(localService == null || !service.equals(localService)) {
 					service.saveLocalService();
-					modified = true;
+					needsReload = true;
 				}
+			}
+			// Reload firewall if any file changed
+			if(needsReload) {
+				// Reload now to avoid "Error: INVALID_SERVICE: 'named-2' not among existing services"
+				Firewalld.reload();
+				needsReload = false;
 			}
 			// Add any services missing from zones
 			for(String zone : zones) {
@@ -603,11 +613,11 @@ public class ServiceSet {
 				}
 				if(!toAdd.isEmpty()) {
 					Firewalld.addServices(zone, toAdd);
-					modified = true;
+					needsReload = true;
 				}
 			}
 			// Reload firewall if any file changed
-			if(modified) Firewalld.reload();
+			if(needsReload) Firewalld.reload();
 		}
 	}
 }
