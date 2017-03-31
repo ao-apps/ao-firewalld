@@ -185,7 +185,7 @@ public class ServiceSet {
 	 * The service set is not {@link #commit(java.util.Set) committed}.
 	 *
 	 * @see Service#loadSystemService(java.lang.String)
-	 * @see #createOptimizedServiceSet(com.aoindustries.firewalld.Service, java.lang.Iterable)
+	 * @see #createOptimizedServiceSet(com.aoindustries.firewalld.Service, java.lang.Iterable) 
 	 * @see #optimize()
 	 */
 	public static ServiceSet createOptimizedServiceSet(String name, Iterable<? extends Target> targets) throws IOException {
@@ -480,8 +480,8 @@ public class ServiceSet {
 	 *
 	 * @return  {@code this} if already optimized, or new {@link ServiceSet} it optimal form is different.
 	 *
-	 * @see #createOptimizedServiceSet(java.lang.String, java.util.Set)
-	 * @see #createOptimizedServiceSet(com.aoindustries.firewalld.Service, java.util.Set)
+	 * @see #createOptimizedServiceSet(java.lang.String, java.lang.Iterable)
+	 * @see #createOptimizedServiceSet(com.aoindustries.firewalld.Service, java.lang.Iterable)
 	 */
 	public ServiceSet optimize() {
 		ServiceSet optimized = createOptimizedServiceSet(template, targets);
