@@ -30,7 +30,7 @@ import com.aoindustries.net.Protocol;
 
 /**
  * A "target" is a single {@link InetAddressPrefix address/prefix},
- * {@link Protocol protocol}, and optional {@IPortRange port range}.
+ * {@link Protocol protocol}, and optional {@link IPortRange port range}.
  * <p>
  * Each {@link Service} may have multiple targets, but all targets will be
  * within its {@link Service#getDestinationIPv4() IPv4 destination} and
