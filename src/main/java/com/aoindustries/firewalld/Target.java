@@ -23,7 +23,6 @@
 package com.aoindustries.firewalld;
 
 import com.aoindustries.lang.NullArgumentException;
-import com.aoindustries.lang.ObjectUtils;
 import com.aoindustries.net.IPortRange;
 import com.aoindustries.net.InetAddressPrefix;
 import com.aoindustries.net.Protocol;
