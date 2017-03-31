@@ -315,9 +315,9 @@ public class Service {
 	private final String version;
 	private final String shortName;
 	private final String description;
-	private final Set<? extends IPortRange> ports;
+	private final Set<IPortRange> ports;
 	private final Set<Protocol> protocols;
-	private final Set<? extends IPortRange> sourcePorts;
+	private final Set<IPortRange> sourcePorts;
 	private final Set<String> modules;
 	private final InetAddressPrefix destinationIPv4;
 	private final InetAddressPrefix destinationIPv6;
@@ -457,7 +457,7 @@ public class Service {
 	 *
 	 * @return  an unmodifiable set of ports
 	 */
-	public Set<? extends IPortRange> getPorts() {
+	public Set<IPortRange> getPorts() {
 		return ports;
 	}
 
@@ -475,7 +475,7 @@ public class Service {
 	 *
 	 * @return  an unmodifiable set of source ports
 	 */
-	public Set<? extends IPortRange> getSourcePorts() {
+	public Set<IPortRange> getSourcePorts() {
 		return sourcePorts;
 	}
 
