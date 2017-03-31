@@ -36,7 +36,7 @@ import com.aoindustries.net.Protocol;
  * {@link Service#getDestinationIPv6() IPv6 destination}.
  * </p>
  * <p>
- * A {@link ServiceSet} goes beyond the single-destination limits of {@Service}
+ * A {@link ServiceSet} goes beyond the single-destination limits of {@link Service}
  * and allows any arbitrary set of targets.
  * </p>
  * <p>
