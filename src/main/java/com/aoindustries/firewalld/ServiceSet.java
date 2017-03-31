@@ -48,7 +48,7 @@ import java.util.logging.Logger;
 
 /**
  * A service set is one service opened on a set of specific IP and port combinations.
- * Because each {@link Service} on supports a single &lt;destination /&gt;, to
+ * Because each {@link Service} only supports a single &lt;destination /&gt;, to
  * open only the specific IP and port combinations, a set of additional services are
  * created using the base service as a template.
  * <p>
@@ -182,7 +182,7 @@ public class ServiceSet {
 	/**
 	 * Creates an optimized service set for the given name and targets.
 	 * The system service is used as the template.
-	 * The service set is not {@link #commit() committed}.
+	 * The service set is not {@link #commit(java.util.Set) committed}.
 	 *
 	 * @see Service#loadSystemService(java.lang.String)
 	 * @see #createOptimizedServiceSet(com.aoindustries.firewalld.Service, java.lang.Iterable)
@@ -213,7 +213,7 @@ public class ServiceSet {
 
 	/**
 	 * Creates an optimized service set for the given template and targets.
-	 * The service set is not {@link #commit() committed}.
+	 * The service set is not {@link #commit(java.util.Set) committed}.
 	 * <p>
 	 * First, ports are coalesced into port ranges within matching destinations.
 	 * Protocol-only is considered to match all ports of that protocol.
@@ -226,8 +226,10 @@ public class ServiceSet {
 	 * </p>
 	 * <p>
 	 * Third, a set of services are generated based on the template.  All fields
-	 * except {@link Service#getDestinationIPv4()} and {@link Service#getDestinationIPv6()}
-	 * are copied from the template.  The template destinations are not used.
+	 * except {@link Service#getPorts()}, {@link Service#getProtocols()},
+	 * {@link Service#getDestinationIPv4()} and {@link Service#getDestinationIPv6()}
+	 * are copied from the template.  The template ports, protocols, and destinations
+	 * are not used.
 	 * </p>
 	 *
 	 * @see #createOptimizedServiceSet(java.lang.String, java.lang.Iterable)
