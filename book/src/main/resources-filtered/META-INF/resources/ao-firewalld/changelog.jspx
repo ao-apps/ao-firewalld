@@ -53,6 +53,7 @@ along with ao-firewalld.  If not, see <http://www.gnu.org/licenses />.
 			>
 				<ul>
 					<li>New Java API for managing <a target="_top" href="http://www.firewalld.org/">firewalld</a>.</li>
+					<li>Added the ability to commit multiple service sets at once for fewer invocations of <code>firewall-cmd</code>.</li>
 				</ul>
 			</changelog:release>
 		</c:if>
