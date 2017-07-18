@@ -32,10 +32,19 @@ along with ao-firewalld.  If not, see <http://www.gnu.org/licenses />.
 		title="@{documented.name}"
 		description="@{documented.description}"
 		datePublished="2017-03-17T00:08:15-0500"
-		dateModified="2017-03-26T22:44:06-0500"
+		dateModified="2017-07-18T08:43:08-0500"
 	>
 		<core:child page="changelog.jspx" />
 		<core:child page="apidocs/index.jspx" />
+		<ao:include
+			page="/ao-badges/badges.inc.jspx"
+			arg.projectStatus="${currentPage.property.projectStatus}"
+			arg.managementStatus="${currentPage.property.managementStatus}"
+			arg.packagingStatus="${currentPage.property.packagingStatus}"
+			arg.javaVersion="${currentPage.property.javaVersion}"
+			arg.semanticVersioning="${currentPage.property.semanticVersioning}"
+			arg.license="${currentPage.property.license}"
+		/>
 		<p>
 			Java API for managing <ao:a href="http://www.firewalld.org/">firewalld</ao:a>.
 		</p>
