@@ -1,10 +1,10 @@
 # [<img src="ao-logo.png" alt="AO Logo" width="35" height="40">](https://aoindustries.com/) [AO firewalld](https://aoindustries.com/ao-firewalld/)
 <p>
-	<a href="https://aoindustries.com/life-cycle#project-beta">
-		<img src="https://aoindustries.com/ao-badges/project-beta.svg" alt="project: beta" />
+	<a href="https://aoindustries.com/life-cycle#project-current-stable">
+		<img src="https://aoindustries.com/ao-badges/project-current-stable.svg" alt="project: current stable" />
 	</a>
-	<a href="https://aoindustries.com/life-cycle#management-preview">
-		<img src="https://aoindustries.com/ao-badges/management-preview.svg" alt="management: preview" />
+	<a href="https://aoindustries.com/life-cycle#management-production">
+		<img src="https://aoindustries.com/ao-badges/management-production.svg" alt="management: production" />
 	</a>
 	<a href="https://aoindustries.com/life-cycle#packaging-active">
 		<img src="https://aoindustries.com/ao-badges/packaging-active.svg" alt="packaging: active" />
