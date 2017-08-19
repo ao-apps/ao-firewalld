@@ -37,7 +37,7 @@ along with ao-firewalld.  If not, see <http://www.gnu.org/licenses />.
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2017-03-17T00:06:12-0500"
-		dateModified="2017-07-20T01:35:56-0500"
+		dateModified="2017-08-19T18:19:21-0500"
 	>
 		<!-- The current snapshot, unreleased version -->
 		<c:set var="version" value="@{com.aoindustries:ao-firewalld:pom.version}" />
@@ -52,7 +52,15 @@ along with ao-firewalld.  If not, see <http://www.gnu.org/licenses />.
 				groupId="@{documented.groupId}"
 				artifactId="@{documented.artifactId}"
 				scmUrl="@{documented.scm.url}"
-			/>
+			>
+				<ol>
+					<li>
+						Fixed bug in <code>ServiceSet.commit()</code> that threw <code>NullPointerException</code>
+						on zone not found instead of the intended <code>IOException</code> with a descriptive message.
+					</li>
+					<li>Fixed bug to now correctly parse the active zone, by handling the <code>" (active)"</code>.</li>
+				</ol>
+			</changelog:release>
 		</c:if>
 
 		<changelog:release

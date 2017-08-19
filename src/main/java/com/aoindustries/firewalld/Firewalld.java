@@ -85,7 +85,11 @@ class Firewalld {
 			while((line = in.readLine()) != null) {
 				if(!line.trim().isEmpty()) {
 					if(!line.startsWith("  ")) {
+						// Might be followed by " (active)"
 						currentZone = line;
+						if(currentZone.endsWith(" (active)")) {
+							currentZone = currentZone.substring(0, currentZone.length() - " (active)".length());
+						}
 					} else if(line.startsWith("  services:")) {
 						if(currentZone == null) throw new IOException("currentZone not set");
 						Set<String> zoneServices = new LinkedHashSet<String>();

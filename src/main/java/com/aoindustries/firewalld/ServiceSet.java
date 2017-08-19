@@ -648,7 +648,7 @@ public class ServiceSet {
 			// Add any services missing from zones
 			for(String zone : zones) {
 				Set<String> servicesForZone = servicesByZone.get(zone);
-				if(servicesByZone == null) throw new IOException("Zone not found: " + zone);
+				if(servicesForZone == null) throw new IOException("Zone not found: " + zone);
 				Set<String> toAdd = new TreeSet<String>();
 				for(ServiceSet serviceSet : serviceSetsMap.values()) {
 					for(Service service : serviceSet.services) {
