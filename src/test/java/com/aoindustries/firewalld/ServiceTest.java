@@ -1,6 +1,6 @@
 /*
  * ao-firewalld - Java API for managing firewalld.
- * Copyright (C) 2017  AO Industries, Inc.
+ * Copyright (C) 2017, 2019  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -254,7 +254,7 @@ public class ServiceTest {
 				null, // version
 				null, // shortName
 				null, // description
-				new LinkedHashSet<IPortRange>(
+				new LinkedHashSet<>(
 					Arrays.asList(
 						(IPortRange)PortRange.valueOf(80, 81, Protocol.TCP),
 						Port.valueOf(22, Protocol.TCP)
@@ -271,7 +271,7 @@ public class ServiceTest {
 				null, // version
 				null, // shortName
 				null, // description
-				new LinkedHashSet<IPortRange>(
+				new LinkedHashSet<>(
 					Arrays.asList(
 						(IPortRange)Port.valueOf(22, Protocol.TCP),
 						PortRange.valueOf(80, 81, Protocol.TCP)

@@ -37,7 +37,7 @@ along with ao-firewalld.  If not, see <http://www.gnu.org/licenses />.
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2017-03-17T00:06:12-0500"
-		dateModified="2017-08-19T18:19:21-0500"
+		dateModified="2019-04-24T16:10:03-0500"
 	>
 		<!-- The current snapshot, unreleased version -->
 		<c:set var="version" value="@{com.aoindustries:ao-firewalld:pom.version}" />
@@ -54,6 +54,7 @@ along with ao-firewalld.  If not, see <http://www.gnu.org/licenses />.
 				scmUrl="@{documented.scm.url}"
 			>
 				<ol>
+					<li>Minimum Java version changed from 1.6 to 1.7.</li>
 					<li>
 						Fixed bug in <code>ServiceSet.commit()</code> that threw <code>NullPointerException</code>
 						on zone not found instead of the intended <code>IOException</code> with a descriptive message.

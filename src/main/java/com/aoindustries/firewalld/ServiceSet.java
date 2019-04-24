@@ -1,6 +1,6 @@
 /*
  * ao-firewalld - Java API for managing firewalld.
- * Copyright (C) 2017  AO Industries, Inc.
+ * Copyright (C) 2017, 2019  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -23,7 +23,6 @@
 package com.aoindustries.firewalld;
 
 import com.aoindustries.io.FileUtils;
-import com.aoindustries.net.AddressFamily;
 import com.aoindustries.net.IPortRange;
 import com.aoindustries.net.InetAddressPrefix;
 import com.aoindustries.net.InetAddressPrefixes;
@@ -31,9 +30,10 @@ import com.aoindustries.net.Protocol;
 import com.aoindustries.util.AoCollections;
 import java.io.File;
 import java.io.IOException;
+import java.net.ProtocolFamily;
+import java.net.StandardProtocolFamily;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -124,7 +124,7 @@ public class ServiceSet {
 		String templateName = template.getName();
 		if(logger.isLoggable(Level.FINE)) logger.fine("Loading service set: " + templateName);
 		checkForSystemServiceConflict(templateName);
-		Map<String,File> servicesToLoad = new LinkedHashMap<String,File>();
+		Map<String,File> servicesToLoad = new LinkedHashMap<>();
 		String[] list = new File(Service.LOCAL_SERVICES_DIRECTORY).list();
 		if(list != null) {
 			String prefix = templateName + '-';
@@ -164,7 +164,7 @@ public class ServiceSet {
 			);
 		}
 		// Load services
-		Set<Service> services = new LinkedHashSet<Service>(servicesToLoad.size()*4/3+1);
+		Set<Service> services = new LinkedHashSet<>(servicesToLoad.size()*4/3+1);
 		for(Map.Entry<String,File> entry : servicesToLoad.entrySet()) {
 			File file = entry.getValue();
 			Service service = Service.loadService(entry.getKey(), file);
@@ -242,9 +242,9 @@ public class ServiceSet {
 	public static ServiceSet createOptimizedServiceSet(Service template, Iterable<? extends Target> targets) {
 		if(logger.isLoggable(Level.FINE)) logger.fine("Optimizing service set: " + template + "->" + targets);
 		// Coalesce ports by destination
-		SortedMap<InetAddressPrefix,SortedSet<ProtocolOrPortRange>> coalescedPortsByDestination = new TreeMap<InetAddressPrefix,SortedSet<ProtocolOrPortRange>>();
+		SortedMap<InetAddressPrefix,SortedSet<ProtocolOrPortRange>> coalescedPortsByDestination = new TreeMap<>();
 		{
-			SortedSet<Target> toAdd = new TreeSet<Target>();
+			SortedSet<Target> toAdd = new TreeSet<>();
 			for(Target target : targets) toAdd.add(target);
 			if(logger.isLoggable(Level.FINE)) logger.fine("Combined into toAdd: " + template + "->" + toAdd);
 			while(!toAdd.isEmpty()) {
@@ -259,7 +259,7 @@ public class ServiceSet {
 				InetAddressPrefix destination = target.getDestination();
 				SortedSet<ProtocolOrPortRange> coalescedPorts = coalescedPortsByDestination.get(destination);
 				if(coalescedPorts == null) {
-					coalescedPorts = new TreeSet<ProtocolOrPortRange>();
+					coalescedPorts = new TreeSet<>();
 					coalescedPorts.add(target.protocolOrPortRange);
 					coalescedPortsByDestination.put(destination, coalescedPorts);
 				} else {
@@ -282,9 +282,9 @@ public class ServiceSet {
 		}
 		if(logger.isLoggable(Level.FINE)) logger.fine("After coalesce port ranges: " + template + "->" + coalescedPortsByDestination);
 		// Coalesce destinations by protocol and ports
-		SortedMap<SortedSet<ProtocolOrPortRange>,SortedSet<InetAddressPrefix>> coalescedDestinationsByPorts = new TreeMap<SortedSet<ProtocolOrPortRange>,SortedSet<InetAddressPrefix>>(portSetComparator);
+		SortedMap<SortedSet<ProtocolOrPortRange>,SortedSet<InetAddressPrefix>> coalescedDestinationsByPorts = new TreeMap<>(portSetComparator);
 		{
-			SortedMap<InetAddressPrefix,SortedSet<ProtocolOrPortRange>> toAdd = new TreeMap<InetAddressPrefix,SortedSet<ProtocolOrPortRange>>(coalescedPortsByDestination);
+			SortedMap<InetAddressPrefix,SortedSet<ProtocolOrPortRange>> toAdd = new TreeMap<>(coalescedPortsByDestination);
 			while(!toAdd.isEmpty()) {
 				// Get and remove the first element
 				InetAddressPrefix destinationToAdd;
@@ -299,7 +299,7 @@ public class ServiceSet {
 				}
 				SortedSet<InetAddressPrefix> coalescedDestinations = coalescedDestinationsByPorts.get(portsToAdd);
 				if(coalescedDestinations == null) {
-					coalescedDestinations = new TreeSet<InetAddressPrefix>();
+					coalescedDestinations = new TreeSet<>();
 					coalescedDestinations.add(destinationToAdd);
 					coalescedDestinationsByPorts.put(portsToAdd, coalescedDestinations);
 				} else {
@@ -324,20 +324,20 @@ public class ServiceSet {
 		}
 		if(logger.isLoggable(Level.FINE)) logger.fine("After coalesce destinations: " + template + "->" + coalescedDestinationsByPorts);
 		// Split by destinations by family
-		SortedMap<SortedSet<ProtocolOrPortRange>,EnumMap<AddressFamily,SortedSet<InetAddressPrefix>>> splitByFamily = new TreeMap<SortedSet<ProtocolOrPortRange>,EnumMap<AddressFamily,SortedSet<InetAddressPrefix>>>(portSetComparator);
+		SortedMap<SortedSet<ProtocolOrPortRange>,Map<ProtocolFamily,SortedSet<InetAddressPrefix>>> splitByFamily = new TreeMap<>(portSetComparator);
 		for(Map.Entry<SortedSet<ProtocolOrPortRange>,SortedSet<InetAddressPrefix>> entry : coalescedDestinationsByPorts.entrySet()) {
 			SortedSet<ProtocolOrPortRange> portsToSplit = entry.getKey();
-			EnumMap<AddressFamily,SortedSet<InetAddressPrefix>> destinationsByFamily = splitByFamily.get(portsToSplit);
+			Map<ProtocolFamily,SortedSet<InetAddressPrefix>> destinationsByFamily = splitByFamily.get(portsToSplit);
 			if(destinationsByFamily == null) {
-				destinationsByFamily = new EnumMap<AddressFamily,SortedSet<InetAddressPrefix>>(AddressFamily.class);
+				destinationsByFamily = new LinkedHashMap<>();
 				splitByFamily.put(portsToSplit, destinationsByFamily);
 			}
 			SortedSet<InetAddressPrefix> destinationsToSplit = entry.getValue();
 			for(InetAddressPrefix destinationToSplit : destinationsToSplit) {
-				AddressFamily family = destinationToSplit.getAddress().getAddressFamily();
+				ProtocolFamily family = destinationToSplit.getAddress().getProtocolFamily();
 				SortedSet<InetAddressPrefix> destinationsForFamily = destinationsByFamily.get(family);
 				if(destinationsForFamily == null) {
-					destinationsForFamily = new TreeSet<InetAddressPrefix>();
+					destinationsForFamily = new TreeSet<>();
 					destinationsByFamily.put(family, destinationsForFamily);
 				}
 				if(!destinationsForFamily.add(destinationToSplit)) throw new AssertionError();
@@ -347,11 +347,11 @@ public class ServiceSet {
 
 		// Build service set
 		// Note: The natural ordering of InetAddressPrefix puts unspecified first, which has the best chance to match default system services
-		Set<Service> services = new LinkedHashSet<Service>();
-		for(Map.Entry<SortedSet<ProtocolOrPortRange>,EnumMap<AddressFamily,SortedSet<InetAddressPrefix>>> entry : splitByFamily.entrySet()) {
+		Set<Service> services = new LinkedHashSet<>();
+		for(Map.Entry<SortedSet<ProtocolOrPortRange>,Map<ProtocolFamily,SortedSet<InetAddressPrefix>>> entry : splitByFamily.entrySet()) {
 			// Split protocols and ports
-			SortedSet<IPortRange> ports = new TreeSet<IPortRange>();
-			SortedSet<Protocol> protocols = new TreeSet<Protocol>();
+			SortedSet<IPortRange> ports = new TreeSet<>();
+			SortedSet<Protocol> protocols = new TreeSet<>();
 			{
 				SortedSet<ProtocolOrPortRange> protocolsAndPorts = entry.getKey();
 				for(ProtocolOrPortRange protocolAndPort : protocolsAndPorts) {
@@ -360,9 +360,9 @@ public class ServiceSet {
 					else protocols.add(protocolAndPort.getProtocol());
 				}
 			}
-			EnumMap<AddressFamily,SortedSet<InetAddressPrefix>> destinationsByFamily = entry.getValue();
-			SortedSet<InetAddressPrefix> ipv4Destinations = destinationsByFamily.get(AddressFamily.INET);
-			SortedSet<InetAddressPrefix> ipv6Destinations = destinationsByFamily.get(AddressFamily.INET6);
+			Map<ProtocolFamily,SortedSet<InetAddressPrefix>> destinationsByFamily = entry.getValue();
+			SortedSet<InetAddressPrefix> ipv4Destinations = destinationsByFamily.get(StandardProtocolFamily.INET);
+			SortedSet<InetAddressPrefix> ipv6Destinations = destinationsByFamily.get(StandardProtocolFamily.INET6);
 			Iterator<InetAddressPrefix> ipv4Iter;
 			if(ipv4Destinations==null) ipv4Iter = AoCollections.emptyIterator();
 			else ipv4Iter = ipv4Destinations.iterator();
@@ -417,7 +417,7 @@ public class ServiceSet {
 	) {
 		this.template = template;
 		this.services = AoCollections.optimalUnmodifiableSet(services);
-		SortedSet<Target> newTargets = new TreeSet<Target>();
+		SortedSet<Target> newTargets = new TreeSet<>();
 		for(Service service : services) {
 			newTargets.addAll(service.getTargets());
 		}
@@ -541,7 +541,7 @@ public class ServiceSet {
 	 * @see  #commit(java.util.Set)
 	 */
 	public static void commit(Iterable<ServiceSet> serviceSets, Set<String> zones) throws IOException {
-		Map<String,ServiceSet> serviceSetsMap = new LinkedHashMap<String,ServiceSet>();
+		Map<String,ServiceSet> serviceSetsMap = new LinkedHashMap<>();
 		for(ServiceSet serviceSet : serviceSets) {
 			String name = serviceSet.getTemplate().getName();
 			if(serviceSetsMap.put(name, serviceSet) != null) throw new IllegalArgumentException("Duplicate service set name: " + name);
@@ -549,7 +549,7 @@ public class ServiceSet {
 		synchronized(Firewalld.firewallCmdLock) {
 			boolean needsReload = false;
 			// Get the set of all service names that should exist
-			Set<String> serviceNames = new LinkedHashSet<String>();
+			Set<String> serviceNames = new LinkedHashSet<>();
 			for(ServiceSet serviceSet : serviceSetsMap.values()) {
 				for(Service service : serviceSet.services) {
 					String serviceName = service.getName();
@@ -564,7 +564,7 @@ public class ServiceSet {
 				Set<String> expected;
 				if(zones.contains(zone)) expected = serviceNames;
 				else expected = Collections.emptySet();
-				Set<String> toRemove = new LinkedHashSet<String>();
+				Set<String> toRemove = new LinkedHashSet<>();
 				for(String service : entry.getValue()) {
 					if(!expected.contains(service)) {
 						boolean isInAServiceSet = false;
@@ -649,7 +649,7 @@ public class ServiceSet {
 			for(String zone : zones) {
 				Set<String> servicesForZone = servicesByZone.get(zone);
 				if(servicesForZone == null) throw new IOException("Zone not found: " + zone);
-				Set<String> toAdd = new TreeSet<String>();
+				Set<String> toAdd = new TreeSet<>();
 				for(ServiceSet serviceSet : serviceSetsMap.values()) {
 					for(Service service : serviceSet.services) {
 						String serviceName = service.getName();

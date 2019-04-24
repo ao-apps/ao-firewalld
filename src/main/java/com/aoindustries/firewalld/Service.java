@@ -1,6 +1,6 @@
 /*
  * ao-firewalld - Java API for managing firewalld.
- * Copyright (C) 2017  AO Industries, Inc.
+ * Copyright (C) 2017, 2019  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -24,8 +24,6 @@ package com.aoindustries.firewalld;
 
 import com.aoindustries.io.FileUtils;
 import com.aoindustries.lang.NullArgumentException;
-import com.aoindustries.lang.ObjectUtils;
-import com.aoindustries.net.AddressFamily;
 import com.aoindustries.net.IPortRange;
 import com.aoindustries.net.InetAddressPrefix;
 import com.aoindustries.net.InetAddressPrefixes;
@@ -38,11 +36,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.ProtocolFamily;
+import java.net.StandardProtocolFamily;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -153,8 +154,8 @@ public class Service {
 				String rootNodeName = serviceElem.getNodeName();
 				if(!rootNodeName.equals(SERVICE_ELEM)) throw new IOException("Root node is not a " + SERVICE_ELEM + ": " + rootNodeName);
 			}
-			Set<IPortRange> ports = new LinkedHashSet<IPortRange>();
-			Set<Protocol> protocols = new LinkedHashSet<Protocol>(); // Not using EnumSet to maintain source order
+			Set<IPortRange> ports = new LinkedHashSet<>();
+			Set<Protocol> protocols = new LinkedHashSet<>(); // Not using EnumSet to maintain source order
 			for(Element portElem : XmlUtils.iterableChildElementsByTagName(serviceElem, PORT_ELEM)) {
 				Protocol protocol = parseProtocol(portElem.getAttribute(PROTOCOL_ATTR));
 				String portAttr = portElem.getAttribute(PORT_ATTR);
@@ -169,7 +170,7 @@ public class Service {
 				Protocol protocol = parseProtocol(protocolElem.getAttribute(VALUE_ATTR));
 				if(!protocols.add(protocol)) throw new IOException("Duplicate " + PROTOCOL_ELEM + ": " + protocol);
 			}
-			Set<IPortRange> sourcePorts = new LinkedHashSet<IPortRange>();
+			Set<IPortRange> sourcePorts = new LinkedHashSet<>();
 			for(Element sourcePortElem : XmlUtils.iterableChildElementsByTagName(serviceElem, SOURCE_PORT_ELEM)) {
 				IPortRange sourcePort = parsePort(
 					sourcePortElem.getAttribute(PORT_ATTR),
@@ -177,7 +178,7 @@ public class Service {
 				);
 				if(!sourcePorts.add(sourcePort)) throw new IOException("Duplicate " + SOURCE_PORT_ELEM + ": " + sourcePort);
 			}
-			Set<String> modules = new LinkedHashSet<String>();
+			Set<String> modules = new LinkedHashSet<>();
 			for(Element moduleElem : XmlUtils.iterableChildElementsByTagName(serviceElem, MODULE_ELEM)) {
 				String module = moduleElem.getAttribute(NAME_ATTR);
 				if(!modules.add(module)) throw new IOException("Duplicate " + MODULE_ELEM + ": " + module);
@@ -208,13 +209,7 @@ public class Service {
 				destinationIPv4,
 				destinationIPv6
 			);
-		} catch(IllegalArgumentException e) {
-			throw new IOException(e);
-		} catch(ValidationException e) {
-			throw new IOException(e);
-		} catch(ParserConfigurationException e) {
-			throw new IOException(e);
-		} catch(SAXException e) {
+		} catch(IllegalArgumentException | ValidationException | ParserConfigurationException | SAXException e) {
 			throw new IOException(e);
 		}
 	}
@@ -230,7 +225,7 @@ public class Service {
 		}
 	}
 
-	private static final Map<File,FileCacheEntry> fileCache = new HashMap<File,FileCacheEntry>();
+	private static final Map<File,FileCacheEntry> fileCache = new HashMap<>();
 
 	/**
 	 * Loads a service from the given {@link File}.
@@ -260,11 +255,8 @@ public class Service {
 			}
 			// Load from file
 			Service service;
-			InputStream in = new BufferedInputStream(new FileInputStream(file));
-			try {
+			try (InputStream in = new BufferedInputStream(new FileInputStream(file))) {
 				service = loadService(name, in);
-			} finally {
-				in.close();
 			}
 			// Store in cache
 			fileCache.put(
@@ -355,20 +347,20 @@ public class Service {
 		}
 		if(
 			destinationIPv4 != null
-			&& destinationIPv4.getAddress().getAddressFamily() != AddressFamily.INET
+			&& destinationIPv4.getAddress().getProtocolFamily() != StandardProtocolFamily.INET
 		) {
 			throw new IllegalArgumentException("Not an IPv4 destination: " + destinationIPv4);
 		}
 		this.destinationIPv4 = destinationIPv4;
 		if(
 			destinationIPv6 != null
-			&& destinationIPv6.getAddress().getAddressFamily() != AddressFamily.INET6
+			&& destinationIPv6.getAddress().getProtocolFamily() != StandardProtocolFamily.INET6
 		) {
 			throw new IllegalArgumentException("Not an IPv6 destination: " + destinationIPv6);
 		}
 		this.destinationIPv6 = destinationIPv6;
 		// Find all the targets
-		SortedSet<Target> newTargets = new TreeSet<Target>();
+		SortedSet<Target> newTargets = new TreeSet<>();
 		for(IPortRange port : ports) {
 			if(destinationIPv4 != null) {
 				Target target = new Target(destinationIPv4, port);
@@ -407,15 +399,15 @@ public class Service {
 		Service other = (Service)obj;
 		return
 			name.equals(other.name)
-			&& ObjectUtils.equals(version, other.version)
-			&& ObjectUtils.equals(shortName, other.shortName)
-			&& ObjectUtils.equals(description, other.description)
+			&& Objects.equals(version, other.version)
+			&& Objects.equals(shortName, other.shortName)
+			&& Objects.equals(description, other.description)
 			&& ports.equals(other.ports)
 			&& protocols.equals(other.protocols)
 			&& sourcePorts.equals(other.sourcePorts)
 			&& modules.equals(other.modules)
-			&& ObjectUtils.equals(destinationIPv4, other.destinationIPv4)
-			&& ObjectUtils.equals(destinationIPv6, other.destinationIPv6)
+			&& Objects.equals(destinationIPv4, other.destinationIPv4)
+			&& Objects.equals(destinationIPv6, other.destinationIPv6)
 		;
 	}
 
@@ -512,13 +504,30 @@ public class Service {
 
 	/**
 	 * Gets the destination for the given {@link AddressFamily}.
+	 *
+	 * @deprecated  Please use {@link #getDestination(java.net.ProtocolFamily)} as of Java 1.7.
 	 */
-	public InetAddressPrefix getDestination(AddressFamily addressFamily) {
+	@Deprecated
+	public InetAddressPrefix getDestination(com.aoindustries.net.AddressFamily addressFamily) {
 		NullArgumentException.checkNotNull(addressFamily);
 		switch(addressFamily) {
 			case INET  : return destinationIPv4;
 			case INET6 : return destinationIPv6;
 			default : throw new AssertionError(addressFamily);
+		}
+	}
+
+	/**
+	 * Gets the destination for the given {@link ProtocolFamily}.
+	 */
+	public InetAddressPrefix getDestination(ProtocolFamily protocolFamily) {
+		NullArgumentException.checkNotNull(protocolFamily);
+		if(protocolFamily == StandardProtocolFamily.INET) {
+			return destinationIPv4;
+		} else if(protocolFamily == StandardProtocolFamily.INET6) {
+			return destinationIPv6;
+		} else {
+			throw new AssertionError(protocolFamily);
 		}
 	}
 
@@ -618,9 +627,7 @@ public class Service {
 			// Move successful file into place
 			if(logger.isLoggable(Level.FINE)) logger.fine("Moving new local service file into place: " + newServiceFile + "->" + serviceFile);
 			FileUtils.rename(newServiceFile, serviceFile);
-		} catch(ParserConfigurationException e) {
-			throw new IOException(e);
-		} catch(TransformerException e) {
+		} catch(ParserConfigurationException | TransformerException e) {
 			throw new IOException(e);
 		}
 	}

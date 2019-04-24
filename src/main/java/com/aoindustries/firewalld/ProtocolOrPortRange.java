@@ -1,6 +1,6 @@
 /*
  * ao-firewalld - Java API for managing firewalld.
- * Copyright (C) 2017  AO Industries, Inc.
+ * Copyright (C) 2017, 2019  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -23,9 +23,9 @@
 package com.aoindustries.firewalld;
 
 import com.aoindustries.lang.NullArgumentException;
-import com.aoindustries.lang.ObjectUtils;
 import com.aoindustries.net.IPortRange;
 import com.aoindustries.net.Protocol;
+import java.util.Objects;
 
 /**
  * A {@link Protocol protocol}, and optional {@IPortRange port range}.
@@ -74,7 +74,7 @@ class ProtocolOrPortRange implements Comparable<ProtocolOrPortRange> {
 		ProtocolOrPortRange other = (ProtocolOrPortRange)obj;
 		return
 			protocol == other.protocol
-			&& ObjectUtils.equals(portRange, other.portRange)
+			&& Objects.equals(portRange, other.portRange)
 		;
 	}
 

@@ -1,6 +1,6 @@
 /*
  * ao-firewalld - Java API for managing firewalld.
- * Copyright (C) 2017  AO Industries, Inc.
+ * Copyright (C) 2017, 2019  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -267,7 +267,7 @@ public class ServiceSetTest {
 		);
 		Service service = optimized.getServices().iterator().next();
 		assertEquals(
-			new HashSet<IPortRange>(
+			new HashSet<>(
 				Arrays.asList(
 					(IPortRange)Port.valueOf(22, Protocol.TCP),
 					PortRange.valueOf(45, 100, Protocol.TCP)
@@ -309,7 +309,7 @@ public class ServiceSetTest {
 		{
 			Service service1 = serviceIter.next();
 			assertEquals(
-				new HashSet<IPortRange>(
+				new HashSet<>(
 					Arrays.asList(
 						(IPortRange)Port.valueOf(22, Protocol.TCP),
 						PortRange.valueOf(45, 78, Protocol.TCP)
@@ -332,7 +332,7 @@ public class ServiceSetTest {
 		{
 			Service service2 = serviceIter.next();
 			assertEquals(
-				new HashSet<IPortRange>(
+				new HashSet<>(
 					Arrays.asList(
 						(IPortRange)Port.valueOf(22, Protocol.TCP),
 						PortRange.valueOf(45, 100, Protocol.TCP)
@@ -374,7 +374,7 @@ public class ServiceSetTest {
 		{
 			Service service1 = serviceIter.next();
 			assertEquals(
-				new HashSet<IPortRange>(
+				new HashSet<>(
 					Arrays.asList(
 						(IPortRange)Port.valueOf(22, Protocol.TCP),
 						PortRange.valueOf(45, 78, Protocol.TCP)
@@ -397,7 +397,7 @@ public class ServiceSetTest {
 		{
 			Service service2 = serviceIter.next();
 			assertEquals(
-				new HashSet<IPortRange>(
+				new HashSet<>(
 					Arrays.asList(
 						(IPortRange)Port.valueOf(22, Protocol.TCP),
 						PortRange.valueOf(45, 100, Protocol.TCP)
@@ -505,7 +505,7 @@ public class ServiceSetTest {
 			// 22/TCP, 24/TCP -> 1.2.3.4
 			Service service1 = serviceIter.next();
 			assertEquals(
-				new HashSet<IPortRange>(
+				new HashSet<>(
 					Arrays.asList(
 						(IPortRange)Port.valueOf(22, Protocol.TCP),
 						Port.valueOf(24, Protocol.TCP)
@@ -529,7 +529,7 @@ public class ServiceSetTest {
 			// 22/TCP, 45-78/TCP -> 1:2:3:4:5:6:7:8
 			Service service2 = serviceIter.next();
 			assertEquals(
-				new HashSet<IPortRange>(
+				new HashSet<>(
 					Arrays.asList(
 						(IPortRange)Port.valueOf(22, Protocol.TCP),
 						PortRange.valueOf(45, 78, Protocol.TCP)
@@ -553,7 +553,7 @@ public class ServiceSetTest {
 			// 22-23/TCP, 45-78/TCP -> 1.2.3.4/31
 			Service service3 = serviceIter.next();
 			assertEquals(
-				new HashSet<IPortRange>(
+				new HashSet<>(
 					Arrays.asList(
 						(IPortRange)PortRange.valueOf(22, 23, Protocol.TCP),
 						PortRange.valueOf(45, 78, Protocol.TCP)
@@ -577,7 +577,7 @@ public class ServiceSetTest {
 			// 45-78/TCP -> 0.0.0.0/0
 			Service service4 = serviceIter.next();
 			assertEquals(
-				new HashSet<IPortRange>(
+				new HashSet<>(
 					Arrays.asList(
 						(IPortRange)PortRange.valueOf(45, 78, Protocol.TCP)
 					)

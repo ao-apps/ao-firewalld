@@ -1,6 +1,6 @@
 /*
  * ao-firewalld - Java API for managing firewalld.
- * Copyright (C) 2017  AO Industries, Inc.
+ * Copyright (C) 2017, 2019  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -77,9 +77,8 @@ class Firewalld {
 	 */
 	static Map<String,Set<String>> listAllServices() throws IOException {
 		ProcessResult result = execFirewallCmd("--permanent", "--list-all-zones");
-		Map<String,Set<String>> allServices = new LinkedHashMap<String,Set<String>>();
-		BufferedReader in = new BufferedReader(new StringReader(result.getStdout()));
-		try {
+		Map<String,Set<String>> allServices = new LinkedHashMap<>();
+		try (BufferedReader in = new BufferedReader(new StringReader(result.getStdout()))) {
 			String currentZone = null;
 			String line;
 			while((line = in.readLine()) != null) {
@@ -92,7 +91,7 @@ class Firewalld {
 						}
 					} else if(line.startsWith("  services:")) {
 						if(currentZone == null) throw new IOException("currentZone not set");
-						Set<String> zoneServices = new LinkedHashSet<String>();
+						Set<String> zoneServices = new LinkedHashSet<>();
 						for(String service : line.substring("  services:".length()).trim().split(" ")) {
 							if(!service.isEmpty()) {
 								if(!zoneServices.add(service)) throw new IOException("Duplicate service: " + service);
@@ -109,8 +108,6 @@ class Firewalld {
 					}
 				}
 			}
-		} finally {
-			in.close();
 		}
 		if(logger.isLoggable(Level.FINER)) logger.finer("Got allServices: " + allServices);
 		return AoCollections.optimalUnmodifiableMap(allServices);
