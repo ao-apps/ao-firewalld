@@ -37,7 +37,7 @@ along with ao-firewalld.  If not, see <http://www.gnu.org/licenses />.
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2017-03-17T00:06:12-0500"
-		dateModified="2019-04-24T16:10:03-0500"
+		dateModified="2019-04-24T17:19:54-0500"
 	>
 		<!-- The current snapshot, unreleased version -->
 		<c:set var="version" value="@{com.aoindustries:ao-firewalld:pom.version}" />
@@ -52,17 +52,29 @@ along with ao-firewalld.  If not, see <http://www.gnu.org/licenses />.
 				groupId="@{documented.groupId}"
 				artifactId="@{documented.artifactId}"
 				scmUrl="@{documented.scm.url}"
-			>
-				<ol>
-					<li>Minimum Java version changed from 1.6 to 1.7.</li>
-					<li>
-						Fixed bug in <code>ServiceSet.commit()</code> that threw <code>NullPointerException</code>
-						on zone not found instead of the intended <code>IOException</code> with a descriptive message.
-					</li>
-					<li>Fixed bug to now correctly parse the active zone, by handling the <code>" (active)"</code>.</li>
-				</ol>
-			</changelog:release>
+			/>
 		</c:if>
+
+		<changelog:release
+			projectName="@{documented.name}"
+			version="1.1.0"
+			datePublished="2019-04-24T17:19:54-0500"
+			groupId="@{documented.groupId}"
+			artifactId="@{documented.artifactId}"
+			scmUrl="@{documented.scm.url}"
+		>
+			<ol>
+				<li>Minimum Java version changed from 1.6 to 1.7.</li>
+				<li>
+					Fixed bug in <ao:a href="@{javac.link.javaApi}com/aoindustries/firewalld/ServiceSet.html#commit-java.util.Set-">ServiceSet.commit()</ao:a>
+					that threw <ao:a rel="nofollow" href="@{javac.link.javaApi}java/lang/NullPointerException.html">NullPointerException</ao:a>
+					on zone not found instead of the intended
+					<ao:a rel="nofollow" href="@{javac.link.javaApi}java/io/IOException.html">IOException</ao:a>
+					with a descriptive message.
+				</li>
+				<li>Fixed bug to now correctly parse the active zone, by handling the <code>" (active)"</code>.</li>
+			</ol>
+		</changelog:release>
 
 		<changelog:release
 			projectName="@{documented.name}"
