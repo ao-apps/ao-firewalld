@@ -520,14 +520,14 @@ public class Service {
 	/**
 	 * Gets the destination for the given {@link ProtocolFamily}.
 	 */
-	public InetAddressPrefix getDestination(ProtocolFamily protocolFamily) {
-		NullArgumentException.checkNotNull(protocolFamily);
-		if(protocolFamily == StandardProtocolFamily.INET) {
+	public InetAddressPrefix getDestination(ProtocolFamily family) {
+		NullArgumentException.checkNotNull(family);
+		if(family == StandardProtocolFamily.INET) {
 			return destinationIPv4;
-		} else if(protocolFamily == StandardProtocolFamily.INET6) {
+		} else if(family == StandardProtocolFamily.INET6) {
 			return destinationIPv6;
 		} else {
-			throw new AssertionError(protocolFamily);
+			throw new AssertionError("Unexpected family: " + family);
 		}
 	}
 

@@ -37,7 +37,7 @@ along with ao-firewalld.  If not, see <http://www.gnu.org/licenses />.
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2017-03-17T00:06:12-0500"
-		dateModified="2019-04-24T17:44:21-0500"
+		dateModified="2019-05-28T17:43:14-0500"
 	>
 		<!-- The current snapshot, unreleased version -->
 		<c:set var="version" value="@{com.aoindustries:ao-firewalld:pom.version}" />
@@ -52,7 +52,11 @@ along with ao-firewalld.  If not, see <http://www.gnu.org/licenses />.
 				groupId="@{documented.groupId}"
 				artifactId="@{documented.artifactId}"
 				scmUrl="@{documented.scm.url}"
-			/>
+			>
+				<ol>
+					<li>Minor improvements to exception messages.</li>
+				</ol>
+			</changelog:release>
 		</c:if>
 
 		<changelog:release
