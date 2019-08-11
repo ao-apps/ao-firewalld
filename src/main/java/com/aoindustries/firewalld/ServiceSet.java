@@ -448,7 +448,7 @@ public class ServiceSet {
 	/**
 	 * Gets the template for this service set.  This will often be loaded from
 	 * the {@link Service#loadSystemService(java.lang.String) system service},
-	 * but may be programmatically provided for dynamic services.
+	 * but may have been programmatically provided for dynamic services.
 	 */
 	public Service getTemplate() {
 		return template;
@@ -478,7 +478,7 @@ public class ServiceSet {
 	/**
 	 * Returns an optimized version of this set.
 	 *
-	 * @return  {@code this} if already optimized, or new {@link ServiceSet} it optimal form is different.
+	 * @return  {@code this} when already optimized, or new {@link ServiceSet} when optimal form is different.
 	 *
 	 * @see #createOptimizedServiceSet(java.lang.String, java.lang.Iterable)
 	 * @see #createOptimizedServiceSet(com.aoindustries.firewalld.Service, java.lang.Iterable)
