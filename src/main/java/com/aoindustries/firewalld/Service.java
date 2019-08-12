@@ -503,7 +503,7 @@ public class Service {
 	}
 
 	/**
-	 * Gets the destination for the given {@link AddressFamily}.
+	 * Gets the destination for the given {@link com.aoindustries.net.AddressFamily}.
 	 *
 	 * @deprecated  Please use {@link #getDestination(java.net.ProtocolFamily)} as of Java 1.7.
 	 */
