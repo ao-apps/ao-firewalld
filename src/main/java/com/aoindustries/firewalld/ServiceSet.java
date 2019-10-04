@@ -364,10 +364,10 @@ public class ServiceSet {
 			SortedSet<InetAddressPrefix> ipv4Destinations = destinationsByFamily.get(StandardProtocolFamily.INET);
 			SortedSet<InetAddressPrefix> ipv6Destinations = destinationsByFamily.get(StandardProtocolFamily.INET6);
 			Iterator<InetAddressPrefix> ipv4Iter;
-			if(ipv4Destinations==null) ipv4Iter = AoCollections.emptyIterator();
+			if(ipv4Destinations==null) ipv4Iter = Collections.emptyIterator();
 			else ipv4Iter = ipv4Destinations.iterator();
 			Iterator<InetAddressPrefix> ipv6Iter;
-			if(ipv6Destinations==null) ipv6Iter = AoCollections.emptyIterator();
+			if(ipv6Destinations==null) ipv6Iter = Collections.emptyIterator();
 			else ipv6Iter = ipv6Destinations.iterator();
 			while(ipv4Iter.hasNext() || ipv6Iter.hasNext()) {
 				InetAddressPrefix destinationIPv4 = ipv4Iter.hasNext() ? ipv4Iter.next() : null;
