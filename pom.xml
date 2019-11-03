@@ -33,6 +33,10 @@ along with ao-firewalld.  If not, see <http://www.gnu.org/licenses />.
 	<packaging>bundle</packaging>
 
 	<properties>
+		<javaVersion>1.8</javaVersion>
+		<compiler.bootclasspath>${bootclasspath.jdk8}</compiler.bootclasspath>
+		<javac.bootclasspath>${bootclasspath.jdk8}</javac.bootclasspath>
+		<javac.link.javaApi>${javac.link.javaApi.jdk8}</javac.link.javaApi>
 		<description.html><![CDATA[Java API for managing <a target="_top" href="http://www.firewalld.org/">firewalld</a>.]]></description.html>
 	</properties>
 

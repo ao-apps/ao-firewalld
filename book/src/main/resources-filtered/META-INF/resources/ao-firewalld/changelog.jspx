@@ -36,7 +36,7 @@ along with ao-firewalld.  If not, see <http://www.gnu.org/licenses />.
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2017-03-17T00:06:12-0500"
-		dateModified="2019-10-04T06:23:39-0500"
+		dateModified="2019-11-03T02:12:52-0600"
 	>
 		<!-- The current snapshot, unreleased version -->
 		<c:set var="version" value="@{com.aoindustries:ao-firewalld:pom.version}" />
@@ -51,7 +51,11 @@ along with ao-firewalld.  If not, see <http://www.gnu.org/licenses />.
 				groupId="@{documented.groupId}"
 				artifactId="@{documented.artifactId}"
 				scmUrl="@{documented.scm.url}"
-			/>
+			>
+				<ul>
+					<li>Minimum Java version changed from 1.7 to 1.8.</li>
+				</ul>
+			</changelog:release>
 		</c:if>
 
 		<changelog:release
