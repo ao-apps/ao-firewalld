@@ -107,9 +107,9 @@ along with ao-firewalld.  If not, see <http://www.gnu.org/licenses />.
 				<li>Minimum Java version changed from 1.6 to 1.7.</li>
 				<li>
 					Fixed bug in <ao:a href="apidocs/com/aoindustries/firewalld/ServiceSet.html#commit-java.util.Set-">ServiceSet.commit()</ao:a>
-					that threw <ao:a rel="nofollow" href="@{javac.link.javaApi}java/lang/NullPointerException.html">NullPointerException</ao:a>
+					that threw <ao:a rel="nofollow" href="@{javadoc.link.javase}java/lang/NullPointerException.html">NullPointerException</ao:a>
 					on zone not found instead of the intended
-					<ao:a rel="nofollow" href="@{javac.link.javaApi}java/io/IOException.html">IOException</ao:a>
+					<ao:a rel="nofollow" href="@{javadoc.link.javase}java/io/IOException.html">IOException</ao:a>
 					with a descriptive message.
 				</li>
 				<li>Fixed bug to now correctly parse the active zone, by handling the <code>" (active)"</code>.</li>
