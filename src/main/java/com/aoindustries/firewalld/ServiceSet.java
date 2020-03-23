@@ -57,9 +57,9 @@ import java.util.logging.Logger;
  * </p>
  * <p>
  * Consider the example of opening SSH on two addresses, but leaving it closed on others.
- * One port could be <samp>192.0.2.14:22</samp> while the other is <samp>192.0.2.16:22</samp>.
- * This would result in two services: <samp>ssh</samp> with a destination of
- * <samp>192.0.2.14:22</samp> and <samp>ssh-2</samp> with a destination of <samp>192.0.2.16:22</samp>.
+ * One port could be <code>192.0.2.14:22</code> while the other is <code>192.0.2.16:22</code>.
+ * This would result in two services: <code>ssh</code> with a destination of
+ * <code>192.0.2.14:22</code> and <code>ssh-2</code> with a destination of <code>192.0.2.16:22</code>.
  *
  * @author  AO Industries, Inc.
  */

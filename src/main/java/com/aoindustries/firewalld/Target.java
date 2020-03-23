@@ -1,6 +1,6 @@
 /*
  * ao-firewalld - Java API for managing firewalld.
- * Copyright (C) 2017  AO Industries, Inc.
+ * Copyright (C) 2017, 2020  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -77,7 +77,7 @@ public class Target implements Comparable<Target> {
 	}
 
 	/**
-	 * @return  The target in form <samp>[port[-range]/]protocol@address[/prefix]</samp>.
+	 * @return  The target in form <code>[port[-range]/]protocol@address[/prefix]</code>.
 	 *
 	 * @see  IPortRange#toString()
 	 * @see  Protocol#toString()
