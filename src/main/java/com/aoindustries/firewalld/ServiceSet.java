@@ -1,6 +1,6 @@
 /*
  * ao-firewalld - Java API for managing firewalld.
- * Copyright (C) 2017, 2019  AO Industries, Inc.
+ * Copyright (C) 2017, 2019, 2020  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -195,20 +195,17 @@ public class ServiceSet {
 		return createOptimizedServiceSet(template, targets);
 	}
 
-	private static final Comparator<SortedSet<ProtocolOrPortRange>> portSetComparator = new Comparator<SortedSet<ProtocolOrPortRange>>() {
-		@Override
-		public int compare(SortedSet<ProtocolOrPortRange> ports1, SortedSet<ProtocolOrPortRange> ports2) {
-			// Put shorter sets of ports before longer when they are otherwise not sorted
-			Iterator<ProtocolOrPortRange> iter1 = ports1.iterator();
-			Iterator<ProtocolOrPortRange> iter2 = ports2.iterator();
-			while(iter1.hasNext()) {
-				if(!iter2.hasNext()) return 1; // ports2 shorter list than ports1
-				int diff = iter1.next().compareTo(iter2.next());
-				if(diff != 0) return diff;
-			}
-			if(iter2.hasNext()) return -1; // ports1 shorter list than ports2
-			return 0;
+	private static final Comparator<SortedSet<ProtocolOrPortRange>> portSetComparator = (ports1, ports2) -> {
+		// Put shorter sets of ports before longer when they are otherwise not sorted
+		Iterator<ProtocolOrPortRange> iter1 = ports1.iterator();
+		Iterator<ProtocolOrPortRange> iter2 = ports2.iterator();
+		while(iter1.hasNext()) {
+			if(!iter2.hasNext()) return 1; // ports2 shorter list than ports1
+			int diff = iter1.next().compareTo(iter2.next());
+			if(diff != 0) return diff;
 		}
+		if(iter2.hasNext()) return -1; // ports1 shorter list than ports2
+		return 0;
 	};
 
 	/**
