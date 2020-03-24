@@ -22,12 +22,12 @@
  */
 package com.aoindustries.firewalld;
 
+import com.aoindustries.collections.AoCollections;
 import com.aoindustries.io.FileUtils;
 import com.aoindustries.net.IPortRange;
 import com.aoindustries.net.InetAddressPrefix;
 import com.aoindustries.net.InetAddressPrefixes;
 import com.aoindustries.net.Protocol;
-import com.aoindustries.util.AoCollections;
 import java.io.File;
 import java.io.IOException;
 import java.net.ProtocolFamily;

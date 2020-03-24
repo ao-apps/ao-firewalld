@@ -1,6 +1,6 @@
 /*
  * ao-firewalld - Java API for managing firewalld.
- * Copyright (C) 2017, 2019  AO Industries, Inc.
+ * Copyright (C) 2017, 2019, 2020  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -22,8 +22,8 @@
  */
 package com.aoindustries.firewalld;
 
+import com.aoindustries.collections.AoCollections;
 import com.aoindustries.lang.ProcessResult;
-import com.aoindustries.util.AoCollections;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
