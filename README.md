@@ -27,7 +27,7 @@ Java API for managing [firewalld](http://www.firewalld.org/).
 * [Project Home](https://aoindustries.com/ao-firewalld/)
 * [Changelog](https://aoindustries.com/ao-firewalld/changelog)
 * [API Docs](https://aoindustries.com/ao-firewalld/apidocs/)
-* [Maven Central Repository](https://search.maven.org/#search%7Cgav%7C1%7Cg:%22com.aoindustries%22%20AND%20a:%22ao-firewalld%22)
+* [Maven Central Repository](https://search.maven.org/artifact/com.aoindustries/ao-firewalld)
 * [GitHub](https://github.com/aoindustries/ao-firewalld)
 
 ## Features
