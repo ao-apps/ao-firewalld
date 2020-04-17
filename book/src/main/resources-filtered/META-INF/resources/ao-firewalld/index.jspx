@@ -78,7 +78,7 @@ along with ao-firewalld.  If not, see <http://www.gnu.org/licenses />.
 				support multiple <![CDATA[&lt;service /&gt;]]> tags with multiple <![CDATA[&lt;destination /&gt;]]> per service file, but this is not currently a feature.
 			</p>
 			<p>
-				Our server configuration process, <core:link book="/" page="/aoserv/daemon/index.jspx" />, is written in the Java programming language.
+				Our server configuration process, <core:link book="/aoserv/daemon" page="/index.jspx" />, is written in the Java programming language.
 				We desire a clean interface to <ao:a href="http://www.firewalld.org/">firewalld</ao:a> without having to operate with
 				<code>firewall-cmd</code> and other commands directly.
 			</p>
