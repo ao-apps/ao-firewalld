@@ -60,13 +60,22 @@ along with ao-firewalld.  If not, see <http://www.gnu.org/licenses />.
 				<plugins>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId><artifactId>maven-dependency-plugin</artifactId>
+						<dependencies>
+							<dependency>
+								<groupId>com.aoindustries</groupId><artifactId>ao-javadoc-offline</artifactId><version>1.0.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
+							</dependency>
+						</dependencies>
 						<executions>
 							<execution>
-								<id>unpack.offlinkLinks</id>
-								<phase>generate-sources</phase>
-								<goals><goal>unpack</goal></goals>
+								<id>unpack.offlinkLinks</id><phase>generate-sources</phase><goals><goal>unpack</goal></goals>
 								<configuration>
+									<silent>true</silent>
 									<artifactItems>
+										<artifactItem>
+											<groupId>com.aoindustries</groupId><artifactId>ao-javadoc-offline</artifactId><version>1.0.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
+											<includes>**/element-list, **/package-list</includes>
+											<outputDirectory>${project.build.directory}/offlineLinks</outputDirectory>
+										</artifactItem>
 										<!-- Direct -->
 										<artifactItem>
 											<groupId>com.aoindustries</groupId><artifactId>ao-collections</artifactId>
@@ -97,16 +106,11 @@ along with ao-firewalld.  If not, see <http://www.gnu.org/licenses />.
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId><artifactId>maven-javadoc-plugin</artifactId>
 						<configuration>
-							<links>
-								<link>${javadoc.link.javase}</link>
-								<!-- Direct -->
-								<!-- offlineLink: <groupId>com.aoindustries</groupId><artifactId>ao-collections</artifactId> -->
-								<!-- offlineLink: <groupId>com.aoindustries</groupId><artifactId>ao-lang</artifactId> -->
-								<!-- offlineLink: <groupId>com.aoindustries</groupId><artifactId>ao-net-types</artifactId> -->
-								<!-- Test Direct -->
-								<!-- offlineLink: <groupId>junit</groupId><artifactId>junit</artifactId> -->
-							</links>
 							<offlineLinks>
+								<offlineLink>
+									<url>${javadoc.link.javase}</url>
+									<location>${project.build.directory}/offlineLinks/com/aoindustries/javadoc/offline/javase/${javase.release}</location>
+								</offlineLink>
 								<!-- Direct -->
 								<offlineLink>
 									<url>https://aoindustries.com/ao-collections/apidocs/</url>
