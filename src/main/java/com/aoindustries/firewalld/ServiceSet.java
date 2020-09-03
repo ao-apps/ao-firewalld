@@ -242,7 +242,9 @@ public class ServiceSet {
 		SortedMap<InetAddressPrefix,SortedSet<ProtocolOrPortRange>> coalescedPortsByDestination = new TreeMap<>();
 		{
 			SortedSet<Target> toAdd = new TreeSet<>();
-			for(Target target : targets) toAdd.add(target);
+			for(Target target : targets) {
+				toAdd.add(target);
+			}
 			if(logger.isLoggable(Level.FINE)) logger.fine("Combined into toAdd: " + template + "->" + toAdd);
 			while(!toAdd.isEmpty()) {
 				// Get and remove the first element
@@ -455,6 +457,7 @@ public class ServiceSet {
 	 * The set of services representing this service set.
 	 * This may be an empty set when a template has no existing configuration.
 	 */
+	@SuppressWarnings("ReturnOfCollectionOrArrayField") // Returning unmodifiable
 	public Set<Service> getServices() {
 		return services;
 	}
@@ -468,6 +471,7 @@ public class ServiceSet {
 	 *
 	 * @see  Target#compareTo(com.aoindustries.firewalld.Target)
 	 */
+	@SuppressWarnings("ReturnOfCollectionOrArrayField") // Returning unmodifiable
 	public SortedSet<Target> getTargets() {
 		return targets;
 	}

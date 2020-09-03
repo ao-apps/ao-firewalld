@@ -450,6 +450,7 @@ public class Service {
 	 *
 	 * @return  an unmodifiable set of ports
 	 */
+	@SuppressWarnings("ReturnOfCollectionOrArrayField") // Returning unmodifiable
 	public Set<IPortRange> getPorts() {
 		return ports;
 	}
@@ -459,6 +460,7 @@ public class Service {
 	 *
 	 * @return  an unmodifiable set of protocols
 	 */
+	@SuppressWarnings("ReturnOfCollectionOrArrayField") // Returning unmodifiable
 	public Set<Protocol> getProtocols() {
 		return protocols;
 	}
@@ -468,6 +470,7 @@ public class Service {
 	 *
 	 * @return  an unmodifiable set of source ports
 	 */
+	@SuppressWarnings("ReturnOfCollectionOrArrayField") // Returning unmodifiable
 	public Set<IPortRange> getSourcePorts() {
 		return sourcePorts;
 	}
@@ -477,6 +480,7 @@ public class Service {
 	 *
 	 * @return  an unmodifiable set of modules
 	 */
+	@SuppressWarnings("ReturnOfCollectionOrArrayField") // Returning unmodifiable
 	public Set<String> getModules() {
 		return modules;
 	}
@@ -541,6 +545,7 @@ public class Service {
 	 *
 	 * @see  Target#compareTo(com.aoindustries.firewalld.Target)
 	 */
+	@SuppressWarnings("ReturnOfCollectionOrArrayField") // Returning unmodifiable
 	public SortedSet<Target> getTargets() {
 		assert !targets.isEmpty();
 		return targets;
