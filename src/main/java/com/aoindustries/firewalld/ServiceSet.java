@@ -164,7 +164,7 @@ public class ServiceSet {
 			);
 		}
 		// Load services
-		Set<Service> services = new LinkedHashSet<>(servicesToLoad.size()*4/3+1);
+		Set<Service> services = AoCollections.newLinkedHashSet(servicesToLoad.size());
 		for(Map.Entry<String,File> entry : servicesToLoad.entrySet()) {
 			File file = entry.getValue();
 			Service service = Service.loadService(entry.getKey(), file);
