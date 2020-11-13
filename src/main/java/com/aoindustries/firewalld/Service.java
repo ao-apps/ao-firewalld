@@ -568,7 +568,7 @@ public class Service {
 	public void saveLocalService() throws IOException {
 		try {
 			File serviceFile = getLocalServiceFile(name);
-			File newServiceFile = File.createTempFile(name + '-', ".tmp", new File(LOCAL_SERVICES_DIRECTORY));
+			File newServiceFile = File.createTempFile(name + '-', null, new File(LOCAL_SERVICES_DIRECTORY));
 			// Should we use ao-encoding here?  Java XML is just so tedious
 			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
