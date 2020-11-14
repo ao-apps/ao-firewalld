@@ -23,7 +23,6 @@
 package com.aoindustries.firewalld;
 
 import com.aoindustries.collections.AoCollections;
-import com.aoindustries.io.FileUtils;
 import com.aoindustries.net.IPortRange;
 import com.aoindustries.net.InetAddressPrefix;
 import com.aoindustries.net.InetAddressPrefixes;
@@ -32,6 +31,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.ProtocolFamily;
 import java.net.StandardProtocolFamily;
+import java.nio.file.Files;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -604,7 +604,7 @@ public class ServiceSet {
 								if(isInAServiceSet) {
 									File serviceFile = new File(localServicesDir, filename);
 									if(logger.isLoggable(Level.FINE)) logger.fine("Deleting extra local service file: " + serviceFile);
-									FileUtils.delete(serviceFile);
+									Files.delete(serviceFile.toPath());
 									needsReload = true;
 								}
 							}
@@ -627,7 +627,7 @@ public class ServiceSet {
 							File serviceFile = Service.getLocalServiceFile(serviceName);
 							if(serviceFile.exists()) {
 								if(logger.isLoggable(Level.FINE)) logger.fine("Deleting local service file handled by system file: " + serviceFile);
-								FileUtils.delete(serviceFile);
+								Files.delete(serviceFile.toPath());
 								needsReload = true;
 							}
 							continue;
