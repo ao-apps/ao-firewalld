@@ -141,7 +141,7 @@ along with ao-firewalld.  If not, see <http://www.gnu.org/licenses />.
 			</dependency>
 			<!-- Transitive -->
 			<dependency>
-				<groupId>com.aoindustries</groupId><artifactId>ao-tlds</artifactId><version>1.2.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
+				<groupId>com.aoindustries</groupId><artifactId>ao-tlds</artifactId><version>1.2.0${POST-SNAPSHOT}</version>
 			</dependency>
 			<!-- Test Direct -->
 			<dependency>
