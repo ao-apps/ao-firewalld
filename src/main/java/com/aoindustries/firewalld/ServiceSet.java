@@ -1,6 +1,6 @@
 /*
  * ao-firewalld - Java API for managing firewalld.
- * Copyright (C) 2017, 2019, 2020  AO Industries, Inc.
+ * Copyright (C) 2017, 2019, 2020, 2021  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -124,7 +124,7 @@ public class ServiceSet {
 		String templateName = template.getName();
 		if(logger.isLoggable(Level.FINE)) logger.fine("Loading service set: " + templateName);
 		checkForSystemServiceConflict(templateName);
-		Map<String,File> servicesToLoad = new LinkedHashMap<>();
+		Map<String, File> servicesToLoad = new LinkedHashMap<>();
 		String[] list = new File(Service.LOCAL_SERVICES_DIRECTORY).list();
 		if(list != null) {
 			String prefix = templateName + '-';
@@ -165,7 +165,7 @@ public class ServiceSet {
 		}
 		// Load services
 		Set<Service> services = AoCollections.newLinkedHashSet(servicesToLoad.size());
-		for(Map.Entry<String,File> entry : servicesToLoad.entrySet()) {
+		for(Map.Entry<String, File> entry : servicesToLoad.entrySet()) {
 			File file = entry.getValue();
 			Service service = Service.loadService(entry.getKey(), file);
 			// Ignore if file removed or doesn't exist
@@ -239,7 +239,7 @@ public class ServiceSet {
 	public static ServiceSet createOptimizedServiceSet(Service template, Iterable<? extends Target> targets) {
 		if(logger.isLoggable(Level.FINE)) logger.fine("Optimizing service set: " + template + "->" + targets);
 		// Coalesce ports by destination
-		SortedMap<InetAddressPrefix,SortedSet<ProtocolOrPortRange>> coalescedPortsByDestination = new TreeMap<>();
+		SortedMap<InetAddressPrefix, SortedSet<ProtocolOrPortRange>> coalescedPortsByDestination = new TreeMap<>();
 		{
 			SortedSet<Target> toAdd = new TreeSet<>();
 			for(Target target : targets) {
@@ -281,16 +281,16 @@ public class ServiceSet {
 		}
 		if(logger.isLoggable(Level.FINE)) logger.fine("After coalesce port ranges: " + template + "->" + coalescedPortsByDestination);
 		// Coalesce destinations by protocol and ports
-		SortedMap<SortedSet<ProtocolOrPortRange>,SortedSet<InetAddressPrefix>> coalescedDestinationsByPorts = new TreeMap<>(portSetComparator);
+		SortedMap<SortedSet<ProtocolOrPortRange>, SortedSet<InetAddressPrefix>> coalescedDestinationsByPorts = new TreeMap<>(portSetComparator);
 		{
-			SortedMap<InetAddressPrefix,SortedSet<ProtocolOrPortRange>> toAdd = new TreeMap<>(coalescedPortsByDestination);
+			SortedMap<InetAddressPrefix, SortedSet<ProtocolOrPortRange>> toAdd = new TreeMap<>(coalescedPortsByDestination);
 			while(!toAdd.isEmpty()) {
 				// Get and remove the first element
 				InetAddressPrefix destinationToAdd;
 				SortedSet<ProtocolOrPortRange> portsToAdd;
 				{
-					Iterator<Map.Entry<InetAddressPrefix,SortedSet<ProtocolOrPortRange>>> toAddIter = toAdd.entrySet().iterator();
-					Map.Entry<InetAddressPrefix,SortedSet<ProtocolOrPortRange>> entry = toAddIter.next();
+					Iterator<Map.Entry<InetAddressPrefix, SortedSet<ProtocolOrPortRange>>> toAddIter = toAdd.entrySet().iterator();
+					Map.Entry<InetAddressPrefix, SortedSet<ProtocolOrPortRange>> entry = toAddIter.next();
 					destinationToAdd = entry.getKey();
 					portsToAdd = entry.getValue();
 					if(logger.isLoggable(Level.FINER)) logger.finer(toAdd.size() + " more to add: " + template + "->" + destinationToAdd);
@@ -323,10 +323,10 @@ public class ServiceSet {
 		}
 		if(logger.isLoggable(Level.FINE)) logger.fine("After coalesce destinations: " + template + "->" + coalescedDestinationsByPorts);
 		// Split by destinations by family
-		SortedMap<SortedSet<ProtocolOrPortRange>,Map<ProtocolFamily,SortedSet<InetAddressPrefix>>> splitByFamily = new TreeMap<>(portSetComparator);
-		for(Map.Entry<SortedSet<ProtocolOrPortRange>,SortedSet<InetAddressPrefix>> entry : coalescedDestinationsByPorts.entrySet()) {
+		SortedMap<SortedSet<ProtocolOrPortRange>, Map<ProtocolFamily, SortedSet<InetAddressPrefix>>> splitByFamily = new TreeMap<>(portSetComparator);
+		for(Map.Entry<SortedSet<ProtocolOrPortRange>, SortedSet<InetAddressPrefix>> entry : coalescedDestinationsByPorts.entrySet()) {
 			SortedSet<ProtocolOrPortRange> portsToSplit = entry.getKey();
-			Map<ProtocolFamily,SortedSet<InetAddressPrefix>> destinationsByFamily = splitByFamily.get(portsToSplit);
+			Map<ProtocolFamily, SortedSet<InetAddressPrefix>> destinationsByFamily = splitByFamily.get(portsToSplit);
 			if(destinationsByFamily == null) {
 				destinationsByFamily = new LinkedHashMap<>();
 				splitByFamily.put(portsToSplit, destinationsByFamily);
@@ -347,7 +347,7 @@ public class ServiceSet {
 		// Build service set
 		// Note: The natural ordering of InetAddressPrefix puts unspecified first, which has the best chance to match default system services
 		Set<Service> services = new LinkedHashSet<>();
-		for(Map.Entry<SortedSet<ProtocolOrPortRange>,Map<ProtocolFamily,SortedSet<InetAddressPrefix>>> entry : splitByFamily.entrySet()) {
+		for(Map.Entry<SortedSet<ProtocolOrPortRange>, Map<ProtocolFamily, SortedSet<InetAddressPrefix>>> entry : splitByFamily.entrySet()) {
 			// Split protocols and ports
 			SortedSet<IPortRange> ports = new TreeSet<>();
 			SortedSet<Protocol> protocols = new TreeSet<>();
@@ -359,7 +359,7 @@ public class ServiceSet {
 					else protocols.add(protocolAndPort.getProtocol());
 				}
 			}
-			Map<ProtocolFamily,SortedSet<InetAddressPrefix>> destinationsByFamily = entry.getValue();
+			Map<ProtocolFamily, SortedSet<InetAddressPrefix>> destinationsByFamily = entry.getValue();
 			SortedSet<InetAddressPrefix> ipv4Destinations = destinationsByFamily.get(StandardProtocolFamily.INET);
 			SortedSet<InetAddressPrefix> ipv6Destinations = destinationsByFamily.get(StandardProtocolFamily.INET6);
 			Iterator<InetAddressPrefix> ipv4Iter;
@@ -542,7 +542,7 @@ public class ServiceSet {
 	 * @see  #commit(java.util.Set)
 	 */
 	public static void commit(Iterable<ServiceSet> serviceSets, Set<String> zones) throws IOException {
-		Map<String,ServiceSet> serviceSetsMap = new LinkedHashMap<>();
+		Map<String, ServiceSet> serviceSetsMap = new LinkedHashMap<>();
 		for(ServiceSet serviceSet : serviceSets) {
 			String name = serviceSet.getTemplate().getName();
 			if(serviceSetsMap.put(name, serviceSet) != null) throw new IllegalArgumentException("Duplicate service set name: " + name);
@@ -558,9 +558,9 @@ public class ServiceSet {
 				}
 			}
 			// Get listing of all zones and services (firewall-cmd --permanent --list-all-zones)
-			Map<String,Set<String>> servicesByZone = Firewalld.listAllServices();
+			Map<String, Set<String>> servicesByZone = Firewalld.listAllServices();
 			// Remove any extra services from all zones
-			for(Map.Entry<String,Set<String>> entry : servicesByZone.entrySet()) {
+			for(Map.Entry<String, Set<String>> entry : servicesByZone.entrySet()) {
 				String zone = entry.getKey();
 				Set<String> expected;
 				if(zones.contains(zone)) expected = serviceNames;
@@ -613,7 +613,7 @@ public class ServiceSet {
 				}
 			}
 			// Rewrite any changed or missing service files
-			for(Map.Entry<String,ServiceSet> serviceSetEntry : serviceSetsMap.entrySet()) {
+			for(Map.Entry<String, ServiceSet> serviceSetEntry : serviceSetsMap.entrySet()) {
 				String templateName = serviceSetEntry.getKey();
 				ServiceSet serviceSet = serviceSetEntry.getValue();
 				assert templateName.equals(serviceSet.template.getName());

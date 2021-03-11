@@ -1,6 +1,6 @@
 /*
  * ao-firewalld - Java API for managing firewalld.
- * Copyright (C) 2017, 2019, 2020  AO Industries, Inc.
+ * Copyright (C) 2017, 2019, 2020, 2021  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -75,9 +75,9 @@ class Firewalld {
 	/**
 	 * Gets the listing of services enabled on a per-zone basis.
 	 */
-	static Map<String,Set<String>> listAllServices() throws IOException {
+	static Map<String, Set<String>> listAllServices() throws IOException {
 		ProcessResult result = execFirewallCmd("--permanent", "--list-all-zones");
-		Map<String,Set<String>> allServices = new LinkedHashMap<>();
+		Map<String, Set<String>> allServices = new LinkedHashMap<>();
 		try (BufferedReader in = new BufferedReader(new StringReader(result.getStdout()))) {
 			String currentZone = null;
 			String line;
