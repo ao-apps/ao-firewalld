@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 ao-firewalld - Java API for managing firewalld.
-Copyright (C) 2017, 2019, 2020  AO Industries, Inc.
+Copyright (C) 2017, 2019, 2020, 2021  AO Industries, Inc.
     support@aoindustries.com
     7262 Bull Pen Cir
     Mobile, AL 36695
@@ -37,7 +37,7 @@ along with ao-firewalld.  If not, see <http://www.gnu.org/licenses />.
 	<core:page
 		title="@{documented.name} ${ao:getProjectVersion('./', 'com.aoindustries', 'ao-firewalld', '¿@{project.version}?')} API Docs"
 		shortTitle="API Docs"
-		datePublished="2017-03-17T00:04:38-0500"
+		datePublished="2017-03-17T00:04:38-05:00"
 		dateModified="${ao:getLastModified('index.html')}"
 	/>
 </jsp:root>
