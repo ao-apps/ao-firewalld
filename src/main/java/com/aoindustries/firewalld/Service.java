@@ -22,15 +22,15 @@
  */
 package com.aoindustries.firewalld;
 
-import com.aoindustries.collections.AoCollections;
-import com.aoindustries.io.FileUtils;
-import com.aoindustries.lang.NullArgumentException;
-import com.aoindustries.net.IPortRange;
-import com.aoindustries.net.InetAddressPrefix;
-import com.aoindustries.net.InetAddressPrefixes;
-import com.aoindustries.net.Protocol;
-import com.aoindustries.validation.ValidationException;
-import com.aoindustries.xml.XmlUtils;
+import com.aoapps.collections.AoCollections;
+import com.aoapps.lang.NullArgumentException;
+import com.aoapps.lang.io.FileUtils;
+import com.aoapps.lang.validation.ValidationException;
+import com.aoapps.lang.xml.XmlUtils;
+import com.aoapps.net.IPortRange;
+import com.aoapps.net.InetAddressPrefix;
+import com.aoapps.net.InetAddressPrefixes;
+import com.aoapps.net.Protocol;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -508,12 +508,12 @@ public class Service {
 	}
 
 	/**
-	 * Gets the destination for the given {@link com.aoindustries.net.AddressFamily}.
+	 * Gets the destination for the given {@link com.aoapps.net.AddressFamily}.
 	 *
 	 * @deprecated  Please use {@link #getDestination(java.net.ProtocolFamily)} as of Java 1.7.
 	 */
 	@Deprecated
-	public InetAddressPrefix getDestination(com.aoindustries.net.AddressFamily addressFamily) {
+	public InetAddressPrefix getDestination(com.aoapps.net.AddressFamily addressFamily) {
 		NullArgumentException.checkNotNull(addressFamily);
 		switch(addressFamily) {
 			case INET  : return destinationIPv4;

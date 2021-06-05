@@ -22,8 +22,8 @@
  */
 package com.aoindustries.firewalld;
 
-import com.aoindustries.collections.AoCollections;
-import com.aoindustries.lang.ProcessResult;
+import com.aoapps.collections.AoCollections;
+import com.aoapps.lang.ProcessResult;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;

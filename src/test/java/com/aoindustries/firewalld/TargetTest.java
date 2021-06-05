@@ -1,6 +1,6 @@
 /*
  * ao-firewalld - Java API for managing firewalld.
- * Copyright (C) 2017, 2020  AO Industries, Inc.
+ * Copyright (C) 2017, 2020, 2021  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -22,12 +22,12 @@
  */
 package com.aoindustries.firewalld;
 
-import com.aoindustries.net.InetAddress;
-import com.aoindustries.net.InetAddressPrefix;
-import com.aoindustries.net.Port;
-import com.aoindustries.net.PortRange;
-import com.aoindustries.net.Protocol;
-import com.aoindustries.validation.ValidationException;
+import com.aoapps.lang.validation.ValidationException;
+import com.aoapps.net.InetAddress;
+import com.aoapps.net.InetAddressPrefix;
+import com.aoapps.net.Port;
+import com.aoapps.net.PortRange;
+import com.aoapps.net.Protocol;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
