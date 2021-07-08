@@ -89,6 +89,21 @@ along with ao-firewalld.  If not, see <http://www.gnu.org/licenses />.
 		<url>https://github.com/aoindustries/ao-firewalld/issues</url>
 	</issueManagement>
 
+	<repositories>
+		<!-- Repository required here, too, so can find parent -->
+		<repository>
+			<id>sonatype-nexus-snapshots-s01</id>
+			<name>Sonatype Nexus Snapshots S01</name>
+			<url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
 	<build>
 		<plugins>
 			<!-- Java 1.8: see https://maven.apache.org/plugins/maven-compiler-plugin/examples/module-info.html -->
