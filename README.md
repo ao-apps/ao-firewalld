@@ -9,6 +9,12 @@
 
 [![Build](https://github.com/aoindustries/ao-firewalld/workflows/Build/badge.svg?branch=master)](https://github.com/aoindustries/ao-firewalld/actions?query=workflow%3ABuild)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.aoindustries/ao-firewalld/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.aoindustries/ao-firewalld)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?branch=master&project=com.aoapps.platform%3Aaoapps-firewalld&metric=alert_status)](https://sonarcloud.io/dashboard?branch=master&id=com.aoapps.platform%3Aaoapps-firewalld)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?branch=master&project=com.aoapps.platform%3Aaoapps-firewalld&metric=ncloc)](https://sonarcloud.io/component_measures?branch=master&id=com.aoapps.platform%3Aaoapps-firewalld&metric=ncloc)  
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?branch=master&project=com.aoapps.platform%3Aaoapps-firewalld&metric=reliability_rating)](https://sonarcloud.io/component_measures?branch=master&id=com.aoapps.platform%3Aaoapps-firewalld&metric=Reliability)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?branch=master&project=com.aoapps.platform%3Aaoapps-firewalld&metric=security_rating)](https://sonarcloud.io/component_measures?branch=master&id=com.aoapps.platform%3Aaoapps-firewalld&metric=Security)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?branch=master&project=com.aoapps.platform%3Aaoapps-firewalld&metric=sqale_rating)](https://sonarcloud.io/component_measures?branch=master&id=com.aoapps.platform%3Aaoapps-firewalld&metric=Maintainability)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?branch=master&project=com.aoapps.platform%3Aaoapps-firewalld&metric=coverage)](https://sonarcloud.io/component_measures?branch=master&id=com.aoapps.platform%3Aaoapps-firewalld&metric=Coverage)
 
 Java API for managing [firewalld](http://www.firewalld.org/).
 
