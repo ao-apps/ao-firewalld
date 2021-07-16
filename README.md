@@ -8,6 +8,7 @@
 [![license: LGPL v3](https://aoindustries.com/ao-badges/license-lgpl-3.0.svg)](https://www.gnu.org/licenses/lgpl-3.0)
 
 [![Build](https://github.com/aoindustries/ao-firewalld/workflows/Build/badge.svg?branch=master)](https://github.com/aoindustries/ao-firewalld/actions?query=workflow%3ABuild)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.aoindustries/ao-firewalld/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.aoindustries/ao-firewalld)
 
 Java API for managing [firewalld](http://www.firewalld.org/).
 
