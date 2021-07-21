@@ -37,7 +37,7 @@ along with ao-firewalld.  If not, see <http://www.gnu.org/licenses />.
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2017-03-17T00:06:12-05:00"
-		dateModified="2021-06-27T16:13:41-05:00"
+		dateModified="2021-07-21T03:29:15-05:00"
 	>
 		<c:if test="${fn:endsWith('@{project.version}', '-SNAPSHOT') and !fn:endsWith('@{project.version}', '-POST-SNAPSHOT')}">
 			<changelog:release
@@ -93,7 +93,7 @@ along with ao-firewalld.  If not, see <http://www.gnu.org/licenses />.
 			artifactId="@{documented.artifactId}"
 			scmUrl="@{project.scm.url}"
 		>
-			<ol>
+			<ul>
 				<li>Minor improvements to exception messages.</li>
 				<li>Using managed dependencies:
 					<ol>
@@ -101,7 +101,7 @@ along with ao-firewalld.  If not, see <http://www.gnu.org/licenses />.
 						<li>This project's managed dependencies may also be imported by other projects.</li>
 					</ol>
 				</li>
-			</ol>
+			</ul>
 		</changelog:release>
 
 		<changelog:release
@@ -112,7 +112,7 @@ along with ao-firewalld.  If not, see <http://www.gnu.org/licenses />.
 			artifactId="@{documented.artifactId}"
 			scmUrl="@{project.scm.url}"
 		>
-			<ol>
+			<ul>
 				<li>Minimum Java version changed from 1.6 to 1.7.</li>
 				<li>
 					Fixed bug in <ao:a href="apidocs/com.aoindustries.firewalld/com/aoindustries/firewalld/ServiceSet.html#commit-java.util.Set-">ServiceSet.commit()</ao:a>
@@ -122,7 +122,7 @@ along with ao-firewalld.  If not, see <http://www.gnu.org/licenses />.
 					with a descriptive message.
 				</li>
 				<li>Fixed bug to now correctly parse the active zone, by handling the <code>" (active)"</code>.</li>
-			</ol>
+			</ul>
 		</changelog:release>
 
 		<changelog:release
