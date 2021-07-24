@@ -25,7 +25,7 @@ along with ao-firewalld.  If not, see <http://www.gnu.org/licenses />.
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>com.aoapps</groupId><artifactId>ao-oss-parent</artifactId><version>1.17.0-POST-SNAPSHOT</version>
+		<groupId>com.aoapps</groupId><artifactId>ao-oss-parent</artifactId><version>1.17.0<!-- -POST-SNAPSHOT --></version>
 		<relativePath>../oss/parent/pom.xml</relativePath>
 	</parent>
 
@@ -43,7 +43,7 @@ along with ao-firewalld.  If not, see <http://www.gnu.org/licenses />.
 
 		<javadoc.breadcrumbs><![CDATA[<a target="${javadoc.target}" href="${project.url}">${project.name}</a>]]></javadoc.breadcrumbs>
 		<description.html><![CDATA[Java API for managing <a target="${javadoc.target}" href="http://www.firewalld.org/">firewalld</a>.]]></description.html>
-		<!-- TODO: Remove once moved to oss.aoapps.com -->
+		<!-- TODO: Remove once moved to platform.aoapps.com -->
 		<google.analytics.trackingId>UA-86871646-1</google.analytics.trackingId>
 		<!-- com.aoindustries is on original Sonatype Nexus Repository Manager -->
 		<nexusUrl>https://oss.sonatype.org/</nexusUrl>
@@ -226,17 +226,17 @@ along with ao-firewalld.  If not, see <http://www.gnu.org/licenses />.
 		<dependencies>
 			<!-- Direct -->
 			<dependency>
-				<groupId>com.aoapps</groupId><artifactId>ao-collections</artifactId><version>2.0.0${POST-SNAPSHOT}</version>
+				<groupId>com.aoapps</groupId><artifactId>ao-collections</artifactId><version>2.0.0<!-- ${POST-SNAPSHOT} --></version>
 			</dependency>
 			<dependency>
-				<groupId>com.aoapps</groupId><artifactId>ao-lang</artifactId><version>5.0.0${POST-SNAPSHOT}</version>
+				<groupId>com.aoapps</groupId><artifactId>ao-lang</artifactId><version>5.0.0<!-- ${POST-SNAPSHOT} --></version>
 			</dependency>
 			<dependency>
-				<groupId>com.aoapps</groupId><artifactId>ao-net-types</artifactId><version>2.0.0${POST-SNAPSHOT}</version>
+				<groupId>com.aoapps</groupId><artifactId>ao-net-types</artifactId><version>2.0.0<!-- ${POST-SNAPSHOT} --></version>
 			</dependency>
 			<!-- Transitive -->
 			<dependency>
-				<groupId>com.aoapps</groupId><artifactId>ao-tlds</artifactId><version>2.0.0${POST-SNAPSHOT}</version>
+				<groupId>com.aoapps</groupId><artifactId>ao-tlds</artifactId><version>2.0.0<!-- ${POST-SNAPSHOT} --></version>
 			</dependency>
 			<!-- Test Direct -->
 			<dependency>
