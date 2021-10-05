@@ -49,7 +49,7 @@ along with ao-firewalld.  If not, see <http://www.gnu.org/licenses />.
 		<nexusUrl>https://oss.sonatype.org/</nexusUrl>
 		<!-- SonarQube -->
 		<sonar.projectKey>com.aoapps.platform:aoapps-firewalld<!-- TODO: ${project.groupId}:${project.artifactId} --></sonar.projectKey>
-		<sonar.organization>aoindustries</sonar.organization>
+		<sonar.organization>ao-apps</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
 
@@ -82,20 +82,20 @@ along with ao-firewalld.  If not, see <http://www.gnu.org/licenses />.
 	</developers>
 
 	<scm>
-		<connection>scm:git:git://github.com/aoindustries/ao-firewalld.git</connection>
-		<developerConnection>scm:git:git@github.com:aoindustries/ao-firewalld.git</developerConnection>
-		<url>https://github.com/aoindustries/ao-firewalld</url>
+		<connection>scm:git:git://github.com/ao-apps/ao-firewalld.git</connection>
+		<developerConnection>scm:git:git@github.com:ao-apps/ao-firewalld.git</developerConnection>
+		<url>https://github.com/ao-apps/ao-firewalld</url>
 		<tag>HEAD</tag>
 	</scm>
 
 	<issueManagement>
 		<system>GitHub Issues</system>
-		<url>https://github.com/aoindustries/ao-firewalld/issues</url>
+		<url>https://github.com/ao-apps/ao-firewalld/issues</url>
 	</issueManagement>
 
 	<ciManagement>
 		<system>GitHub Actions</system>
-		<url>https://github.com/aoindustries/ao-firewalld/actions</url>
+		<url>https://github.com/ao-apps/ao-firewalld/actions</url>
 	</ciManagement>
 
 	<repositories>

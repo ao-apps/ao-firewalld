@@ -1,4 +1,4 @@
-# [<img src="ao-logo.png" alt="AO Logo" width="35" height="40">](https://github.com/aoindustries) [AO firewalld](https://github.com/aoindustries/ao-firewalld)
+# [<img src="ao-logo.png" alt="AO Logo" width="35" height="40">](https://github.com/ao-apps) [AO firewalld](https://github.com/ao-apps/ao-firewalld)
 
 [![project: current stable](https://aoindustries.com/ao-badges/project-current-stable.svg)](https://aoindustries.com/life-cycle#project-current-stable)
 [![management: production](https://aoindustries.com/ao-badges/management-production.svg)](https://aoindustries.com/life-cycle#management-production)
@@ -7,7 +7,7 @@
 [![semantic versioning: 2.0.0](https://aoindustries.com/ao-badges/semver-2.0.0.svg)](http://semver.org/spec/v2.0.0.html)
 [![license: LGPL v3](https://aoindustries.com/ao-badges/license-lgpl-3.0.svg)](https://www.gnu.org/licenses/lgpl-3.0)
 
-[![Build](https://github.com/aoindustries/ao-firewalld/workflows/Build/badge.svg?branch=master)](https://github.com/aoindustries/ao-firewalld/actions?query=workflow%3ABuild)
+[![Build](https://github.com/ao-apps/ao-firewalld/workflows/Build/badge.svg?branch=master)](https://github.com/ao-apps/ao-firewalld/actions?query=workflow%3ABuild)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.aoindustries/ao-firewalld/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.aoindustries/ao-firewalld)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?branch=master&project=com.aoapps.platform%3Aaoapps-firewalld&metric=alert_status)](https://sonarcloud.io/dashboard?branch=master&id=com.aoapps.platform%3Aaoapps-firewalld)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?branch=master&project=com.aoapps.platform%3Aaoapps-firewalld&metric=ncloc)](https://sonarcloud.io/component_measures?branch=master&id=com.aoapps.platform%3Aaoapps-firewalld&metric=ncloc)  
@@ -23,7 +23,7 @@ Java API for managing [firewalld](http://www.firewalld.org/).
 * [Changelog](https://aoindustries.com/ao-firewalld/changelog)
 * [API Docs](https://aoindustries.com/ao-firewalld/apidocs/)
 * [Maven Central Repository](https://search.maven.org/artifact/com.aoindustries/ao-firewalld)
-* [GitHub](https://github.com/aoindustries/ao-firewalld)
+* [GitHub](https://github.com/ao-apps/ao-firewalld)
 
 ## Features
 * Clean programmatic access to [firewalld](http://www.firewalld.org/).
@@ -35,7 +35,7 @@ Java API for managing [firewalld](http://www.firewalld.org/).
 ## Motivation
 The [AOServ Platform](https://aoindustries.com/aoserv/) allows opening ports on a per-IP basis.  [firewalld](http://www.firewalld.org/) service files are limited to a single &lt;destination /&gt; per service file.  To selectively open ports on a per-IP basis, additional service files must be managed.  This is tedious if done manually.  We would rather [firewalld](http://www.firewalld.org/) support multiple &lt;service /&gt; tags with multiple &lt;destination /&gt; per service file, but this is not currently a feature.
 
-Our server configuration process, [AOServ Daemon](https://github.com/aoindustries/aoserv-daemon), is written in the Java programming language.  We desire a clean interface to [firewalld](http://www.firewalld.org/) without having to operate with `firewall-cmd` and other commands directly.
+Our server configuration process, [AOServ Daemon](https://github.com/ao-apps/aoserv-daemon), is written in the Java programming language.  We desire a clean interface to [firewalld](http://www.firewalld.org/) without having to operate with `firewall-cmd` and other commands directly.
 
 ## Evaluated Alternatives
 We were unable to find any existing implementations via [GitHub](https://github.com/search?utf8=%E2%9C%93&q=java+firewalld&type=Repositories&ref=searchresults), [The Central Repository](http://search.maven.org/#search|ga|1|firewalld), or [Google Search](https://www.google.com/search?q=java+api+for+firewalld).
