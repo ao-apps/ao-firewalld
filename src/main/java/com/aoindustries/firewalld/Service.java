@@ -50,11 +50,13 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -570,8 +572,17 @@ public class Service {
 			File serviceFile = getLocalServiceFile(name);
 			File newServiceFile = File.createTempFile(name + '-', null, new File(LOCAL_SERVICES_DIRECTORY));
 			// Should we use ao-encoding here?  Java XML is just so tedious
-			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			try {
+				dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+			} catch(ParserConfigurationException e) {
+				throw new AssertionError("All implementations are required to support the javax.xml.XMLConstants.FEATURE_SECURE_PROCESSING feature.", e);
+			}
+			// See https://github.com/OWASP/CheatSheetSeries/blob/master/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.md#java
+			// See https://rules.sonarsource.com/java/RSPEC-2755
+			dbf.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+			dbf.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+			DocumentBuilder docBuilder = dbf.newDocumentBuilder();
 			Document document = docBuilder.newDocument();
 			Element serviceElem = document.createElement(SERVICE_ELEM);
 			document.appendChild(serviceElem);
@@ -619,6 +630,15 @@ public class Service {
 			}
 			int indent = 2;
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			try {
+				transformerFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+			} catch(TransformerConfigurationException e) {
+				throw new AssertionError("All implementations are required to support the javax.xml.XMLConstants.FEATURE_SECURE_PROCESSING feature.", e);
+			}
+			// See https://github.com/OWASP/CheatSheetSeries/blob/master/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.md#java
+			// See https://rules.sonarsource.com/java/RSPEC-2755
+			transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+			transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
 			transformerFactory.setAttribute("indent-number", indent); // Required by older java?
 			Transformer transformer = transformerFactory.newTransformer();
 			transformer.setOutputProperty(OutputKeys.VERSION, "1.0");

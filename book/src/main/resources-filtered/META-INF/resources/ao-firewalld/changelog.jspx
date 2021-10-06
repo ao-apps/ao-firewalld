@@ -37,7 +37,7 @@ along with ao-firewalld.  If not, see <http://www.gnu.org/licenses />.
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2017-03-17T00:06:12-05:00"
-		dateModified="2021-07-24T13:38:44-05:00"
+		dateModified="2021-10-05T19:51:36-05:00"
 	>
 		<c:if test="${fn:endsWith('@{project.version}', '-SNAPSHOT') and !fn:endsWith('@{project.version}', '-POST-SNAPSHOT')}">
 			<changelog:release
@@ -47,7 +47,11 @@ along with ao-firewalld.  If not, see <http://www.gnu.org/licenses />.
 				artifactId="@{documented.artifactId}"
 				repository="@{nexusUrl}content/repositories/snapshots/"
 				scmUrl="@{project.scm.url}"
-			/>
+			>
+				<ul>
+					<li>Improved XML parser security.</li>
+				</ul>
+			</changelog:release>
 		</c:if>
 
 		<changelog:release
