@@ -29,7 +29,7 @@ along with ao-firewalld.  If not, see <http://www.gnu.org/licenses />.
 		<relativePath>../../oss/parent/pom.xml</relativePath>
 	</parent>
 
-	<groupId>com.aoindustries</groupId><artifactId>ao-firewalld-book</artifactId><version>1.1.5-SNAPSHOT</version>
+	<groupId>com.aoindustries</groupId><artifactId>ao-firewalld-book</artifactId><version>1.1.5</version>
 	<packaging>bundle</packaging>
 
 	<properties>
@@ -81,7 +81,7 @@ along with ao-firewalld.  If not, see <http://www.gnu.org/licenses />.
 		<connection>scm:git:git://github.com/ao-apps/ao-firewalld.git</connection>
 		<developerConnection>scm:git:git@github.com:ao-apps/ao-firewalld.git</developerConnection>
 		<url>https://github.com/ao-apps/ao-firewalld</url>
-		<tag>HEAD</tag>
+		<tag>ao-firewalld-book-1.1.5</tag>
 	</scm>
 
 	<issueManagement>
