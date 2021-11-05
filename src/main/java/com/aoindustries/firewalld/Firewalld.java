@@ -40,7 +40,10 @@ import java.util.logging.Logger;
  *
  * @author  AO Industries, Inc.
  */
-class Firewalld {
+abstract class Firewalld {
+
+	/** Make no instances. */
+	private Firewalld() {throw new AssertionError();}
 
 	private static final Logger logger = Logger.getLogger(Firewalld.class.getName());
 
@@ -52,7 +55,7 @@ class Firewalld {
 	/**
 	 * Serializes access to the underlying <code>firewall-cmd</code> command.
 	 */
-	private static class FirewallCmdLock {}
+	private static class FirewallCmdLock {/* Empty lock class to help heap profile */}
 	static final FirewallCmdLock firewallCmdLock = new FirewallCmdLock();
 
 	/**
@@ -144,11 +147,5 @@ class Firewalld {
 	static void reload() throws IOException {
 		if(logger.isLoggable(Level.FINE)) logger.fine("Reloading firewall");
 		execFirewallCmd("--reload");
-	}
-
-	/**
-	 * Make no instances.
-	 */
-	private Firewalld() {
 	}
 }
