@@ -35,128 +35,130 @@ import java.util.Objects;
  */
 class ProtocolOrPortRange implements Comparable<ProtocolOrPortRange> {
 
-	private final Protocol protocol;
-	private final IPortRange portRange;
+  private final Protocol protocol;
+  private final IPortRange portRange;
 
-	ProtocolOrPortRange(Protocol protocol, IPortRange portRange) {
-		this.protocol = NullArgumentException.checkNotNull(protocol, "protocol");
-		this.portRange = portRange;
-		assert portRange == null || portRange.getProtocol() == protocol;
-	}
+  ProtocolOrPortRange(Protocol protocol, IPortRange portRange) {
+    this.protocol = NullArgumentException.checkNotNull(protocol, "protocol");
+    this.portRange = portRange;
+    assert portRange == null || portRange.getProtocol() == protocol;
+  }
 
-	ProtocolOrPortRange(IPortRange portRange) {
-		this.portRange = NullArgumentException.checkNotNull(portRange, "portRange");
-		this.protocol = portRange.getProtocol();
-	}
+  ProtocolOrPortRange(IPortRange portRange) {
+    this.portRange = NullArgumentException.checkNotNull(portRange, "portRange");
+    this.protocol = portRange.getProtocol();
+  }
 
-	ProtocolOrPortRange(Protocol protocol) {
-		this.protocol = NullArgumentException.checkNotNull(protocol, "protocol");
-		this.portRange = null;
-	}
+  ProtocolOrPortRange(Protocol protocol) {
+    this.protocol = NullArgumentException.checkNotNull(protocol, "protocol");
+    this.portRange = null;
+  }
 
-	/**
-	 * @return  The string in form <samp>[port[-range]/]protocol</samp>.
-	 *
-	 * @see  IPortRange#toString()
-	 * @see  Protocol#toString()
-	 */
-	@Override
-	public String toString() {
-		if(portRange == null) {
-			return protocol.toString();
-		} else {
-			return portRange.toString();
-		}
-	}
+  /**
+   * @return  The string in form <samp>[port[-range]/]protocol</samp>.
+   *
+   * @see  IPortRange#toString()
+   * @see  Protocol#toString()
+   */
+  @Override
+  public String toString() {
+    if (portRange == null) {
+      return protocol.toString();
+    } else {
+      return portRange.toString();
+    }
+  }
 
-	@Override
-	public boolean equals(Object obj) {
-		if(!(obj instanceof ProtocolOrPortRange)) return false;
-		ProtocolOrPortRange other = (ProtocolOrPortRange)obj;
-		return
-			protocol == other.protocol
-			&& Objects.equals(portRange, other.portRange)
-		;
-	}
+  @Override
+  public boolean equals(Object obj) {
+    if (!(obj instanceof ProtocolOrPortRange)) {
+      return false;
+    }
+    ProtocolOrPortRange other = (ProtocolOrPortRange)obj;
+    return
+      protocol == other.protocol
+      && Objects.equals(portRange, other.portRange)
+    ;
+  }
 
-	@Override
-	public int hashCode() {
-		if(portRange == null) {
-			return protocol.hashCode();
-		} else {
-			return portRange.hashCode();
-		}
-	}
+  @Override
+  public int hashCode() {
+    if (portRange == null) {
+      return protocol.hashCode();
+    } else {
+      return portRange.hashCode();
+    }
+  }
 
-	/**
-	 * Ordered by portRange, protocol; those with port ranges
-	 * before those that are protocol-only.
-	 *
-	 * @see  IPortRange#compareTo(com.aoapps.net.IPortRange)
-	 */
-	@Override
-	public int compareTo(ProtocolOrPortRange other) {
-		if(portRange == null) {
-			if(other.portRange == null) {
-				return protocol.compareTo(other.protocol);
-			} else {
-				return 1;
-			}
-		} else {
-			if(other.portRange == null) {
-				return -1;
-			} else {
-				return portRange.compareTo(other.portRange);
-			}
-		}
-	}
+  /**
+   * Ordered by portRange, protocol; those with port ranges
+   * before those that are protocol-only.
+   *
+   * @see  IPortRange#compareTo(com.aoapps.net.IPortRange)
+   */
+  @Override
+  public int compareTo(ProtocolOrPortRange other) {
+    if (portRange == null) {
+      if (other.portRange == null) {
+        return protocol.compareTo(other.protocol);
+      } else {
+        return 1;
+      }
+    } else {
+      if (other.portRange == null) {
+        return -1;
+      } else {
+        return portRange.compareTo(other.portRange);
+      }
+    }
+  }
 
-	/**
-	 * Gets the protocol.
-	 */
-	Protocol getProtocol() {
-		return protocol;
-	}
+  /**
+   * Gets the protocol.
+   */
+  Protocol getProtocol() {
+    return protocol;
+  }
 
-	/**
-	 * Gets the optional port range.
-	 */
-	IPortRange getPortRange() {
-		return portRange;
-	}
+  /**
+   * Gets the optional port range.
+   */
+  IPortRange getPortRange() {
+    return portRange;
+  }
 
-	/**
-	 * Combines this with the given if possible.
-	 * <p>
-	 * No port range matches all ports on that protocol.
-	 * </p>
-	 *
-	 * @return  The new value that represents the union of this and the other or {@code null}
-	 *          when they cannot be combined.
-	 */
-	ProtocolOrPortRange coalesce(ProtocolOrPortRange other) {
-		if(this.protocol != other.protocol) {
-			// Different protocols
-			return null;
-		}
-		if(this.portRange == null) {
-			// This has no port range, use for all ports
-			return this;
-		} else if(other.portRange == null) {
-			// Other has no port range, use for all ports
-			return other;
-		} else {
-			IPortRange coalescedRange = this.portRange.coalesce(other.portRange);
-			if(coalescedRange == null) {
-				// Not combinable
-				return null;
-			} else if(coalescedRange == this.portRange) {
-				return this;
-			} else if(coalescedRange == other.portRange) {
-				return other;
-			} else {
-				return new ProtocolOrPortRange(protocol, coalescedRange);
-			}
-		}
-	}
+  /**
+   * Combines this with the given if possible.
+   * <p>
+   * No port range matches all ports on that protocol.
+   * </p>
+   *
+   * @return  The new value that represents the union of this and the other or {@code null}
+   *          when they cannot be combined.
+   */
+  ProtocolOrPortRange coalesce(ProtocolOrPortRange other) {
+    if (this.protocol != other.protocol) {
+      // Different protocols
+      return null;
+    }
+    if (this.portRange == null) {
+      // This has no port range, use for all ports
+      return this;
+    } else if (other.portRange == null) {
+      // Other has no port range, use for all ports
+      return other;
+    } else {
+      IPortRange coalescedRange = this.portRange.coalesce(other.portRange);
+      if (coalescedRange == null) {
+        // Not combinable
+        return null;
+      } else if (coalescedRange == this.portRange) {
+        return this;
+      } else if (coalescedRange == other.portRange) {
+        return other;
+      } else {
+        return new ProtocolOrPortRange(protocol, coalescedRange);
+      }
+    }
+  }
 }

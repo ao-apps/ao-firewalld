@@ -22,267 +22,267 @@ You should have received a copy of the GNU Lesser General Public License
 along with ao-firewalld.  If not, see <https://www.gnu.org/licenses/>.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>com.aoapps</groupId><artifactId>ao-oss-parent</artifactId><version>1.18.0-SNAPSHOT</version>
-		<relativePath>../oss/parent/pom.xml</relativePath>
-	</parent>
+  <parent>
+    <groupId>com.aoapps</groupId><artifactId>ao-oss-parent</artifactId><version>1.18.0-SNAPSHOT</version>
+    <relativePath>../oss/parent/pom.xml</relativePath>
+  </parent>
 
-	<groupId>com.aoindustries</groupId><artifactId>ao-firewalld</artifactId><version>1.1.5-POST-SNAPSHOT</version>
-	<packaging>bundle</packaging>
+  <groupId>com.aoindustries</groupId><artifactId>ao-firewalld</artifactId><version>1.1.5-POST-SNAPSHOT</version>
+  <packaging>bundle</packaging>
 
-	<properties>
-		<module.name>com.aoindustries.firewalld</module.name>
-		<!-- Java 1.8 -->
-		<javase.version>1.8</javase.version>
-		<javase.release>8</javase.release>
-		<javadoc.link.javase>${javadoc.link.javase.8}</javadoc.link.javase>
-		<!-- This must be set in your ~/.m2/settings.xml when building with JDK < 9 -->
-		<javase.bootclasspath>${javase.bootclasspath.8}</javase.bootclasspath>
+  <properties>
+    <module.name>com.aoindustries.firewalld</module.name>
+    <!-- Java 1.8 -->
+    <javase.version>1.8</javase.version>
+    <javase.release>8</javase.release>
+    <javadoc.link.javase>${javadoc.link.javase.8}</javadoc.link.javase>
+    <!-- This must be set in your ~/.m2/settings.xml when building with JDK < 9 -->
+    <javase.bootclasspath>${javase.bootclasspath.8}</javase.bootclasspath>
 
-		<javadoc.breadcrumbs><![CDATA[<a target="${javadoc.target}" href="${project.url}">${project.name}</a>]]></javadoc.breadcrumbs>
-		<description.html><![CDATA[Java API for managing <a target="${javadoc.target}" href="http://www.firewalld.org/">firewalld</a>.]]></description.html>
-		<!-- TODO: Remove once moved to platform.aoapps.com -->
-		<google.analytics.trackingId>UA-86871646-1</google.analytics.trackingId>
-		<!-- com.aoindustries is on original Sonatype Nexus Repository Manager -->
-		<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-		<!-- SonarQube -->
-		<sonar.projectKey>com.aoapps.platform:aoapps-firewalld<!-- TODO: ${project.groupId}:${project.artifactId} --></sonar.projectKey>
-		<sonar.organization>ao-apps</sonar.organization>
-		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
-	</properties>
+    <javadoc.breadcrumbs><![CDATA[<a target="${javadoc.target}" href="${project.url}">${project.name}</a>]]></javadoc.breadcrumbs>
+    <description.html><![CDATA[Java API for managing <a target="${javadoc.target}" href="http://www.firewalld.org/">firewalld</a>.]]></description.html>
+    <!-- TODO: Remove once moved to platform.aoapps.com -->
+    <google.analytics.trackingId>UA-86871646-1</google.analytics.trackingId>
+    <!-- com.aoindustries is on original Sonatype Nexus Repository Manager -->
+    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+    <!-- SonarQube -->
+    <sonar.projectKey>com.aoapps.platform:aoapps-firewalld<!-- TODO: ${project.groupId}:${project.artifactId} --></sonar.projectKey>
+    <sonar.organization>ao-apps</sonar.organization>
+    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+  </properties>
 
-	<name>AO firewalld</name>
-	<url>https://aoindustries.com/ao-firewalld/</url>
-	<description>Java API for managing firewalld.</description>
-	<inceptionYear>2017</inceptionYear>
+  <name>AO firewalld</name>
+  <url>https://aoindustries.com/ao-firewalld/</url>
+  <description>Java API for managing firewalld.</description>
+  <inceptionYear>2017</inceptionYear>
 
-	<licenses>
-		<license>
-			<name>GNU General Lesser Public License (LGPL) version 3.0</name>
-			<url>https://www.gnu.org/licenses/lgpl-3.0.txt</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
+  <licenses>
+    <license>
+      <name>GNU General Lesser Public License (LGPL) version 3.0</name>
+      <url>https://www.gnu.org/licenses/lgpl-3.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
 
-	<organization>
-		<name>AO Industries, Inc.</name>
-		<url>https://aoindustries.com/</url>
-	</organization>
+  <organization>
+    <name>AO Industries, Inc.</name>
+    <url>https://aoindustries.com/</url>
+  </organization>
 
-	<developers>
-		<developer>
-			<name>AO Industries, Inc.</name>
-			<email>support@aoindustries.com</email>
-			<url>https://aoindustries.com/</url>
-			<organization>AO Industries, Inc.</organization>
-			<organizationUrl>https://aoindustries.com/</organizationUrl>
-		</developer>
-	</developers>
+  <developers>
+    <developer>
+      <name>AO Industries, Inc.</name>
+      <email>support@aoindustries.com</email>
+      <url>https://aoindustries.com/</url>
+      <organization>AO Industries, Inc.</organization>
+      <organizationUrl>https://aoindustries.com/</organizationUrl>
+    </developer>
+  </developers>
 
-	<scm>
-		<connection>scm:git:git://github.com/ao-apps/ao-firewalld.git</connection>
-		<developerConnection>scm:git:git@github.com:ao-apps/ao-firewalld.git</developerConnection>
-		<url>https://github.com/ao-apps/ao-firewalld</url>
-		<tag>HEAD</tag>
-	</scm>
+  <scm>
+    <connection>scm:git:git://github.com/ao-apps/ao-firewalld.git</connection>
+    <developerConnection>scm:git:git@github.com:ao-apps/ao-firewalld.git</developerConnection>
+    <url>https://github.com/ao-apps/ao-firewalld</url>
+    <tag>HEAD</tag>
+  </scm>
 
-	<issueManagement>
-		<system>GitHub Issues</system>
-		<url>https://github.com/ao-apps/ao-firewalld/issues</url>
-	</issueManagement>
+  <issueManagement>
+    <system>GitHub Issues</system>
+    <url>https://github.com/ao-apps/ao-firewalld/issues</url>
+  </issueManagement>
 
-	<ciManagement>
-		<system>Jenkins</system>
-		<url>https://jenkins.aoindustries.com/job/ao/job/ao-firewalld/</url>
-	</ciManagement>
-	<!-- Only one allowed in POM:
-	<ciManagement>
-		<system>GitHub Actions</system>
-		<url>https://github.com/ao-apps/ao-firewalld/actions</url>
-	</ciManagement>
-	-->
+  <ciManagement>
+    <system>Jenkins</system>
+    <url>https://jenkins.aoindustries.com/job/ao/job/ao-firewalld/</url>
+  </ciManagement>
+  <!-- Only one allowed in POM:
+  <ciManagement>
+    <system>GitHub Actions</system>
+    <url>https://github.com/ao-apps/ao-firewalld/actions</url>
+  </ciManagement>
+  -->
 
-	<repositories>
-		<!-- Repository required here, too, so can find parent -->
-		<repository>
-			<id>sonatype-nexus-snapshots-s01</id>
-			<name>Sonatype Nexus Snapshots S01</name>
-			<url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-				<checksumPolicy>fail</checksumPolicy>
-			</snapshots>
-		</repository>
-	</repositories>
+  <repositories>
+    <!-- Repository required here, too, so can find parent -->
+    <repository>
+      <id>sonatype-nexus-snapshots-s01</id>
+      <name>Sonatype Nexus Snapshots S01</name>
+      <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <checksumPolicy>fail</checksumPolicy>
+      </snapshots>
+    </repository>
+  </repositories>
 
-	<build>
-		<plugins>
-			<!-- Java 1.8: see https://maven.apache.org/plugins/maven-compiler-plugin/examples/module-info.html -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId><artifactId>maven-compiler-plugin</artifactId>
-				<executions>
-					<!-- compile everything to ensure module-info contains right entries -->
-					<execution>
-						<id>default-compile</id>
-						<configuration>
-							<release>9</release>
-						</configuration>
-					</execution>
-					<!-- recompile everything for target VM except the module-info.java -->
-					<execution>
-						<id>base-compile</id><goals><goal>compile</goal></goals>
-						<configuration>
-							<excludes>
-								<exclude>module-info.java</exclude>
-							</excludes>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId><artifactId>maven-javadoc-plugin</artifactId>
-				<configuration>
-					<!-- Java 1.8: generate future-proof modular javadocs -->
-					<source>11</source>
-					<release>11</release>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId><artifactId>maven-checkstyle-plugin</artifactId>
-				<configuration>
-					<!-- TODO: Clean-up Checkstyle -->
-					<failOnViolation>false</failOnViolation>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>com.github.spotbugs</groupId><artifactId>spotbugs-maven-plugin</artifactId>
-				<configuration>
-					<!-- TODO: Clean-up SpotBugs -->
-					<failOnError>false</failOnError>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+  <build>
+    <plugins>
+      <!-- Java 1.8: see https://maven.apache.org/plugins/maven-compiler-plugin/examples/module-info.html -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId><artifactId>maven-compiler-plugin</artifactId>
+        <executions>
+          <!-- compile everything to ensure module-info contains right entries -->
+          <execution>
+            <id>default-compile</id>
+            <configuration>
+              <release>9</release>
+            </configuration>
+          </execution>
+          <!-- recompile everything for target VM except the module-info.java -->
+          <execution>
+            <id>base-compile</id><goals><goal>compile</goal></goals>
+            <configuration>
+              <excludes>
+                <exclude>module-info.java</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId><artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <!-- Java 1.8: generate future-proof modular javadocs -->
+          <source>11</source>
+          <release>11</release>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId><artifactId>maven-checkstyle-plugin</artifactId>
+        <configuration>
+          <!-- TODO: Clean-up Checkstyle -->
+          <failOnViolation>false</failOnViolation>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.github.spotbugs</groupId><artifactId>spotbugs-maven-plugin</artifactId>
+        <configuration>
+          <!-- TODO: Clean-up SpotBugs -->
+          <failOnError>false</failOnError>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
-	<profiles>
-		<profile>
-			<id>offlineLinks</id><activation><file><exists>src/main/java</exists></file></activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId><artifactId>maven-dependency-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>unpack.offlineLinks</id><phase>prepare-package</phase><goals><goal>unpack</goal></goals>
-								<configuration>
-									<artifactItems>
-										<!-- Direct -->
-										<artifactItem>
-											<groupId>com.aoapps</groupId><artifactId>ao-collections</artifactId><classifier>javadoc</classifier>
-											<includes>element-list, package-list</includes>
-											<outputDirectory>${project.build.directory}/offlineLinks/com.aoapps/ao-collections</outputDirectory>
-										</artifactItem>
-										<artifactItem>
-											<groupId>com.aoapps</groupId><artifactId>ao-lang</artifactId><classifier>javadoc</classifier>
-											<includes>element-list, package-list</includes>
-											<outputDirectory>${project.build.directory}/offlineLinks/com.aoapps/ao-lang</outputDirectory>
-										</artifactItem>
-										<artifactItem>
-											<groupId>com.aoapps</groupId><artifactId>ao-net-types</artifactId><classifier>javadoc</classifier>
-											<includes>element-list, package-list</includes>
-											<outputDirectory>${project.build.directory}/offlineLinks/com.aoapps/ao-net-types</outputDirectory>
-										</artifactItem>
-										<!-- Test Direct -->
-										<artifactItem>
-											<groupId>junit</groupId><artifactId>junit</artifactId><classifier>javadoc</classifier>
-											<includes>element-list, package-list</includes>
-											<outputDirectory>${project.build.directory}/offlineLinks/junit/junit</outputDirectory>
-										</artifactItem>
-									</artifactItems>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId><artifactId>maven-javadoc-plugin</artifactId>
-						<configuration>
-							<offlineLinks combine.children="append">
-								<!-- Direct -->
-								<offlineLink>
-									<url>https://oss.aoapps.com/collections/apidocs/</url>
-									<location>${project.build.directory}/offlineLinks/com.aoapps/ao-collections</location>
-								</offlineLink>
-								<offlineLink>
-									<url>https://oss.aoapps.com/lang/apidocs/</url>
-									<location>${project.build.directory}/offlineLinks/com.aoapps/ao-lang</location>
-								</offlineLink>
-								<offlineLink>
-									<url>https://oss.aoapps.com/net-types/apidocs/</url>
-									<location>${project.build.directory}/offlineLinks/com.aoapps/ao-net-types</location>
-								</offlineLink>
-								<!-- Test Direct -->
-								<offlineLink>
-									<url>https://junit.org/junit4/javadoc/latest/</url>
-									<location>${project.build.directory}/offlineLinks/junit/junit</location>
-								</offlineLink>
-							</offlineLinks>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
+  <profiles>
+    <profile>
+      <id>offlineLinks</id><activation><file><exists>src/main/java</exists></file></activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId><artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>unpack.offlineLinks</id><phase>prepare-package</phase><goals><goal>unpack</goal></goals>
+                <configuration>
+                  <artifactItems>
+                    <!-- Direct -->
+                    <artifactItem>
+                      <groupId>com.aoapps</groupId><artifactId>ao-collections</artifactId><classifier>javadoc</classifier>
+                      <includes>element-list, package-list</includes>
+                      <outputDirectory>${project.build.directory}/offlineLinks/com.aoapps/ao-collections</outputDirectory>
+                    </artifactItem>
+                    <artifactItem>
+                      <groupId>com.aoapps</groupId><artifactId>ao-lang</artifactId><classifier>javadoc</classifier>
+                      <includes>element-list, package-list</includes>
+                      <outputDirectory>${project.build.directory}/offlineLinks/com.aoapps/ao-lang</outputDirectory>
+                    </artifactItem>
+                    <artifactItem>
+                      <groupId>com.aoapps</groupId><artifactId>ao-net-types</artifactId><classifier>javadoc</classifier>
+                      <includes>element-list, package-list</includes>
+                      <outputDirectory>${project.build.directory}/offlineLinks/com.aoapps/ao-net-types</outputDirectory>
+                    </artifactItem>
+                    <!-- Test Direct -->
+                    <artifactItem>
+                      <groupId>junit</groupId><artifactId>junit</artifactId><classifier>javadoc</classifier>
+                      <includes>element-list, package-list</includes>
+                      <outputDirectory>${project.build.directory}/offlineLinks/junit/junit</outputDirectory>
+                    </artifactItem>
+                  </artifactItems>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId><artifactId>maven-javadoc-plugin</artifactId>
+            <configuration>
+              <offlineLinks combine.children="append">
+                <!-- Direct -->
+                <offlineLink>
+                  <url>https://oss.aoapps.com/collections/apidocs/</url>
+                  <location>${project.build.directory}/offlineLinks/com.aoapps/ao-collections</location>
+                </offlineLink>
+                <offlineLink>
+                  <url>https://oss.aoapps.com/lang/apidocs/</url>
+                  <location>${project.build.directory}/offlineLinks/com.aoapps/ao-lang</location>
+                </offlineLink>
+                <offlineLink>
+                  <url>https://oss.aoapps.com/net-types/apidocs/</url>
+                  <location>${project.build.directory}/offlineLinks/com.aoapps/ao-net-types</location>
+                </offlineLink>
+                <!-- Test Direct -->
+                <offlineLink>
+                  <url>https://junit.org/junit4/javadoc/latest/</url>
+                  <location>${project.build.directory}/offlineLinks/junit/junit</location>
+                </offlineLink>
+              </offlineLinks>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
-	<dependencyManagement>
-		<dependencies>
-			<!-- Direct -->
-			<dependency>
-				<groupId>com.aoapps</groupId><artifactId>ao-collections</artifactId><version>3.0.0${POST-SNAPSHOT}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.aoapps</groupId><artifactId>ao-lang</artifactId><version>5.2.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
-			</dependency>
-			<dependency>
-				<groupId>com.aoapps</groupId><artifactId>ao-net-types</artifactId><version>2.0.2${POST-SNAPSHOT}</version>
-			</dependency>
-			<!-- Transitive -->
-			<dependency>
-				<groupId>com.aoapps</groupId><artifactId>ao-tlds</artifactId><version>2.0.0${POST-SNAPSHOT}</version>
-			</dependency>
-			<!-- Test Direct -->
-			<dependency>
-				<groupId>junit</groupId><artifactId>junit</artifactId><version>4.13.2</version>
-			</dependency>
-			<!-- Test Transitive -->
-			<dependency>
-				<groupId>org.hamcrest</groupId><artifactId>hamcrest</artifactId><version>2.2</version>
-			</dependency>
-			<dependency>
-				<!-- Shim for junit 4.13.2 -->
-				<groupId>org.hamcrest</groupId><artifactId>hamcrest-core</artifactId><version>2.2</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
+  <dependencyManagement>
+    <dependencies>
+      <!-- Direct -->
+      <dependency>
+        <groupId>com.aoapps</groupId><artifactId>ao-collections</artifactId><version>3.0.0${POST-SNAPSHOT}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.aoapps</groupId><artifactId>ao-lang</artifactId><version>5.2.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
+      </dependency>
+      <dependency>
+        <groupId>com.aoapps</groupId><artifactId>ao-net-types</artifactId><version>2.0.2${POST-SNAPSHOT}</version>
+      </dependency>
+      <!-- Transitive -->
+      <dependency>
+        <groupId>com.aoapps</groupId><artifactId>ao-tlds</artifactId><version>2.0.0${POST-SNAPSHOT}</version>
+      </dependency>
+      <!-- Test Direct -->
+      <dependency>
+        <groupId>junit</groupId><artifactId>junit</artifactId><version>4.13.2</version>
+      </dependency>
+      <!-- Test Transitive -->
+      <dependency>
+        <groupId>org.hamcrest</groupId><artifactId>hamcrest</artifactId><version>2.2</version>
+      </dependency>
+      <dependency>
+        <!-- Shim for junit 4.13.2 -->
+        <groupId>org.hamcrest</groupId><artifactId>hamcrest-core</artifactId><version>2.2</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
-	<dependencies>
-		<!-- Direct -->
-		<dependency>
-			<groupId>com.aoapps</groupId><artifactId>ao-collections</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.aoapps</groupId><artifactId>ao-lang</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.aoapps</groupId><artifactId>ao-net-types</artifactId>
-		</dependency>
-		<!-- Test Direct -->
-		<dependency>
-			<groupId>junit</groupId><artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+  <dependencies>
+    <!-- Direct -->
+    <dependency>
+      <groupId>com.aoapps</groupId><artifactId>ao-collections</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.aoapps</groupId><artifactId>ao-lang</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.aoapps</groupId><artifactId>ao-net-types</artifactId>
+    </dependency>
+    <!-- Test Direct -->
+    <dependency>
+      <groupId>junit</groupId><artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 </project>

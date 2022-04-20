@@ -49,140 +49,144 @@ import com.aoapps.net.Protocol;
  */
 public class Target implements Comparable<Target> {
 
-	private final InetAddressPrefix destination;
-	final ProtocolOrPortRange protocolOrPortRange;
+  private final InetAddressPrefix destination;
+  final ProtocolOrPortRange protocolOrPortRange;
 
-	/**
-	 * @param destination  The destination is {@link InetAddressPrefix#normalize() normalized}
-	 */
-	Target(InetAddressPrefix destination, ProtocolOrPortRange protocolOrPortRange) {
-		this.destination = NullArgumentException.checkNotNull(destination, "destination");
-		assert destination == destination.normalize();
-		this.protocolOrPortRange = protocolOrPortRange;
-	}
+  /**
+   * @param destination  The destination is {@link InetAddressPrefix#normalize() normalized}
+   */
+  Target(InetAddressPrefix destination, ProtocolOrPortRange protocolOrPortRange) {
+    this.destination = NullArgumentException.checkNotNull(destination, "destination");
+    assert destination == destination.normalize();
+    this.protocolOrPortRange = protocolOrPortRange;
+  }
 
-	/**
-	 * @param destination  The destination is {@link InetAddressPrefix#normalize() normalized}
-	 */
-	public Target(InetAddressPrefix destination, IPortRange portRange) {
-		this.destination = NullArgumentException.checkNotNull(destination, "destination").normalize();
-		this.protocolOrPortRange = new ProtocolOrPortRange(portRange);
-	}
+  /**
+   * @param destination  The destination is {@link InetAddressPrefix#normalize() normalized}
+   */
+  public Target(InetAddressPrefix destination, IPortRange portRange) {
+    this.destination = NullArgumentException.checkNotNull(destination, "destination").normalize();
+    this.protocolOrPortRange = new ProtocolOrPortRange(portRange);
+  }
 
-	/**
-	 * @param destination  The destination is {@link InetAddressPrefix#normalize() normalized}
-	 */
-	public Target(InetAddressPrefix destination, Protocol protocol) {
-		this.destination = NullArgumentException.checkNotNull(destination, "destination").normalize();
-		this.protocolOrPortRange = new ProtocolOrPortRange(protocol);
-	}
+  /**
+   * @param destination  The destination is {@link InetAddressPrefix#normalize() normalized}
+   */
+  public Target(InetAddressPrefix destination, Protocol protocol) {
+    this.destination = NullArgumentException.checkNotNull(destination, "destination").normalize();
+    this.protocolOrPortRange = new ProtocolOrPortRange(protocol);
+  }
 
-	/**
-	 * @return  The target in form <code>[port[-range]/]protocol@address[/prefix]</code>.
-	 *
-	 * @see  IPortRange#toString()
-	 * @see  Protocol#toString()
-	 * @see  InetAddressPrefix#toString()
-	 */
-	@Override
-	public String toString() {
-		return protocolOrPortRange.toString() + '@' + destination;
-	}
+  /**
+   * @return  The target in form <code>[port[-range]/]protocol@address[/prefix]</code>.
+   *
+   * @see  IPortRange#toString()
+   * @see  Protocol#toString()
+   * @see  InetAddressPrefix#toString()
+   */
+  @Override
+  public String toString() {
+    return protocolOrPortRange.toString() + '@' + destination;
+  }
 
-	@Override
-	public boolean equals(Object obj) {
-		if(!(obj instanceof Target)) return false;
-		Target other = (Target)obj;
-		return
-			protocolOrPortRange.equals(other.protocolOrPortRange)
-			&& destination.equals(other.destination)
-		;
-	}
+  @Override
+  public boolean equals(Object obj) {
+    if (!(obj instanceof Target)) {
+      return false;
+    }
+    Target other = (Target)obj;
+    return
+      protocolOrPortRange.equals(other.protocolOrPortRange)
+      && destination.equals(other.destination)
+    ;
+  }
 
-	@Override
-	public int hashCode() {
-		return destination.hashCode() * 31 + protocolOrPortRange.hashCode();
-	}
+  @Override
+  public int hashCode() {
+    return destination.hashCode() * 31 + protocolOrPortRange.hashCode();
+  }
 
-	/**
-	 * Ordered by destination, portRange, protocol; those with port ranges
-	 * before those that are protocol-only.
-	 *
-	 * @see  InetAddressPrefix#compareTo(com.aoapps.net.InetAddressPrefix)
-	 * @see  IPortRange#compareTo(com.aoapps.net.IPortRange)
-	 */
-	@Override
-	public int compareTo(Target other) {
-		int diff = destination.compareTo(other.destination);
-		if(diff != 0) return diff;
-		return protocolOrPortRange.compareTo(other.protocolOrPortRange);
-	}
+  /**
+   * Ordered by destination, portRange, protocol; those with port ranges
+   * before those that are protocol-only.
+   *
+   * @see  InetAddressPrefix#compareTo(com.aoapps.net.InetAddressPrefix)
+   * @see  IPortRange#compareTo(com.aoapps.net.IPortRange)
+   */
+  @Override
+  public int compareTo(Target other) {
+    int diff = destination.compareTo(other.destination);
+    if (diff != 0) {
+      return diff;
+    }
+    return protocolOrPortRange.compareTo(other.protocolOrPortRange);
+  }
 
-	/**
-	 * Gets the destination network range for this target.
-	 *
-	 * @return The {@link InetAddressPrefix#normalize() normalized} destination
-	 */
-	public InetAddressPrefix getDestination() {
-		return destination;
-	}
+  /**
+   * Gets the destination network range for this target.
+   *
+   * @return The {@link InetAddressPrefix#normalize() normalized} destination
+   */
+  public InetAddressPrefix getDestination() {
+    return destination;
+  }
 
-	/**
-	 * Gets the protocol for this target.
-	 */
-	public Protocol getProtocol() {
-		return protocolOrPortRange.getProtocol();
-	}
+  /**
+   * Gets the protocol for this target.
+   */
+  public Protocol getProtocol() {
+    return protocolOrPortRange.getProtocol();
+  }
 
-	/**
-	 * Gets the optional port range for this target.
-	 */
-	public IPortRange getPortRange() {
-		return protocolOrPortRange.getPortRange();
-	}
+  /**
+   * Gets the optional port range for this target.
+   */
+  public IPortRange getPortRange() {
+    return protocolOrPortRange.getPortRange();
+  }
 
-	/**
-	 * Combines this target with the given target if possible.
-	 * <p>
-	 * If have the same destination, tries to combine by protocol and port range.
-	 * If have the same protocol and port range, tries to combine by destination network prefixes.
-	 * </p>
-	 * <p>
-	 * When combining by protocol and port range, a target with no port range
-	 * matches all ports on that protocol.
-	 * </p>
-	 *
-	 * @return  The new target that represents the union of this and the other target or {@code null}
-	 *          when they cannot be combined.
-	 */
-	public Target coalesce(Target other) {
-		if(this.destination.equals(other.destination)) {
-			ProtocolOrPortRange coalesced = protocolOrPortRange.coalesce(other.protocolOrPortRange);
-			if(coalesced == null) {
-				// Not combinable
-				return null;
-			} else if(coalesced == this.protocolOrPortRange) {
-				return this;
-			} else if(coalesced == other.protocolOrPortRange) {
-				return other;
-			} else {
-				return new Target(this.destination, coalesced);
-			}
-		} else if(this.protocolOrPortRange.equals(other.protocolOrPortRange)) {
-			InetAddressPrefix coalescedDestination = this.destination.coalesce(other.destination);
-			if(coalescedDestination == null) {
-				// Not combinable
-				return null;
-			} else if(coalescedDestination == this.destination) {
-				return this;
-			} else if(coalescedDestination == other.destination) {
-				return other;
-			} else {
-				return new Target(coalescedDestination, protocolOrPortRange);
-			}
-		} else {
-			// Cannot combine by port range or destination
-			return null;
-		}
-	}
+  /**
+   * Combines this target with the given target if possible.
+   * <p>
+   * If have the same destination, tries to combine by protocol and port range.
+   * If have the same protocol and port range, tries to combine by destination network prefixes.
+   * </p>
+   * <p>
+   * When combining by protocol and port range, a target with no port range
+   * matches all ports on that protocol.
+   * </p>
+   *
+   * @return  The new target that represents the union of this and the other target or {@code null}
+   *          when they cannot be combined.
+   */
+  public Target coalesce(Target other) {
+    if (this.destination.equals(other.destination)) {
+      ProtocolOrPortRange coalesced = protocolOrPortRange.coalesce(other.protocolOrPortRange);
+      if (coalesced == null) {
+        // Not combinable
+        return null;
+      } else if (coalesced == this.protocolOrPortRange) {
+        return this;
+      } else if (coalesced == other.protocolOrPortRange) {
+        return other;
+      } else {
+        return new Target(this.destination, coalesced);
+      }
+    } else if (this.protocolOrPortRange.equals(other.protocolOrPortRange)) {
+      InetAddressPrefix coalescedDestination = this.destination.coalesce(other.destination);
+      if (coalescedDestination == null) {
+        // Not combinable
+        return null;
+      } else if (coalescedDestination == this.destination) {
+        return this;
+      } else if (coalescedDestination == other.destination) {
+        return other;
+      } else {
+        return new Target(coalescedDestination, protocolOrPortRange);
+      }
+    } else {
+      // Cannot combine by port range or destination
+      return null;
+    }
+  }
 }
