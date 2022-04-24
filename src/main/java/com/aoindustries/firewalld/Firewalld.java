@@ -58,7 +58,9 @@ final class Firewalld {
   /**
    * Serializes access to the underlying <code>firewall-cmd</code> command.
    */
-  private static class FirewallCmdLock {/* Empty lock class to help heap profile */}
+  private static class FirewallCmdLock {
+    // Empty lock class to help heap profile
+  }
   static final FirewallCmdLock firewallCmdLock = new FirewallCmdLock();
 
   /**
@@ -110,10 +112,10 @@ final class Firewalld {
               }
             }
             if (
-              allServices.put(
-                currentZone,
-                AoCollections.optimalUnmodifiableSet(zoneServices)
-              ) != null
+                allServices.put(
+                    currentZone,
+                    AoCollections.optimalUnmodifiableSet(zoneServices)
+                ) != null
             ) {
               throw new IOException("Duplicate zone: " + currentZone);
             }
@@ -136,7 +138,7 @@ final class Firewalld {
     }
     String[] command = new String[2 + toAdd.size()];
     command[0] = "--permanent";
-    command[1] = "--zone="+zone;
+    command[1] = "--zone=" + zone;
     int pos = 2;
     for (String service : toAdd) {
       command[pos++] = "--add-service=" + service;
@@ -156,7 +158,7 @@ final class Firewalld {
     }
     String[] command = new String[2 + toRemove.size()];
     command[0] = "--permanent";
-    command[1] = "--zone="+zone;
+    command[1] = "--zone=" + zone;
     int pos = 2;
     for (String service : toRemove) {
       command[pos++] = "--remove-service=" + service;

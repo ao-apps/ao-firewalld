@@ -101,16 +101,16 @@ public class ServiceSet {
           logger.finer("Scanning for system service conflict: " + filename);
         }
         if (
-          filename.startsWith(prefix)
-          && filename.endsWith(Service.EXTENSION)
+            filename.startsWith(prefix)
+                && filename.endsWith(Service.EXTENSION)
         ) {
           // Must also be parseable as an int
           try {
             Integer.parseInt(
-              filename.substring(
-                prefix.length(),
-                filename.length() - Service.EXTENSION.length()
-              )
+                filename.substring(
+                    prefix.length(),
+                    filename.length() - Service.EXTENSION.length()
+                )
             );
             throw new IllegalStateException("System service conflicts with service set names: " + filename);
           } catch (NumberFormatException e) {
@@ -144,23 +144,23 @@ public class ServiceSet {
           logger.finer("Scanning for service set: " + filename);
         }
         if (
-          filename.startsWith(prefix)
-          && filename.endsWith(Service.EXTENSION)
+            filename.startsWith(prefix)
+                && filename.endsWith(Service.EXTENSION)
         ) {
           // Must also be parseable as an int
           try {
             int num = Integer.parseInt(
-              filename.substring(
-                prefix.length(),
-                filename.length() - Service.EXTENSION.length()
-              )
+                filename.substring(
+                    prefix.length(),
+                    filename.length() - Service.EXTENSION.length()
+                )
             );
             if (logger.isLoggable(Level.FINE)) {
               logger.fine("Found local service: " + filename);
             }
             servicesToLoad.put(
-              prefix + num,
-              new File(Service.LOCAL_SERVICES_DIRECTORY, filename)
+                prefix + num,
+                new File(Service.LOCAL_SERVICES_DIRECTORY, filename)
             );
           } catch (NumberFormatException e) {
             // Is not parseable as Integer, ignore
@@ -178,8 +178,8 @@ public class ServiceSet {
         logger.fine("Adding system service: " + templateName);
       }
       servicesToLoad.put(
-        templateName,
-        Service.getLocalServiceFile(templateName)
+          templateName,
+          Service.getLocalServiceFile(templateName)
       );
     }
     // Load services
@@ -451,18 +451,18 @@ public class ServiceSet {
           logger.fine("Adding service: " + name + "->ports(" + ports + ") and protocols(" + protocols + ')');
         }
         services.add(
-          new Service(
-            name,
-            template.getVersion(),
-            shortName,
-            template.getDescription(),
-            ports,
-            protocols,
-            template.getSourcePorts(),
-            template.getModules(),
-            destinationIPv4,
-            destinationIPv6
-          )
+            new Service(
+                name,
+                template.getVersion(),
+                shortName,
+                template.getDescription(),
+                ports,
+                protocols,
+                template.getSourcePorts(),
+                template.getModules(),
+                destinationIPv4,
+                destinationIPv6
+            )
         );
       }
     }
@@ -481,8 +481,8 @@ public class ServiceSet {
   private final SortedSet<Target> targets;
 
   private ServiceSet(
-    Service template,
-    Set<Service> services
+      Service template,
+      Set<Service> services
   ) {
     this.template = template;
     this.services = AoCollections.optimalUnmodifiableSet(services);
@@ -507,7 +507,7 @@ public class ServiceSet {
     if (!(obj instanceof ServiceSet)) {
       return false;
     }
-    ServiceSet other = (ServiceSet)obj;
+    ServiceSet other = (ServiceSet) obj;
     return services.equals(other.services);
   }
 

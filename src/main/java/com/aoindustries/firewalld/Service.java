@@ -99,21 +99,21 @@ public class Service {
    * The names of the various XML elements.
    */
   private static final String
-    SERVICE_ELEM = "service",
-    VERSION_ATTR = "version",
-    SHORT_ELEM = "short",
-    DESCRIPTION_ELEM = "description",
-    PORT_ELEM = "port",
-    PORT_ATTR = "port",
-    PROTOCOL_ATTR = "protocol",
-    PROTOCOL_ELEM = "protocol",
-    VALUE_ATTR = "value",
-    SOURCE_PORT_ELEM = "source-port",
-    MODULE_ELEM = "module",
-    NAME_ATTR = "name",
-    DESTINATION_ELEM = "destination",
-    IPV4_ATTR = "ipv4",
-    IPV6_ATTR = "ipv6"
+      SERVICE_ELEM = "service",
+      VERSION_ATTR = "version",
+      SHORT_ELEM = "short",
+      DESCRIPTION_ELEM = "description",
+      PORT_ELEM = "port",
+      PORT_ATTR = "port",
+      PROTOCOL_ATTR = "protocol",
+      PROTOCOL_ELEM = "protocol",
+      VALUE_ATTR = "value",
+      SOURCE_PORT_ELEM = "source-port",
+      MODULE_ELEM = "module",
+      NAME_ATTR = "name",
+      DESTINATION_ELEM = "destination",
+      IPV4_ATTR = "ipv4",
+      IPV6_ATTR = "ipv6"
   ;
 
   /**
@@ -187,8 +187,8 @@ public class Service {
       Set<IPortRange> sourcePorts = new LinkedHashSet<>();
       for (Element sourcePortElem : XmlUtils.iterableChildElementsByTagName(serviceElem, SOURCE_PORT_ELEM)) {
         IPortRange sourcePort = parsePort(
-          sourcePortElem.getAttribute(PORT_ATTR),
-          parseProtocol(sourcePortElem.getAttribute(PROTOCOL_ATTR))
+            sourcePortElem.getAttribute(PORT_ATTR),
+            parseProtocol(sourcePortElem.getAttribute(PROTOCOL_ATTR))
         );
         if (!sourcePorts.add(sourcePort)) {
           throw new IOException("Duplicate " + SOURCE_PORT_ELEM + ": " + sourcePort);
@@ -216,16 +216,16 @@ public class Service {
         destinationIPv6 = InetAddressPrefixes.UNSPECIFIED_IPV6;
       }
       return new Service(
-        name,
-        serviceElem.getAttribute(VERSION_ATTR),
-        XmlUtils.getChildTextContent(serviceElem, SHORT_ELEM),
-        XmlUtils.getChildTextContent(serviceElem, DESCRIPTION_ELEM),
-        ports,
-        protocols,
-        sourcePorts,
-        modules,
-        destinationIPv4,
-        destinationIPv6
+          name,
+          serviceElem.getAttribute(VERSION_ATTR),
+          XmlUtils.getChildTextContent(serviceElem, SHORT_ELEM),
+          XmlUtils.getChildTextContent(serviceElem, DESCRIPTION_ELEM),
+          ports,
+          protocols,
+          sourcePorts,
+          modules,
+          destinationIPv4,
+          destinationIPv6
       );
     } catch (IllegalArgumentException | ValidationException | ParserConfigurationException | SAXException e) {
       throw new IOException(e);
@@ -236,6 +236,7 @@ public class Service {
     private final long lastModified;
     private final long length;
     private final Service service;
+
     private FileCacheEntry(long lastModified, long length, Service service) {
       this.lastModified = lastModified;
       this.length = length;
@@ -263,9 +264,9 @@ public class Service {
       // Check for cache match
       FileCacheEntry cacheEntry = fileCache.get(file);
       if (
-        cacheEntry != null
-        && lastModified == cacheEntry.lastModified
-        && length == cacheEntry.length
+          cacheEntry != null
+              && lastModified == cacheEntry.lastModified
+              && length == cacheEntry.length
       ) {
         Service service = cacheEntry.service;
         if (!name.equals(service.name)) {
@@ -280,8 +281,8 @@ public class Service {
       }
       // Store in cache
       fileCache.put(
-        file,
-        new FileCacheEntry(lastModified, length, service)
+          file,
+          new FileCacheEntry(lastModified, length, service)
       );
       return service;
     }
@@ -340,16 +341,16 @@ public class Service {
   private final SortedSet<Target> targets;
 
   public Service(
-    String name,
-    String version,
-    String shortName,
-    String description,
-    Collection<? extends IPortRange> ports,
-    Collection<Protocol> protocols,
-    Collection<? extends IPortRange> sourcePorts,
-    Set<String> modules,
-    InetAddressPrefix destinationIPv4,
-    InetAddressPrefix destinationIPv6
+      String name,
+      String version,
+      String shortName,
+      String description,
+      Collection<? extends IPortRange> ports,
+      Collection<Protocol> protocols,
+      Collection<? extends IPortRange> sourcePorts,
+      Set<String> modules,
+      InetAddressPrefix destinationIPv4,
+      InetAddressPrefix destinationIPv6
   ) {
     this.name = NullArgumentException.checkNotNull(name, "name");
     this.version = version == null || version.isEmpty() ? null : version;
@@ -366,15 +367,15 @@ public class Service {
       throw new IllegalArgumentException("Neither destinationIPv4 nor destinationIPv6 provided.  To match all, use \"0.0.0.0/0\" or \"::/0\".");
     }
     if (
-      destinationIPv4 != null
-      && destinationIPv4.getAddress().getProtocolFamily() != StandardProtocolFamily.INET
+        destinationIPv4 != null
+            && destinationIPv4.getAddress().getProtocolFamily() != StandardProtocolFamily.INET
     ) {
       throw new IllegalArgumentException("Not an IPv4 destination: " + destinationIPv4);
     }
     this.destinationIPv4 = destinationIPv4;
     if (
-      destinationIPv6 != null
-      && destinationIPv6.getAddress().getProtocolFamily() != StandardProtocolFamily.INET6
+        destinationIPv6 != null
+            && destinationIPv6.getAddress().getProtocolFamily() != StandardProtocolFamily.INET6
     ) {
       throw new IllegalArgumentException("Not an IPv6 destination: " + destinationIPv6);
     }
@@ -426,18 +427,18 @@ public class Service {
     if (!(obj instanceof Service)) {
       return false;
     }
-    Service other = (Service)obj;
+    Service other = (Service) obj;
     return
-      name.equals(other.name)
-      && Objects.equals(version, other.version)
-      && Objects.equals(shortName, other.shortName)
-      && Objects.equals(description, other.description)
-      && ports.equals(other.ports)
-      && protocols.equals(other.protocols)
-      && sourcePorts.equals(other.sourcePorts)
-      && modules.equals(other.modules)
-      && Objects.equals(destinationIPv4, other.destinationIPv4)
-      && Objects.equals(destinationIPv6, other.destinationIPv6)
+        name.equals(other.name)
+            && Objects.equals(version, other.version)
+            && Objects.equals(shortName, other.shortName)
+            && Objects.equals(description, other.description)
+            && ports.equals(other.ports)
+            && protocols.equals(other.protocols)
+            && sourcePorts.equals(other.sourcePorts)
+            && modules.equals(other.modules)
+            && Objects.equals(destinationIPv4, other.destinationIPv4)
+            && Objects.equals(destinationIPv6, other.destinationIPv6)
     ;
   }
 
@@ -652,8 +653,8 @@ public class Service {
         serviceElem.appendChild(moduleElem);
       }
       if (
-        !InetAddressPrefixes.UNSPECIFIED_IPV4.equals(destinationIPv4)
-        || !InetAddressPrefixes.UNSPECIFIED_IPV6.equals(destinationIPv6)
+          !InetAddressPrefixes.UNSPECIFIED_IPV4.equals(destinationIPv4)
+              || !InetAddressPrefixes.UNSPECIFIED_IPV6.equals(destinationIPv6)
       ) {
         Element destinationElem = document.createElement(DESTINATION_ELEM);
         if (destinationIPv4 != null) {

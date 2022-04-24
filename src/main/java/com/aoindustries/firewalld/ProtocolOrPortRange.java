@@ -74,10 +74,10 @@ class ProtocolOrPortRange implements Comparable<ProtocolOrPortRange> {
     if (!(obj instanceof ProtocolOrPortRange)) {
       return false;
     }
-    ProtocolOrPortRange other = (ProtocolOrPortRange)obj;
+    ProtocolOrPortRange other = (ProtocolOrPortRange) obj;
     return
-      protocol == other.protocol
-      && Objects.equals(portRange, other.portRange)
+        protocol == other.protocol
+            && Objects.equals(portRange, other.portRange)
     ;
   }
 

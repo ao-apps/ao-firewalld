@@ -94,10 +94,10 @@ public class Target implements Comparable<Target> {
     if (!(obj instanceof Target)) {
       return false;
     }
-    Target other = (Target)obj;
+    Target other = (Target) obj;
     return
-      protocolOrPortRange.equals(other.protocolOrPortRange)
-      && destination.equals(other.destination)
+        protocolOrPortRange.equals(other.protocolOrPortRange)
+            && destination.equals(other.destination)
     ;
   }
 

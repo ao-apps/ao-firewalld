@@ -50,13 +50,13 @@ public class ServiceSetTest {
     Service sshTemplate = ServiceTest.loadCentos7TestService("ssh");
     Iterable<Target> emptyTargets = Collections.emptySet();
     ServiceSet optimized = ServiceSet.createOptimizedServiceSet(
-      sshTemplate,
-      emptyTargets
+        sshTemplate,
+        emptyTargets
     );
     assertEquals(
-      "Empty targets must give empty service set",
-      Collections.emptySet(),
-      optimized.getServices()
+        "Empty targets must give empty service set",
+        Collections.emptySet(),
+        optimized.getServices()
     );
   }
 
@@ -64,50 +64,50 @@ public class ServiceSetTest {
   public void testCreateOptimizedServiceSet_singlePort_unspecified_IPv4() throws IOException, ValidationException {
     Service sshTemplate = ServiceTest.loadCentos7TestService("ssh");
     ServiceSet optimized = ServiceSet.createOptimizedServiceSet(
-      sshTemplate,
-      Arrays.asList(
-        new Target(InetAddressPrefixes.UNSPECIFIED_IPV4, Port.valueOf(22, Protocol.TCP))
-      )
+        sshTemplate,
+        Arrays.asList(
+            new Target(InetAddressPrefixes.UNSPECIFIED_IPV4, Port.valueOf(22, Protocol.TCP))
+        )
     );
     assertEquals(
-      "Single port should result in a single service",
-      1,
-      optimized.getServices().size()
+        "Single port should result in a single service",
+        1,
+        optimized.getServices().size()
     );
     Service service = optimized.getServices().iterator().next();
     assertEquals(
-      "ssh",
-      service.getName()
+        "ssh",
+        service.getName()
     );
     assertNull(
-      service.getVersion()
+        service.getVersion()
     );
     assertEquals(
-      "Secure Shell (SSH) is a protocol for logging into and executing commands on remote machines. It provides secure encrypted communications. If you plan on accessing your machine remotely via SSH over a firewalled interface, enable this option. You need the openssh-server package installed for this option to be useful.",
-      service.getDescription()
+        "Secure Shell (SSH) is a protocol for logging into and executing commands on remote machines. It provides secure encrypted communications. If you plan on accessing your machine remotely via SSH over a firewalled interface, enable this option. You need the openssh-server package installed for this option to be useful.",
+        service.getDescription()
     );
     assertEquals(
-      Collections.singleton(Port.valueOf(22, Protocol.TCP)),
-      service.getPorts()
+        Collections.singleton(Port.valueOf(22, Protocol.TCP)),
+        service.getPorts()
     );
     assertEquals(
-      Collections.emptySet(),
-      service.getProtocols()
+        Collections.emptySet(),
+        service.getProtocols()
     );
     assertEquals(
-      Collections.emptySet(),
-      service.getSourcePorts()
+        Collections.emptySet(),
+        service.getSourcePorts()
     );
     assertEquals(
-      Collections.emptySet(),
-      service.getModules()
+        Collections.emptySet(),
+        service.getModules()
     );
     assertEquals(
-      InetAddressPrefixes.UNSPECIFIED_IPV4,
-      service.getDestinationIPv4()
+        InetAddressPrefixes.UNSPECIFIED_IPV4,
+        service.getDestinationIPv4()
     );
     assertNull(
-      service.getDestinationIPv6()
+        service.getDestinationIPv6()
     );
   }
 
@@ -115,33 +115,33 @@ public class ServiceSetTest {
   public void testCreateOptimizedServiceSet_singlePort_unspecified_IPv4and6() throws IOException, ValidationException {
     Service sshTemplate = ServiceTest.loadCentos7TestService("ssh");
     ServiceSet optimized = ServiceSet.createOptimizedServiceSet(
-      sshTemplate,
-      Arrays.asList(
-        new Target(InetAddressPrefixes.UNSPECIFIED_IPV4, Port.valueOf(22, Protocol.TCP)),
-        new Target(InetAddressPrefixes.UNSPECIFIED_IPV6, Port.valueOf(22, Protocol.TCP))
-      )
+        sshTemplate,
+        Arrays.asList(
+            new Target(InetAddressPrefixes.UNSPECIFIED_IPV4, Port.valueOf(22, Protocol.TCP)),
+            new Target(InetAddressPrefixes.UNSPECIFIED_IPV6, Port.valueOf(22, Protocol.TCP))
+        )
     );
     assertEquals(
-      "Single port should result in a single service",
-      1,
-      optimized.getServices().size()
+        "Single port should result in a single service",
+        1,
+        optimized.getServices().size()
     );
     Service service = optimized.getServices().iterator().next();
     assertEquals(
-      Collections.singleton(Port.valueOf(22, Protocol.TCP)),
-      service.getPorts()
+        Collections.singleton(Port.valueOf(22, Protocol.TCP)),
+        service.getPorts()
     );
     assertEquals(
-      Collections.emptySet(),
-      service.getProtocols()
+        Collections.emptySet(),
+        service.getProtocols()
     );
     assertEquals(
-      InetAddressPrefixes.UNSPECIFIED_IPV4,
-      service.getDestinationIPv4()
+        InetAddressPrefixes.UNSPECIFIED_IPV4,
+        service.getDestinationIPv4()
     );
     assertEquals(
-      InetAddressPrefixes.UNSPECIFIED_IPV6,
-      service.getDestinationIPv6()
+        InetAddressPrefixes.UNSPECIFIED_IPV6,
+        service.getDestinationIPv6()
     );
   }
 
@@ -149,32 +149,32 @@ public class ServiceSetTest {
   public void testCreateOptimizedServiceSet_adjacentPorts_unspecified_IPv4() throws IOException, ValidationException {
     Service sshTemplate = ServiceTest.loadCentos7TestService("ssh");
     ServiceSet optimized = ServiceSet.createOptimizedServiceSet(
-      sshTemplate,
-      Arrays.asList(
-        new Target(InetAddressPrefixes.UNSPECIFIED_IPV4, Port.valueOf(22, Protocol.TCP)),
-        new Target(InetAddressPrefixes.UNSPECIFIED_IPV4, Port.valueOf(23, Protocol.TCP))
-      )
+        sshTemplate,
+        Arrays.asList(
+            new Target(InetAddressPrefixes.UNSPECIFIED_IPV4, Port.valueOf(22, Protocol.TCP)),
+            new Target(InetAddressPrefixes.UNSPECIFIED_IPV4, Port.valueOf(23, Protocol.TCP))
+        )
     );
     assertEquals(
-      "Adjacent ports should result in a single service",
-      1,
-      optimized.getServices().size()
+        "Adjacent ports should result in a single service",
+        1,
+        optimized.getServices().size()
     );
     Service service = optimized.getServices().iterator().next();
     assertEquals(
-      Collections.singleton(PortRange.valueOf(22, 23, Protocol.TCP)),
-      service.getPorts()
+        Collections.singleton(PortRange.valueOf(22, 23, Protocol.TCP)),
+        service.getPorts()
     );
     assertEquals(
-      Collections.emptySet(),
-      service.getProtocols()
+        Collections.emptySet(),
+        service.getProtocols()
     );
     assertEquals(
-      InetAddressPrefixes.UNSPECIFIED_IPV4,
-      service.getDestinationIPv4()
+        InetAddressPrefixes.UNSPECIFIED_IPV4,
+        service.getDestinationIPv4()
     );
     assertNull(
-      service.getDestinationIPv6()
+        service.getDestinationIPv6()
     );
   }
 
@@ -182,35 +182,35 @@ public class ServiceSetTest {
   public void testCreateOptimizedServiceSet_adjacentPorts_unspecified_IPv4and6() throws IOException, ValidationException {
     Service sshTemplate = ServiceTest.loadCentos7TestService("ssh");
     ServiceSet optimized = ServiceSet.createOptimizedServiceSet(
-      sshTemplate,
-      Arrays.asList(
-        new Target(InetAddressPrefixes.UNSPECIFIED_IPV4, Port.valueOf(22, Protocol.TCP)),
-        new Target(InetAddressPrefixes.UNSPECIFIED_IPV4, Port.valueOf(23, Protocol.TCP)),
-        new Target(InetAddressPrefixes.UNSPECIFIED_IPV6, Port.valueOf(22, Protocol.TCP)),
-        new Target(InetAddressPrefixes.UNSPECIFIED_IPV6, Port.valueOf(23, Protocol.TCP))
-      )
+        sshTemplate,
+        Arrays.asList(
+            new Target(InetAddressPrefixes.UNSPECIFIED_IPV4, Port.valueOf(22, Protocol.TCP)),
+            new Target(InetAddressPrefixes.UNSPECIFIED_IPV4, Port.valueOf(23, Protocol.TCP)),
+            new Target(InetAddressPrefixes.UNSPECIFIED_IPV6, Port.valueOf(22, Protocol.TCP)),
+            new Target(InetAddressPrefixes.UNSPECIFIED_IPV6, Port.valueOf(23, Protocol.TCP))
+        )
     );
     assertEquals(
-      "Adjacent ports should result in a single service",
-      1,
-      optimized.getServices().size()
+        "Adjacent ports should result in a single service",
+        1,
+        optimized.getServices().size()
     );
     Service service = optimized.getServices().iterator().next();
     assertEquals(
-      Collections.singleton(PortRange.valueOf(22, 23, Protocol.TCP)),
-      service.getPorts()
+        Collections.singleton(PortRange.valueOf(22, 23, Protocol.TCP)),
+        service.getPorts()
     );
     assertEquals(
-      Collections.emptySet(),
-      service.getProtocols()
+        Collections.emptySet(),
+        service.getProtocols()
     );
     assertEquals(
-      InetAddressPrefixes.UNSPECIFIED_IPV4,
-      service.getDestinationIPv4()
+        InetAddressPrefixes.UNSPECIFIED_IPV4,
+        service.getDestinationIPv4()
     );
     assertEquals(
-      InetAddressPrefixes.UNSPECIFIED_IPV6,
-      service.getDestinationIPv6()
+        InetAddressPrefixes.UNSPECIFIED_IPV6,
+        service.getDestinationIPv6()
     );
   }
 
@@ -218,35 +218,35 @@ public class ServiceSetTest {
   public void testCreateOptimizedServiceSet_adjacentPorts_unspecifiedIPv4_specificIPv6() throws IOException, ValidationException {
     Service sshTemplate = ServiceTest.loadCentos7TestService("ssh");
     ServiceSet optimized = ServiceSet.createOptimizedServiceSet(
-      sshTemplate,
-      Arrays.asList(
-        new Target(InetAddressPrefixes.UNSPECIFIED_IPV4, Port.valueOf(22, Protocol.TCP)),
-        new Target(InetAddressPrefixes.UNSPECIFIED_IPV4, Port.valueOf(23, Protocol.TCP)),
-        new Target(InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8"), Port.valueOf(22, Protocol.TCP)),
-        new Target(InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8"), Port.valueOf(23, Protocol.TCP))
-      )
+        sshTemplate,
+        Arrays.asList(
+            new Target(InetAddressPrefixes.UNSPECIFIED_IPV4, Port.valueOf(22, Protocol.TCP)),
+            new Target(InetAddressPrefixes.UNSPECIFIED_IPV4, Port.valueOf(23, Protocol.TCP)),
+            new Target(InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8"), Port.valueOf(22, Protocol.TCP)),
+            new Target(InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8"), Port.valueOf(23, Protocol.TCP))
+        )
     );
     assertEquals(
-      "Adjacent ports should result in a single service",
-      1,
-      optimized.getServices().size()
+        "Adjacent ports should result in a single service",
+        1,
+        optimized.getServices().size()
     );
     Service service = optimized.getServices().iterator().next();
     assertEquals(
-      Collections.singleton(PortRange.valueOf(22, 23, Protocol.TCP)),
-      service.getPorts()
+        Collections.singleton(PortRange.valueOf(22, 23, Protocol.TCP)),
+        service.getPorts()
     );
     assertEquals(
-      Collections.emptySet(),
-      service.getProtocols()
+        Collections.emptySet(),
+        service.getProtocols()
     );
     assertEquals(
-      InetAddressPrefixes.UNSPECIFIED_IPV4,
-      service.getDestinationIPv4()
+        InetAddressPrefixes.UNSPECIFIED_IPV4,
+        service.getDestinationIPv4()
     );
     assertEquals(
-      InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8"),
-      service.getDestinationIPv6()
+        InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8"),
+        service.getDestinationIPv6()
     );
   }
 
@@ -254,39 +254,39 @@ public class ServiceSetTest {
   public void testCreateOptimizedServiceSet_splitPorts_unspecifiedIPv4_specificIPv6() throws IOException, ValidationException {
     Service sshTemplate = ServiceTest.loadCentos7TestService("ssh");
     ServiceSet optimized = ServiceSet.createOptimizedServiceSet(
-      sshTemplate,
-      Arrays.asList(
-        new Target(InetAddressPrefixes.UNSPECIFIED_IPV4, Port.valueOf(22, Protocol.TCP)),
-        new Target(InetAddressPrefixes.UNSPECIFIED_IPV4, PortRange.valueOf(45, 100, Protocol.TCP)),
-        new Target(InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8"), Port.valueOf(22, Protocol.TCP)),
-        new Target(InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8"), PortRange.valueOf(45, 100, Protocol.TCP))
-      )
+        sshTemplate,
+        Arrays.asList(
+            new Target(InetAddressPrefixes.UNSPECIFIED_IPV4, Port.valueOf(22, Protocol.TCP)),
+            new Target(InetAddressPrefixes.UNSPECIFIED_IPV4, PortRange.valueOf(45, 100, Protocol.TCP)),
+            new Target(InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8"), Port.valueOf(22, Protocol.TCP)),
+            new Target(InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8"), PortRange.valueOf(45, 100, Protocol.TCP))
+        )
     );
     assertEquals(
-      1,
-      optimized.getServices().size()
+        1,
+        optimized.getServices().size()
     );
     Service service = optimized.getServices().iterator().next();
     assertEquals(
-      new HashSet<>(
-        Arrays.asList(
-          (IPortRange)Port.valueOf(22, Protocol.TCP),
-          PortRange.valueOf(45, 100, Protocol.TCP)
-        )
-      ),
-      service.getPorts()
+        new HashSet<>(
+            Arrays.asList(
+                (IPortRange) Port.valueOf(22, Protocol.TCP),
+                PortRange.valueOf(45, 100, Protocol.TCP)
+            )
+        ),
+        service.getPorts()
     );
     assertEquals(
-      Collections.emptySet(),
-      service.getProtocols()
+        Collections.emptySet(),
+        service.getProtocols()
     );
     assertEquals(
-      InetAddressPrefixes.UNSPECIFIED_IPV4,
-      service.getDestinationIPv4()
+        InetAddressPrefixes.UNSPECIFIED_IPV4,
+        service.getDestinationIPv4()
     );
     assertEquals(
-      InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8"),
-      service.getDestinationIPv6()
+        InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8"),
+        service.getDestinationIPv6()
     );
   }
 
@@ -294,63 +294,63 @@ public class ServiceSetTest {
   public void testCreateOptimizedServiceSet_unalignedSplitPorts_unspecifiedIPv4_specificIPv6() throws IOException, ValidationException {
     Service sshTemplate = ServiceTest.loadCentos7TestService("ssh");
     ServiceSet optimized = ServiceSet.createOptimizedServiceSet(
-      sshTemplate,
-      Arrays.asList(
-        new Target(InetAddressPrefixes.UNSPECIFIED_IPV4, Port.valueOf(22, Protocol.TCP)),
-        new Target(InetAddressPrefixes.UNSPECIFIED_IPV4, PortRange.valueOf(45, 100, Protocol.TCP)),
-        new Target(InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8"), Port.valueOf(22, Protocol.TCP)),
-        new Target(InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8"), PortRange.valueOf(45, 78, Protocol.TCP))
-      )
+        sshTemplate,
+        Arrays.asList(
+            new Target(InetAddressPrefixes.UNSPECIFIED_IPV4, Port.valueOf(22, Protocol.TCP)),
+            new Target(InetAddressPrefixes.UNSPECIFIED_IPV4, PortRange.valueOf(45, 100, Protocol.TCP)),
+            new Target(InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8"), Port.valueOf(22, Protocol.TCP)),
+            new Target(InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8"), PortRange.valueOf(45, 78, Protocol.TCP))
+        )
     );
     assertEquals(
-      2,
-      optimized.getServices().size()
+        2,
+        optimized.getServices().size()
     );
     Iterator<Service> serviceIter = optimized.getServices().iterator();
     {
       Service service1 = serviceIter.next();
       assertEquals(
-        new HashSet<>(
-          Arrays.asList(
-            (IPortRange)Port.valueOf(22, Protocol.TCP),
-            PortRange.valueOf(45, 78, Protocol.TCP)
-          )
-        ),
-        service1.getPorts()
+          new HashSet<>(
+              Arrays.asList(
+                  (IPortRange) Port.valueOf(22, Protocol.TCP),
+                  PortRange.valueOf(45, 78, Protocol.TCP)
+              )
+          ),
+          service1.getPorts()
       );
       assertEquals(
-        Collections.emptySet(),
-        service1.getProtocols()
+          Collections.emptySet(),
+          service1.getProtocols()
       );
       assertNull(
-        service1.getDestinationIPv4()
+          service1.getDestinationIPv4()
       );
       assertEquals(
-        InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8"),
-        service1.getDestinationIPv6()
+          InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8"),
+          service1.getDestinationIPv6()
       );
     }
     {
       Service service2 = serviceIter.next();
       assertEquals(
-        new HashSet<>(
-          Arrays.asList(
-            (IPortRange)Port.valueOf(22, Protocol.TCP),
-            PortRange.valueOf(45, 100, Protocol.TCP)
-          )
-        ),
-        service2.getPorts()
+          new HashSet<>(
+              Arrays.asList(
+                  (IPortRange) Port.valueOf(22, Protocol.TCP),
+                  PortRange.valueOf(45, 100, Protocol.TCP)
+              )
+          ),
+          service2.getPorts()
       );
       assertEquals(
-        Collections.emptySet(),
-        service2.getProtocols()
+          Collections.emptySet(),
+          service2.getProtocols()
       );
       assertEquals(
-        InetAddressPrefixes.UNSPECIFIED_IPV4,
-        service2.getDestinationIPv4()
+          InetAddressPrefixes.UNSPECIFIED_IPV4,
+          service2.getDestinationIPv4()
       );
       assertNull(
-        service2.getDestinationIPv6()
+          service2.getDestinationIPv6()
       );
     }
   }
@@ -359,63 +359,63 @@ public class ServiceSetTest {
   public void testCreateOptimizedServiceSet_unalignedSplitPorts_unspecifiedIPv4_specificIPv6_reversed() throws IOException, ValidationException {
     Service sshTemplate = ServiceTest.loadCentos7TestService("ssh");
     ServiceSet optimized = ServiceSet.createOptimizedServiceSet(
-      sshTemplate,
-      Arrays.asList(
-        new Target(InetAddressPrefixes.UNSPECIFIED_IPV4, Port.valueOf(22, Protocol.TCP)),
-        new Target(InetAddressPrefixes.UNSPECIFIED_IPV4, PortRange.valueOf(45, 78, Protocol.TCP)),
-        new Target(InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8"), Port.valueOf(22, Protocol.TCP)),
-        new Target(InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8"), PortRange.valueOf(45, 100, Protocol.TCP))
-      )
+        sshTemplate,
+        Arrays.asList(
+            new Target(InetAddressPrefixes.UNSPECIFIED_IPV4, Port.valueOf(22, Protocol.TCP)),
+            new Target(InetAddressPrefixes.UNSPECIFIED_IPV4, PortRange.valueOf(45, 78, Protocol.TCP)),
+            new Target(InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8"), Port.valueOf(22, Protocol.TCP)),
+            new Target(InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8"), PortRange.valueOf(45, 100, Protocol.TCP))
+        )
     );
     assertEquals(
-      2,
-      optimized.getServices().size()
+        2,
+        optimized.getServices().size()
     );
     Iterator<Service> serviceIter = optimized.getServices().iterator();
     {
       Service service1 = serviceIter.next();
       assertEquals(
-        new HashSet<>(
-          Arrays.asList(
-            (IPortRange)Port.valueOf(22, Protocol.TCP),
-            PortRange.valueOf(45, 78, Protocol.TCP)
-          )
-        ),
-        service1.getPorts()
+          new HashSet<>(
+              Arrays.asList(
+                  (IPortRange) Port.valueOf(22, Protocol.TCP),
+                  PortRange.valueOf(45, 78, Protocol.TCP)
+              )
+          ),
+          service1.getPorts()
       );
       assertEquals(
-        Collections.emptySet(),
-        service1.getProtocols()
+          Collections.emptySet(),
+          service1.getProtocols()
       );
       assertEquals(
-        InetAddressPrefixes.UNSPECIFIED_IPV4,
-        service1.getDestinationIPv4()
+          InetAddressPrefixes.UNSPECIFIED_IPV4,
+          service1.getDestinationIPv4()
       );
       assertNull(
-        service1.getDestinationIPv6()
+          service1.getDestinationIPv6()
       );
     }
     {
       Service service2 = serviceIter.next();
       assertEquals(
-        new HashSet<>(
-          Arrays.asList(
-            (IPortRange)Port.valueOf(22, Protocol.TCP),
-            PortRange.valueOf(45, 100, Protocol.TCP)
-          )
-        ),
-        service2.getPorts()
+          new HashSet<>(
+              Arrays.asList(
+                  (IPortRange) Port.valueOf(22, Protocol.TCP),
+                  PortRange.valueOf(45, 100, Protocol.TCP)
+              )
+          ),
+          service2.getPorts()
       );
       assertEquals(
-        Collections.emptySet(),
-        service2.getProtocols()
+          Collections.emptySet(),
+          service2.getProtocols()
       );
       assertNull(
-        service2.getDestinationIPv4()
+          service2.getDestinationIPv4()
       );
       assertEquals(
-        InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8"),
-        service2.getDestinationIPv6()
+          InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8"),
+          service2.getDestinationIPv6()
       );
     }
   }
@@ -424,42 +424,42 @@ public class ServiceSetTest {
   public void testCreateOptimizedServiceSet_multiAdjacent_unspecifiedIPv4_specificIPv6_with_overlap() throws IOException, ValidationException {
     Service sshTemplate = ServiceTest.loadCentos7TestService("ssh");
     ServiceSet optimized = ServiceSet.createOptimizedServiceSet(
-      sshTemplate,
-      Arrays.asList(
-        new Target(InetAddressPrefixes.UNSPECIFIED_IPV4, Port.valueOf(22, Protocol.TCP)),
-        new Target(InetAddressPrefixes.UNSPECIFIED_IPV4, Port.valueOf(24, Protocol.TCP)),
-        new Target(InetAddressPrefixes.UNSPECIFIED_IPV4, Port.valueOf(23, Protocol.TCP)),
-        new Target(InetAddressPrefixes.UNSPECIFIED_IPV4, Port.valueOf(25, Protocol.TCP)),
-        new Target(InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8"), Port.valueOf(22, Protocol.TCP)),
-        new Target(InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8"), Port.valueOf(24, Protocol.TCP)),
-        new Target(InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8"), Port.valueOf(23, Protocol.TCP)),
-        new Target(InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8"), Port.valueOf(25, Protocol.TCP)),
-        new Target(InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8/112"), Port.valueOf(22, Protocol.TCP)),
-        new Target(InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8/112"), Port.valueOf(24, Protocol.TCP)),
-        new Target(InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8/112"), Port.valueOf(23, Protocol.TCP)),
-        new Target(InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8/112"), Port.valueOf(25, Protocol.TCP))
-      )
+        sshTemplate,
+        Arrays.asList(
+            new Target(InetAddressPrefixes.UNSPECIFIED_IPV4, Port.valueOf(22, Protocol.TCP)),
+            new Target(InetAddressPrefixes.UNSPECIFIED_IPV4, Port.valueOf(24, Protocol.TCP)),
+            new Target(InetAddressPrefixes.UNSPECIFIED_IPV4, Port.valueOf(23, Protocol.TCP)),
+            new Target(InetAddressPrefixes.UNSPECIFIED_IPV4, Port.valueOf(25, Protocol.TCP)),
+            new Target(InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8"), Port.valueOf(22, Protocol.TCP)),
+            new Target(InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8"), Port.valueOf(24, Protocol.TCP)),
+            new Target(InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8"), Port.valueOf(23, Protocol.TCP)),
+            new Target(InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8"), Port.valueOf(25, Protocol.TCP)),
+            new Target(InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8/112"), Port.valueOf(22, Protocol.TCP)),
+            new Target(InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8/112"), Port.valueOf(24, Protocol.TCP)),
+            new Target(InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8/112"), Port.valueOf(23, Protocol.TCP)),
+            new Target(InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8/112"), Port.valueOf(25, Protocol.TCP))
+        )
     );
     assertEquals(
-      1,
-      optimized.getServices().size()
+        1,
+        optimized.getServices().size()
     );
     Service service = optimized.getServices().iterator().next();
     assertEquals(
-      Collections.singleton(PortRange.valueOf(22, 25, Protocol.TCP)),
-      service.getPorts()
+        Collections.singleton(PortRange.valueOf(22, 25, Protocol.TCP)),
+        service.getPorts()
     );
     assertEquals(
-      Collections.emptySet(),
-      service.getProtocols()
+        Collections.emptySet(),
+        service.getProtocols()
     );
     assertEquals(
-      InetAddressPrefixes.UNSPECIFIED_IPV4,
-      service.getDestinationIPv4()
+        InetAddressPrefixes.UNSPECIFIED_IPV4,
+        service.getDestinationIPv4()
     );
     assertEquals(
-      InetAddressPrefix.valueOf("1:2:3:4:5:6:7:0/112"),
-      service.getDestinationIPv6()
+        InetAddressPrefix.valueOf("1:2:3:4:5:6:7:0/112"),
+        service.getDestinationIPv6()
     );
   }
 
@@ -468,16 +468,16 @@ public class ServiceSetTest {
   public void testCreateOptimizedServiceSet_finalCrazyCombo() throws IOException, ValidationException {
     Service sshTemplate = ServiceTest.loadCentos7TestService("ssh");
     ServiceSet optimized = ServiceSet.createOptimizedServiceSet(
-      sshTemplate,
-      Arrays.asList(
-        new Target(InetAddressPrefix.valueOf("1.2.3.4"), Port.valueOf(22, Protocol.TCP)),
-        new Target(InetAddressPrefix.valueOf("1.2.3.4"), Port.valueOf(24, Protocol.TCP)),
-        new Target(InetAddressPrefix.valueOf("1.2.3.5/31"), PortRange.valueOf(22, 23, Protocol.TCP)),
-        new Target(InetAddressPrefix.valueOf("1.2.3.5/31"), PortRange.valueOf(45, 78, Protocol.TCP)),
-        new Target(InetAddressPrefixes.UNSPECIFIED_IPV4, PortRange.valueOf(45, 78, Protocol.TCP)),
-        new Target(InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8"), Port.valueOf(22, Protocol.TCP)),
-        new Target(InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8"), PortRange.valueOf(45, 78, Protocol.TCP))
-      )
+        sshTemplate,
+        Arrays.asList(
+            new Target(InetAddressPrefix.valueOf("1.2.3.4"), Port.valueOf(22, Protocol.TCP)),
+            new Target(InetAddressPrefix.valueOf("1.2.3.4"), Port.valueOf(24, Protocol.TCP)),
+            new Target(InetAddressPrefix.valueOf("1.2.3.5/31"), PortRange.valueOf(22, 23, Protocol.TCP)),
+            new Target(InetAddressPrefix.valueOf("1.2.3.5/31"), PortRange.valueOf(45, 78, Protocol.TCP)),
+            new Target(InetAddressPrefixes.UNSPECIFIED_IPV4, PortRange.valueOf(45, 78, Protocol.TCP)),
+            new Target(InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8"), Port.valueOf(22, Protocol.TCP)),
+            new Target(InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8"), PortRange.valueOf(45, 78, Protocol.TCP))
+        )
     );
     // Phase 1: Coalesce ports by destination
     // 0.0.0.0/0 -> 45-78/TCP
@@ -498,103 +498,103 @@ public class ServiceSetTest {
     // Same
 
     assertEquals(
-      4,
-      optimized.getServices().size()
+        4,
+        optimized.getServices().size()
     );
     Iterator<Service> serviceIter = optimized.getServices().iterator();
     {
       // 22/TCP, 24/TCP -> 1.2.3.4
       Service service1 = serviceIter.next();
       assertEquals(
-        new HashSet<>(
-          Arrays.asList(
-            (IPortRange)Port.valueOf(22, Protocol.TCP),
-            Port.valueOf(24, Protocol.TCP)
-          )
-        ),
-        service1.getPorts()
+          new HashSet<>(
+              Arrays.asList(
+                  (IPortRange) Port.valueOf(22, Protocol.TCP),
+                  Port.valueOf(24, Protocol.TCP)
+              )
+          ),
+          service1.getPorts()
       );
       assertEquals(
-        Collections.emptySet(),
-        service1.getProtocols()
+          Collections.emptySet(),
+          service1.getProtocols()
       );
       assertEquals(
-        InetAddressPrefix.valueOf("1.2.3.4"),
-        service1.getDestinationIPv4()
+          InetAddressPrefix.valueOf("1.2.3.4"),
+          service1.getDestinationIPv4()
       );
       assertNull(
-        service1.getDestinationIPv6()
+          service1.getDestinationIPv6()
       );
     }
     {
       // 22/TCP, 45-78/TCP -> 1:2:3:4:5:6:7:8
       Service service2 = serviceIter.next();
       assertEquals(
-        new HashSet<>(
-          Arrays.asList(
-            (IPortRange)Port.valueOf(22, Protocol.TCP),
-            PortRange.valueOf(45, 78, Protocol.TCP)
-          )
-        ),
-        service2.getPorts()
+          new HashSet<>(
+              Arrays.asList(
+                  (IPortRange) Port.valueOf(22, Protocol.TCP),
+                  PortRange.valueOf(45, 78, Protocol.TCP)
+              )
+          ),
+          service2.getPorts()
       );
       assertEquals(
-        Collections.emptySet(),
-        service2.getProtocols()
+          Collections.emptySet(),
+          service2.getProtocols()
       );
       assertNull(
-        service2.getDestinationIPv4()
+          service2.getDestinationIPv4()
       );
       assertEquals(
-        InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8"),
-        service2.getDestinationIPv6()
+          InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8"),
+          service2.getDestinationIPv6()
       );
     }
     {
       // 22-23/TCP, 45-78/TCP -> 1.2.3.4/31
       Service service3 = serviceIter.next();
       assertEquals(
-        new HashSet<>(
-          Arrays.asList(
-            (IPortRange)PortRange.valueOf(22, 23, Protocol.TCP),
-            PortRange.valueOf(45, 78, Protocol.TCP)
-          )
-        ),
-        service3.getPorts()
+          new HashSet<>(
+              Arrays.asList(
+                  (IPortRange) PortRange.valueOf(22, 23, Protocol.TCP),
+                  PortRange.valueOf(45, 78, Protocol.TCP)
+              )
+          ),
+          service3.getPorts()
       );
       assertEquals(
-        Collections.emptySet(),
-        service3.getProtocols()
+          Collections.emptySet(),
+          service3.getProtocols()
       );
       assertEquals(
-        InetAddressPrefix.valueOf("1.2.3.4/31"),
-        service3.getDestinationIPv4()
+          InetAddressPrefix.valueOf("1.2.3.4/31"),
+          service3.getDestinationIPv4()
       );
       assertNull(
-        service3.getDestinationIPv6()
+          service3.getDestinationIPv6()
       );
     }
     {
       // 45-78/TCP -> 0.0.0.0/0
       Service service4 = serviceIter.next();
       assertEquals(
-        new HashSet<>(
-          Arrays.asList(
-            (IPortRange)PortRange.valueOf(45, 78, Protocol.TCP)
-          )
-        ),
-        service4.getPorts()
+          new HashSet<>(
+              Arrays.asList(
+                  (IPortRange) PortRange.valueOf(45, 78, Protocol.TCP)
+              )
+          ),
+          service4.getPorts()
       );
       assertEquals(
-        Collections.emptySet(),
-        service4.getProtocols()
+          Collections.emptySet(),
+          service4.getProtocols()
       );
       assertEquals(
-        InetAddressPrefixes.UNSPECIFIED_IPV4,
-        service4.getDestinationIPv4()
+          InetAddressPrefixes.UNSPECIFIED_IPV4,
+          service4.getDestinationIPv4()
       );
       assertNull(
-        service4.getDestinationIPv6()
+          service4.getDestinationIPv6()
       );
     }
   }
