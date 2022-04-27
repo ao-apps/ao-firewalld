@@ -224,7 +224,7 @@ public class ServiceSet {
     return createOptimizedServiceSet(template, targets);
   }
 
-  private static final Comparator<SortedSet<ProtocolOrPortRange>> portSetComparator = (ports1, ports2) -> {
+  private static final Comparator<SortedSet<ProtocolOrPortRange>> portSetComparator = (SortedSet<ProtocolOrPortRange> ports1, SortedSet<ProtocolOrPortRange> ports2) -> {
     // Put shorter sets of ports before longer when they are otherwise not sorted
     Iterator<ProtocolOrPortRange> iter1 = ports1.iterator();
     Iterator<ProtocolOrPortRange> iter2 = ports2.iterator();

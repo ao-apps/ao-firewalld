@@ -59,7 +59,9 @@ final class Firewalld {
    * Serializes access to the underlying <code>firewall-cmd</code> command.
    */
   private static class FirewallCmdLock {
-    // Empty lock class to help heap profile
+    private FirewallCmdLock() {
+      // Empty lock class to help heap profile
+    }
   }
   static final FirewallCmdLock firewallCmdLock = new FirewallCmdLock();
 

@@ -587,7 +587,7 @@ public class Service {
     if (from == to) {
       return Integer.toString(from);
     } else {
-      return (from + "-" + to);
+      return from + "-" + to;
     }
   }
 
