@@ -23,6 +23,8 @@
 
 package com.aoindustries.firewalld;
 
+import static org.junit.Assert.assertEquals;
+
 import com.aoapps.lang.validation.ValidationException;
 import com.aoapps.net.IPortRange;
 import com.aoapps.net.InetAddressPrefixes;
@@ -36,11 +38,10 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
- * @see  Service
+ * Tests {@link Service}.
  *
  * @author  AO Industries, Inc.
  */

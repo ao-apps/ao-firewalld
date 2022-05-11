@@ -33,8 +33,8 @@ import com.aoapps.net.Protocol;
  * {@link Protocol protocol}, and optional {@link IPortRange port range}.
  * <p>
  * Each {@link Service} may have multiple targets, but all targets will be
- * within its {@link Service#getDestinationIPv4() IPv4 destination} and
- * {@link Service#getDestinationIPv6() IPv6 destination}.
+ * within its {@link Service#getDestinationIpv4() IPv4 destination} and
+ * {@link Service#getDestinationIpv6() IPv6 destination}.
  * </p>
  * <p>
  * A {@link ServiceSet} goes beyond the single-destination limits of {@link Service}
@@ -53,6 +53,8 @@ public class Target implements Comparable<Target> {
   final ProtocolOrPortRange protocolOrPortRange;
 
   /**
+   * Creates a new target.
+   *
    * @param destination  The destination is {@link InetAddressPrefix#normalize() normalized}
    */
   Target(InetAddressPrefix destination, ProtocolOrPortRange protocolOrPortRange) {
@@ -62,6 +64,8 @@ public class Target implements Comparable<Target> {
   }
 
   /**
+   * Creates a new target.
+   *
    * @param destination  The destination is {@link InetAddressPrefix#normalize() normalized}
    */
   public Target(InetAddressPrefix destination, IPortRange portRange) {
@@ -70,6 +74,8 @@ public class Target implements Comparable<Target> {
   }
 
   /**
+   * Creates a new target.
+   *
    * @param destination  The destination is {@link InetAddressPrefix#normalize() normalized}
    */
   public Target(InetAddressPrefix destination, Protocol protocol) {
@@ -78,6 +84,8 @@ public class Target implements Comparable<Target> {
   }
 
   /**
+   * {@inheritDoc}
+   *
    * @return  The target in form <code>[port[-range]/]protocol@address[/prefix]</code>.
    *
    * @see  IPortRange#toString()
@@ -97,8 +105,7 @@ public class Target implements Comparable<Target> {
     Target other = (Target) obj;
     return
         protocolOrPortRange.equals(other.protocolOrPortRange)
-            && destination.equals(other.destination)
-    ;
+            && destination.equals(other.destination);
   }
 
   @Override

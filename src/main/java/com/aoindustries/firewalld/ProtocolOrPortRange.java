@@ -55,6 +55,8 @@ class ProtocolOrPortRange implements Comparable<ProtocolOrPortRange> {
   }
 
   /**
+   * {@inheritDoc}
+   *
    * @return  The string in form <samp>[port[-range]/]protocol</samp>.
    *
    * @see  IPortRange#toString()
@@ -77,8 +79,7 @@ class ProtocolOrPortRange implements Comparable<ProtocolOrPortRange> {
     ProtocolOrPortRange other = (ProtocolOrPortRange) obj;
     return
         protocol == other.protocol
-            && Objects.equals(portRange, other.portRange)
-    ;
+            && Objects.equals(portRange, other.portRange);
   }
 
   @Override

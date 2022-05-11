@@ -63,10 +63,11 @@ final class Firewalld {
       // Empty lock class to help heap profile
     }
   }
+
   static final FirewallCmdLock firewallCmdLock = new FirewallCmdLock();
 
   /**
-   * Calls the <code>firewall-cmd</code> command with the given arguments
+   * Calls the <code>firewall-cmd</code> command with the given arguments.
    *
    * @throws  IOException  when I/O exception or non-zero exit value
    */

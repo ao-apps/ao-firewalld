@@ -23,17 +23,20 @@
 
 package com.aoindustries.firewalld;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import com.aoapps.lang.validation.ValidationException;
 import com.aoapps.net.InetAddress;
 import com.aoapps.net.InetAddressPrefix;
 import com.aoapps.net.Port;
 import com.aoapps.net.PortRange;
 import com.aoapps.net.Protocol;
-import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
- * @see  Target
+ * Tests {@link Target}.
  *
  * @author  AO Industries, Inc.
  */
