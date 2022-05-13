@@ -29,4 +29,4 @@ module com.aoindustries.firewalld {
   // Java SE
   requires java.logging;
   requires java.xml;
-} // TODO: Avoiding rewrite-maven-plugin-4.22.2 truncation
+}
