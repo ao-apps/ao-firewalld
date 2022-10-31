@@ -701,6 +701,7 @@ public class Service {
         }
         serviceElem.appendChild(destinationElem);
       }
+      // Java 19: New XML Processing Limits (JDK-8270504 (not public)), see https://www.oracle.com/java/technologies/javase/19all-relnotes.html
       TransformerFactory transformerFactory = TransformerFactory.newInstance();
       try {
         transformerFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
