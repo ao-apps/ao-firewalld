@@ -3,7 +3,7 @@
 [![project: current stable](https://aoindustries.com/ao-badges/project-current-stable.svg)](https://aoindustries.com/life-cycle#project-current-stable)
 [![management: production](https://aoindustries.com/ao-badges/management-production.svg)](https://aoindustries.com/life-cycle#management-production)
 [![packaging: active](https://aoindustries.com/ao-badges/packaging-active.svg)](https://aoindustries.com/life-cycle#packaging-active)  
-[![java: &gt;= 8](https://aoindustries.com/ao-badges/java-8.svg)](https://docs.oracle.com/javase/8/docs/api/)
+[![java: &gt;= 8](https://aoindustries.com/ao-badges/java-8.svg)](https://docs.oracle.com/javase/8/)
 [![semantic versioning: 2.0.0](https://aoindustries.com/ao-badges/semver-2.0.0.svg)](http://semver.org/spec/v2.0.0.html)
 [![license: LGPL v3](https://aoindustries.com/ao-badges/license-lgpl-3.0.svg)](https://www.gnu.org/licenses/lgpl-3.0)
 
