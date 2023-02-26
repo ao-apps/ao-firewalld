@@ -22,7 +22,7 @@ Java API for managing [firewalld](http://www.firewalld.org/).
 * [Project Home](https://aoindustries.com/ao-firewalld/)
 * [Changelog](https://aoindustries.com/ao-firewalld/changelog)
 * [API Docs](https://aoindustries.com/ao-firewalld/apidocs/)
-* [Maven Central Repository](https://search.maven.org/artifact/com.aoindustries/ao-firewalld)
+* [Maven Central Repository](https://central.sonatype.com/search?namespace=com.aoindustries&q=a%3Aao-firewalld)
 * [GitHub](https://github.com/ao-apps/ao-firewalld)
 
 ## Features
@@ -38,7 +38,7 @@ The [AOServ Platform](https://aoindustries.com/aoserv/) allows opening ports on 
 Our server configuration process, [AOServ Daemon](https://github.com/ao-apps/aoserv-daemon), is written in the Java programming language.  We desire a clean interface to [firewalld](http://www.firewalld.org/) without having to operate with `firewall-cmd` and other commands directly.
 
 ## Evaluated Alternatives
-We were unable to find any existing implementations via [GitHub](https://github.com/search?utf8=%E2%9C%93&q=java+firewalld&type=Repositories&ref=searchresults), [The Central Repository](http://search.maven.org/#search|ga|1|firewalld), or [Google Search](https://www.google.com/search?q=java+api+for+firewalld).
+We were unable to find any existing implementations via [GitHub](https://github.com/search?utf8=%E2%9C%93&q=java+firewalld&type=Repositories&ref=searchresults), [The Central Repository](https://central.sonatype.com/search?q=firewalld), or [Google Search](https://www.google.com/search?q=java+api+for+firewalld).
 
 ## Contact Us
 For questions or support, please [contact us](https://aoindustries.com/contact):
