@@ -30,7 +30,7 @@ along with ao-firewalld.  If not, see <https://www.gnu.org/licenses/>.
   </parent>
 
   <groupId>com.aoindustries</groupId><artifactId>ao-firewalld</artifactId><version>1.2.0-POST-SNAPSHOT</version>
-  <packaging>bundle</packaging>
+  <packaging>jar</packaging>
 
   <properties>
     <module.name>com.aoindustries.firewalld</module.name>
