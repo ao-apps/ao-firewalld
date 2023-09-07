@@ -1,6 +1,6 @@
 /*
  * ao-firewalld - Java API for managing firewalld.
- * Copyright (C) 2017, 2019, 2020, 2021, 2022  AO Industries, Inc.
+ * Copyright (C) 2017, 2019, 2020, 2021, 2022, 2023  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -727,7 +727,7 @@ public class Service {
       transformer.transform(source, result);
       // Move successful file into place
       if (logger.isLoggable(Level.FINE)) {
-        logger.fine("Moving new local service file into place: " + newServiceFile + "->" + serviceFile);
+        logger.fine("Moving new local service file into place: " + newServiceFile + "→" + serviceFile);
       }
       FileUtils.rename(newServiceFile, serviceFile);
     } catch (ParserConfigurationException | TransformerException e) {

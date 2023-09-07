@@ -1,6 +1,6 @@
 /*
  * ao-firewalld - Java API for managing firewalld.
- * Copyright (C) 2017, 2019, 2020, 2021, 2022  AO Industries, Inc.
+ * Copyright (C) 2017, 2019, 2020, 2021, 2022, 2023  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -276,7 +276,7 @@ public class ServiceSet {
   // TODO: No rush on this, though, since we'll tend to feed individual IPs, which should group reasonably well with current algorithm
   public static ServiceSet createOptimizedServiceSet(Service template, Iterable<? extends Target> targets) {
     if (logger.isLoggable(Level.FINE)) {
-      logger.fine("Optimizing service set: " + template + "->" + targets);
+      logger.fine("Optimizing service set: " + template + "→" + targets);
     }
     // Coalesce ports by destination
     SortedMap<InetAddressPrefix, SortedSet<ProtocolOrPortRange>> coalescedPortsByDestination = new TreeMap<>();
@@ -286,7 +286,7 @@ public class ServiceSet {
           toAdd.add(target);
         }
         if (logger.isLoggable(Level.FINE)) {
-          logger.fine("Combined into toAdd: " + template + "->" + toAdd);
+          logger.fine("Combined into toAdd: " + template + "→" + toAdd);
         }
         while (!toAdd.isEmpty()) {
           // Get and remove the first element
@@ -295,7 +295,7 @@ public class ServiceSet {
             Iterator<Target> toAddIter = toAdd.iterator();
             target = toAddIter.next();
             if (logger.isLoggable(Level.FINER)) {
-              logger.finer(toAdd.size() + " more to add: " + template + "->" + target);
+              logger.finer(toAdd.size() + " more to add: " + template + "→" + target);
             }
             toAddIter.remove();
           }
@@ -326,7 +326,7 @@ public class ServiceSet {
         }
       }
     if (logger.isLoggable(Level.FINE)) {
-      logger.fine("After coalesce port ranges: " + template + "->" + coalescedPortsByDestination);
+      logger.fine("After coalesce port ranges: " + template + "→" + coalescedPortsByDestination);
     }
     // Coalesce destinations by protocol and ports
     SortedMap<SortedSet<ProtocolOrPortRange>, SortedSet<InetAddressPrefix>> coalescedDestinationsByPorts = new TreeMap<>(portSetComparator);
@@ -342,7 +342,7 @@ public class ServiceSet {
             destinationToAdd = entry.getKey();
             portsToAdd = entry.getValue();
             if (logger.isLoggable(Level.FINER)) {
-              logger.finer(toAdd.size() + " more to add: " + template + "->" + destinationToAdd);
+              logger.finer(toAdd.size() + " more to add: " + template + "→" + destinationToAdd);
             }
             toAddIter.remove();
           }
@@ -374,7 +374,7 @@ public class ServiceSet {
         }
       }
     if (logger.isLoggable(Level.FINE)) {
-      logger.fine("After coalesce destinations: " + template + "->" + coalescedDestinationsByPorts);
+      logger.fine("After coalesce destinations: " + template + "→" + coalescedDestinationsByPorts);
     }
     // Split by destinations by family
     SortedMap<SortedSet<ProtocolOrPortRange>, Map<ProtocolFamily, SortedSet<InetAddressPrefix>>> splitByFamily = new TreeMap<>(portSetComparator);
@@ -399,7 +399,7 @@ public class ServiceSet {
       }
     }
     if (logger.isLoggable(Level.FINE)) {
-      logger.fine("After split by family: " + template + "->" + splitByFamily);
+      logger.fine("After split by family: " + template + "→" + splitByFamily);
     }
 
     // Build service set
@@ -449,7 +449,7 @@ public class ServiceSet {
           shortName = template.getShortName() == null ? null : (template.getShortName() + " #" + num);
         }
         if (logger.isLoggable(Level.FINE)) {
-          logger.fine("Adding service: " + name + "->ports(" + ports + ") and protocols(" + protocols + ')');
+          logger.fine("Adding service: " + name + "→ports(" + ports + ") and protocols(" + protocols + ')');
         }
         services.add(
             new Service(
@@ -496,7 +496,7 @@ public class ServiceSet {
 
   @Override
   public String toString() {
-    return template + "->" + targets;
+    return template + "→" + targets;
   }
 
   /**
