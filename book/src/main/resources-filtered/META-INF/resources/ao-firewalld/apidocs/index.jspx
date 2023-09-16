@@ -39,5 +39,6 @@ along with ao-firewalld.  If not, see <https://www.gnu.org/licenses/>.
     shortTitle="API Docs"
     datePublished="2017-03-17T00:04:38-05:00"
     dateModified="${ao:getLastModified('index.html')}"
+    allowRobots="false"
   />
 </jsp:root>
