@@ -42,6 +42,7 @@ along with ao-firewalld.  If not, see <https://www.gnu.org/licenses/>.
     <javadoc.link.javase>${javadoc.link.javase.8}</javadoc.link.javase>
 
     <javadoc.breadcrumbs><![CDATA[<a target="${javadoc.target}" href="${project.url}">${project.name}</a>]]></javadoc.breadcrumbs>
+    
     <description.html><![CDATA[Java API for managing <a target="${javadoc.target}" href="http://www.firewalld.org/">firewalld</a>.]]></description.html>
     <!-- TODO: Remove once moved to platform.aoapps.com -->
     <google.analytics.trackingId>UA-86871646-1</google.analytics.trackingId>
