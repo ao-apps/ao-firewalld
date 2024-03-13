@@ -1,6 +1,6 @@
 /*
  * ao-firewalld - Java API for managing firewalld.
- * Copyright (C) 2017, 2019, 2020, 2021, 2022, 2023  AO Industries, Inc.
+ * Copyright (C) 2017, 2019, 2020, 2021, 2022, 2023, 2024  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -636,8 +636,8 @@ public class Service {
    */
   public void saveLocalService() throws IOException {
     try {
-      File serviceFile = getLocalServiceFile(name);
-      File newServiceFile = File.createTempFile(name + '-', null, new File(LOCAL_SERVICES_DIRECTORY));
+      final File serviceFile = getLocalServiceFile(name);
+      final File newServiceFile = File.createTempFile(name + '-', null, new File(LOCAL_SERVICES_DIRECTORY));
       // Should we use ao-encoding here?  Java XML is just so tedious
       DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
       try {
