@@ -148,6 +148,20 @@ public class Service {
     return IPortRange.valueOf(from, to, protocol);
   }
 
+  private static class FileCacheEntry {
+    private final long lastModified;
+    private final long length;
+    private final Service service;
+
+    private FileCacheEntry(long lastModified, long length, Service service) {
+      this.lastModified = lastModified;
+      this.length = length;
+      this.service = service;
+    }
+  }
+
+  private static final Map<File, FileCacheEntry> fileCache = new HashMap<>();
+
   /**
    * Loads a service from an {@link InputStream}.
    *
@@ -232,20 +246,6 @@ public class Service {
       throw new IOException(e);
     }
   }
-
-  private static class FileCacheEntry {
-    private final long lastModified;
-    private final long length;
-    private final Service service;
-
-    private FileCacheEntry(long lastModified, long length, Service service) {
-      this.lastModified = lastModified;
-      this.length = length;
-      this.service = service;
-    }
-  }
-
-  private static final Map<File, FileCacheEntry> fileCache = new HashMap<>();
 
   /**
    * Loads a service from the given {@link File}.
