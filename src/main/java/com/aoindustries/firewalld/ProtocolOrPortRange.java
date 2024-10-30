@@ -1,6 +1,6 @@
 /*
  * ao-firewalld - Java API for managing firewalld.
- * Copyright (C) 2017, 2019, 2021, 2022  AO Industries, Inc.
+ * Copyright (C) 2017, 2019, 2021, 2022, 2024  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -130,9 +130,8 @@ class ProtocolOrPortRange implements Comparable<ProtocolOrPortRange> {
 
   /**
    * Combines this with the given if possible.
-   * <p>
-   * No port range matches all ports on that protocol.
-   * </p>
+   *
+   * <p>No port range matches all ports on that protocol.</p>
    *
    * @return  The new value that represents the union of this and the other or {@code null}
    *          when they cannot be combined.

@@ -70,9 +70,8 @@ import org.xml.sax.SAXException;
  * Represents on specific service as configured in either
  * <code>/usr/lib/firewalld/services/<i>service</i>.xml</code> or
  * <code>/etc/firewalld/services/<i>service</i>.xml</code>.
- * <p>
- * See <code>man 5 firewalld.service</code> for details.
- * </p>
+ *
+ * <p>See <code>man 5 firewalld.service</code> for details.</p>
  *
  * @author  AO Industries, Inc.
  */
@@ -605,9 +604,8 @@ public class Service {
   /**
    * Gets the set of all targets represented by this service.
    * This may be an empty set when a service is modules-only (like tftp-client).
-   * <p>
-   * This may have overlapping targets if the service was not previously {@link ServiceSet#optimize() optimized}.
-   * </p>
+   *
+   * <p>This may have overlapping targets if the service was not previously {@link ServiceSet#optimize() optimized}.</p>
    *
    * @see  Target#compareTo(com.aoindustries.firewalld.Target)
    */

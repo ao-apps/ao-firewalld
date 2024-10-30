@@ -1,6 +1,6 @@
 /*
  * ao-firewalld - Java API for managing firewalld.
- * Copyright (C) 2017, 2020, 2021, 2022  AO Industries, Inc.
+ * Copyright (C) 2017, 2020, 2021, 2022, 2024  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -31,19 +31,16 @@ import com.aoapps.net.Protocol;
 /**
  * A "target" is a single {@link InetAddressPrefix address/prefix},
  * {@link Protocol protocol}, and optional {@link IPortRange port range}.
- * <p>
- * Each {@link Service} may have multiple targets, but all targets will be
+ *
+ * <p>Each {@link Service} may have multiple targets, but all targets will be
  * within its {@link Service#getDestinationIpv4() IPv4 destination} and
- * {@link Service#getDestinationIpv6() IPv6 destination}.
- * </p>
- * <p>
- * A {@link ServiceSet} goes beyond the single-destination limits of {@link Service}
- * and allows any arbitrary set of targets.
- * </p>
- * <p>
- * We choose the name "target" as it is the primary new concept and purpose of
- * this API and is otherwise not used in standard firewalld service terminology.
- * </p>
+ * {@link Service#getDestinationIpv6() IPv6 destination}.</p>
+ *
+ * <p>A {@link ServiceSet} goes beyond the single-destination limits of {@link Service}
+ * and allows any arbitrary set of targets.</p>
+ *
+ * <p>We choose the name "target" as it is the primary new concept and purpose of
+ * this API and is otherwise not used in standard firewalld service terminology.</p>
  *
  * @author  AO Industries, Inc.
  */
@@ -154,14 +151,12 @@ public class Target implements Comparable<Target> {
 
   /**
    * Combines this target with the given target if possible.
-   * <p>
-   * If have the same destination, tries to combine by protocol and port range.
-   * If have the same protocol and port range, tries to combine by destination network prefixes.
-   * </p>
-   * <p>
-   * When combining by protocol and port range, a target with no port range
-   * matches all ports on that protocol.
-   * </p>
+   *
+   * <p>If have the same destination, tries to combine by protocol and port range.
+   * If have the same protocol and port range, tries to combine by destination network prefixes.</p>
+   *
+   * <p>When combining by protocol and port range, a target with no port range
+   * matches all ports on that protocol.</p>
    *
    * @return  The new target that represents the union of this and the other target or {@code null}
    *          when they cannot be combined.

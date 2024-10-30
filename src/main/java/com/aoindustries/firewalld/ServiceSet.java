@@ -52,16 +52,14 @@ import java.util.logging.Logger;
  * Because each {@link Service} only supports a single &lt;destination /&gt;, to
  * open only the specific IP and port combinations, a set of additional services are
  * created using the base service as a template.
- * <p>
- * The first service in the set uses the template service name.  Additional services are
- * named with {@code "-2"}, {@code "-3"}, ... added to the template service name.
- * </p>
- * <p>
- * Consider the example of opening SSH on two addresses, but leaving it closed on others.
+ *
+ * <p>The first service in the set uses the template service name.  Additional services are
+ * named with {@code "-2"}, {@code "-3"}, ... added to the template service name.</p>
+ *
+ * <p>Consider the example of opening SSH on two addresses, but leaving it closed on others.
  * One port could be <code>192.0.2.14:22</code> while the other is <code>192.0.2.16:22</code>.
  * This would result in two services: <code>ssh</code> with a destination of
- * <code>192.0.2.14:22</code> and <code>ssh-2</code> with a destination of <code>192.0.2.16:22</code>.
- * </p>
+ * <code>192.0.2.14:22</code> and <code>ssh-2</code> with a destination of <code>192.0.2.16:22</code>.</p>
  *
  * @author  AO Industries, Inc.
  */
@@ -249,23 +247,20 @@ public class ServiceSet {
   /**
    * Creates an optimized service set for the given template and targets.
    * The service set is not {@link #commit(java.util.Set) committed}.
-   * <p>
-   * First, ports are coalesced into port ranges within matching destinations.
-   * Protocol-only is considered to match all ports of that protocol.
-   * </p>
-   * <p>
-   * Second, destinations are combined within network prefixes when have equal port ranges.
+   *
+   * <p>First, ports are coalesced into port ranges within matching destinations.
+   * Protocol-only is considered to match all ports of that protocol.</p>
+   *
+   * <p>Second, destinations are combined within network prefixes when have equal port ranges.
    * {@link InetAddressPrefixes#UNSPECIFIED_IPV4} and {@link InetAddressPrefixes#UNSPECIFIED_IPV6}
    * are considered to match all addresses of the same family (this is a natural consequence of
-   * the way the unspecified prefixes are defined with prefix of zero).
-   * </p>
-   * <p>
-   * Third, a set of services are generated based on the template.  All fields
+   * the way the unspecified prefixes are defined with prefix of zero).</p>
+   *
+   * <p>Third, a set of services are generated based on the template.  All fields
    * except {@link Service#getPorts()}, {@link Service#getProtocols()},
    * {@link Service#getDestinationIpv4()} and {@link Service#getDestinationIpv6()}
    * are copied from the template.  The template ports, protocols, and destinations
-   * are not used.
-   * </p>
+   * are not used.</p>
    *
    * @see #createOptimizedServiceSet(java.lang.String, java.lang.Iterable)
    * @see #optimize()
@@ -538,9 +533,8 @@ public class ServiceSet {
   /**
    * Gets the set of all targets represented by all services in this set.
    * This may be an empty set when a template has no existing configuration or is modules-only (like tftp-client).
-   * <p>
-   * This may have overlapping destinations if the service set was not previously {@link #optimize() optimized}.
-   * </p>
+   *
+   * <p>This may have overlapping destinations if the service set was not previously {@link #optimize() optimized}.</p>
    *
    * @see  Target#compareTo(com.aoindustries.firewalld.Target)
    */
@@ -586,9 +580,8 @@ public class ServiceSet {
   /**
    * Commits this service set to the system configuration, reconfiguring and
    * reloading the firewall as necessary.
-   * <p>
-   * Probably worth {@link #optimize() optimizing} before committing.
-   * </p>
+   *
+   * <p>Probably worth {@link #optimize() optimizing} before committing.</p>
    *
    * @param  zones  the zones that that the service set should be activated in, this can generally be just "public"
    *
@@ -601,13 +594,11 @@ public class ServiceSet {
   /**
    * Commits multiple service sets to the system configuration, reconfiguring and
    * reloading the firewall as necessary.
-   * <p>
-   * Probably worth {@link #optimize() optimizing} before committing.
-   * </p>
-   * <p>
-   * TODO: Should we use <code>firewall-cmd --permanent --new-service-from-file=filename [--name=service]</code>
-   *       instead of manipulating service XML files directly?
-   * </p>
+   *
+   * <p>Probably worth {@link #optimize() optimizing} before committing.</p>
+   *
+   * <p>TODO: Should we use <code>firewall-cmd --permanent --new-service-from-file=filename [--name=service]</code>
+   *       instead of manipulating service XML files directly?</p>
    *
    * @param  serviceSets  the service sets to commit; iterated once; no duplicate service names allowed.
    * @param  zones  the zones that that the service set should be activated in, this can generally be just "public"
