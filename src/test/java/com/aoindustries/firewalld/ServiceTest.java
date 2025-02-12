@@ -1,6 +1,6 @@
 /*
  * ao-firewalld - Java API for managing firewalld.
- * Copyright (C) 2017, 2019, 2020, 2021, 2022  AO Industries, Inc.
+ * Copyright (C) 2017, 2019, 2020, 2021, 2022, 2025  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -37,7 +37,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.LinkedHashSet;
-import java.util.Set;
 import org.junit.Test;
 
 /**
@@ -224,12 +223,6 @@ public class ServiceTest {
     );
   }
 
-  // Java 1.8: Can inline
-  static final Set<? extends IPortRange> EMPTY_PORTS = Collections.emptySet();
-
-  // Java 1.8: Can inline
-  static final Set<String> EMPTY_MODULES = Collections.emptySet();
-
   @Test
   public void testToString2() throws IOException {
     assertEquals(
@@ -240,10 +233,10 @@ public class ServiceTest {
             null, // version
             null, // shortName
             null, // description
-            EMPTY_PORTS, // ports
+            Collections.emptySet(), // ports
             EnumSet.of(Protocol.ESP), // protocols
-            EMPTY_PORTS, // sourcePorts
-            EMPTY_MODULES, // modules
+            Collections.emptySet(), // sourcePorts
+            Collections.emptySet(), // modules
             InetAddressPrefixes.UNSPECIFIED_IPV4,
             InetAddressPrefixes.UNSPECIFIED_IPV6
         ).toString()
@@ -266,8 +259,8 @@ public class ServiceTest {
                 )
             ), // ports
             EnumSet.noneOf(Protocol.class), // protocols
-            EMPTY_PORTS, // sourcePorts
-            EMPTY_MODULES, // modules
+            Collections.emptySet(), // sourcePorts
+            Collections.emptySet(), // modules
             InetAddressPrefixes.UNSPECIFIED_IPV4,
             InetAddressPrefixes.UNSPECIFIED_IPV6
         ),
@@ -283,8 +276,8 @@ public class ServiceTest {
                 )
             ), // ports
             EnumSet.noneOf(Protocol.class), // protocols
-            EMPTY_PORTS, // sourcePorts
-            EMPTY_MODULES, // modules
+            Collections.emptySet(), // sourcePorts
+            Collections.emptySet(), // modules
             InetAddressPrefixes.UNSPECIFIED_IPV4,
             InetAddressPrefixes.UNSPECIFIED_IPV6
         )
