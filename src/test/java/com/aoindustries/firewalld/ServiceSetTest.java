@@ -1,6 +1,6 @@
 /*
  * ao-firewalld - Java API for managing firewalld.
- * Copyright (C) 2017, 2019, 2020, 2021, 2022  AO Industries, Inc.
+ * Copyright (C) 2017, 2019, 2020, 2021, 2022, 2025  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -312,52 +312,52 @@ public class ServiceSetTest {
         optimized.getServices().size()
     );
     Iterator<Service> serviceIter = optimized.getServices().iterator();
-      {
-        Service service1 = serviceIter.next();
-        assertEquals(
-            new HashSet<>(
-                Arrays.asList(
-                    (IPortRange) Port.valueOf(22, Protocol.TCP),
-                    PortRange.valueOf(45, 78, Protocol.TCP)
-                )
-            ),
-            service1.getPorts()
-        );
-        assertEquals(
-            Collections.emptySet(),
-            service1.getProtocols()
-        );
-        assertNull(
-            service1.getDestinationIpv4()
-        );
-        assertEquals(
-            InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8"),
-            service1.getDestinationIpv6()
-        );
-      }
-      {
-        Service service2 = serviceIter.next();
-        assertEquals(
-            new HashSet<>(
-                Arrays.asList(
-                    (IPortRange) Port.valueOf(22, Protocol.TCP),
-                    PortRange.valueOf(45, 100, Protocol.TCP)
-                )
-            ),
-            service2.getPorts()
-        );
-        assertEquals(
-            Collections.emptySet(),
-            service2.getProtocols()
-        );
-        assertEquals(
-            InetAddressPrefixes.UNSPECIFIED_IPV4,
-            service2.getDestinationIpv4()
-        );
-        assertNull(
-            service2.getDestinationIpv6()
-        );
-      }
+    {
+      Service service1 = serviceIter.next();
+      assertEquals(
+          new HashSet<>(
+              Arrays.asList(
+                  (IPortRange) Port.valueOf(22, Protocol.TCP),
+                  PortRange.valueOf(45, 78, Protocol.TCP)
+              )
+          ),
+          service1.getPorts()
+      );
+      assertEquals(
+          Collections.emptySet(),
+          service1.getProtocols()
+      );
+      assertNull(
+          service1.getDestinationIpv4()
+      );
+      assertEquals(
+          InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8"),
+          service1.getDestinationIpv6()
+      );
+    }
+    {
+      Service service2 = serviceIter.next();
+      assertEquals(
+          new HashSet<>(
+              Arrays.asList(
+                  (IPortRange) Port.valueOf(22, Protocol.TCP),
+                  PortRange.valueOf(45, 100, Protocol.TCP)
+              )
+          ),
+          service2.getPorts()
+      );
+      assertEquals(
+          Collections.emptySet(),
+          service2.getProtocols()
+      );
+      assertEquals(
+          InetAddressPrefixes.UNSPECIFIED_IPV4,
+          service2.getDestinationIpv4()
+      );
+      assertNull(
+          service2.getDestinationIpv6()
+      );
+    }
   }
 
   @Test
@@ -377,52 +377,52 @@ public class ServiceSetTest {
         optimized.getServices().size()
     );
     Iterator<Service> serviceIter = optimized.getServices().iterator();
-      {
-        Service service1 = serviceIter.next();
-        assertEquals(
-            new HashSet<>(
-                Arrays.asList(
-                    (IPortRange) Port.valueOf(22, Protocol.TCP),
-                    PortRange.valueOf(45, 78, Protocol.TCP)
-                )
-            ),
-            service1.getPorts()
-        );
-        assertEquals(
-            Collections.emptySet(),
-            service1.getProtocols()
-        );
-        assertEquals(
-            InetAddressPrefixes.UNSPECIFIED_IPV4,
-            service1.getDestinationIpv4()
-        );
-        assertNull(
-            service1.getDestinationIpv6()
-        );
-      }
-      {
-        Service service2 = serviceIter.next();
-        assertEquals(
-            new HashSet<>(
-                Arrays.asList(
-                    (IPortRange) Port.valueOf(22, Protocol.TCP),
-                    PortRange.valueOf(45, 100, Protocol.TCP)
-                )
-            ),
-            service2.getPorts()
-        );
-        assertEquals(
-            Collections.emptySet(),
-            service2.getProtocols()
-        );
-        assertNull(
-            service2.getDestinationIpv4()
-        );
-        assertEquals(
-            InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8"),
-            service2.getDestinationIpv6()
-        );
-      }
+    {
+      Service service1 = serviceIter.next();
+      assertEquals(
+          new HashSet<>(
+              Arrays.asList(
+                  (IPortRange) Port.valueOf(22, Protocol.TCP),
+                  PortRange.valueOf(45, 78, Protocol.TCP)
+              )
+          ),
+          service1.getPorts()
+      );
+      assertEquals(
+          Collections.emptySet(),
+          service1.getProtocols()
+      );
+      assertEquals(
+          InetAddressPrefixes.UNSPECIFIED_IPV4,
+          service1.getDestinationIpv4()
+      );
+      assertNull(
+          service1.getDestinationIpv6()
+      );
+    }
+    {
+      Service service2 = serviceIter.next();
+      assertEquals(
+          new HashSet<>(
+              Arrays.asList(
+                  (IPortRange) Port.valueOf(22, Protocol.TCP),
+                  PortRange.valueOf(45, 100, Protocol.TCP)
+              )
+          ),
+          service2.getPorts()
+      );
+      assertEquals(
+          Collections.emptySet(),
+          service2.getProtocols()
+      );
+      assertNull(
+          service2.getDestinationIpv4()
+      );
+      assertEquals(
+          InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8"),
+          service2.getDestinationIpv6()
+      );
+    }
   }
 
   @Test
@@ -507,100 +507,100 @@ public class ServiceSetTest {
         optimized.getServices().size()
     );
     Iterator<Service> serviceIter = optimized.getServices().iterator();
-      {
-        // 22/TCP, 24/TCP -> 1.2.3.4
-        Service service1 = serviceIter.next();
-        assertEquals(
-            new HashSet<>(
-                Arrays.asList(
-                    (IPortRange) Port.valueOf(22, Protocol.TCP),
-                    Port.valueOf(24, Protocol.TCP)
-                )
-            ),
-            service1.getPorts()
-        );
-        assertEquals(
-            Collections.emptySet(),
-            service1.getProtocols()
-        );
-        assertEquals(
-            InetAddressPrefix.valueOf("1.2.3.4"),
-            service1.getDestinationIpv4()
-        );
-        assertNull(
-            service1.getDestinationIpv6()
-        );
-      }
-      {
-        // 22/TCP, 45-78/TCP -> 1:2:3:4:5:6:7:8
-        Service service2 = serviceIter.next();
-        assertEquals(
-            new HashSet<>(
-                Arrays.asList(
-                    (IPortRange) Port.valueOf(22, Protocol.TCP),
-                    PortRange.valueOf(45, 78, Protocol.TCP)
-                )
-            ),
-            service2.getPorts()
-        );
-        assertEquals(
-            Collections.emptySet(),
-            service2.getProtocols()
-        );
-        assertNull(
-            service2.getDestinationIpv4()
-        );
-        assertEquals(
-            InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8"),
-            service2.getDestinationIpv6()
-        );
-      }
-      {
-        // 22-23/TCP, 45-78/TCP -> 1.2.3.4/31
-        Service service3 = serviceIter.next();
-        assertEquals(
-            new HashSet<>(
-                Arrays.asList(
-                    (IPortRange) PortRange.valueOf(22, 23, Protocol.TCP),
-                    PortRange.valueOf(45, 78, Protocol.TCP)
-                )
-            ),
-            service3.getPorts()
-        );
-        assertEquals(
-            Collections.emptySet(),
-            service3.getProtocols()
-        );
-        assertEquals(
-            InetAddressPrefix.valueOf("1.2.3.4/31"),
-            service3.getDestinationIpv4()
-        );
-        assertNull(
-            service3.getDestinationIpv6()
-        );
-      }
-      {
-        // 45-78/TCP -> 0.0.0.0/0
-        Service service4 = serviceIter.next();
-        assertEquals(
-            new HashSet<>(
-                Arrays.asList(
-                    (IPortRange) PortRange.valueOf(45, 78, Protocol.TCP)
-                )
-            ),
-            service4.getPorts()
-        );
-        assertEquals(
-            Collections.emptySet(),
-            service4.getProtocols()
-        );
-        assertEquals(
-            InetAddressPrefixes.UNSPECIFIED_IPV4,
-            service4.getDestinationIpv4()
-        );
-        assertNull(
-            service4.getDestinationIpv6()
-        );
-      }
+    {
+      // 22/TCP, 24/TCP -> 1.2.3.4
+      Service service1 = serviceIter.next();
+      assertEquals(
+          new HashSet<>(
+              Arrays.asList(
+                  (IPortRange) Port.valueOf(22, Protocol.TCP),
+                  Port.valueOf(24, Protocol.TCP)
+              )
+          ),
+          service1.getPorts()
+      );
+      assertEquals(
+          Collections.emptySet(),
+          service1.getProtocols()
+      );
+      assertEquals(
+          InetAddressPrefix.valueOf("1.2.3.4"),
+          service1.getDestinationIpv4()
+      );
+      assertNull(
+          service1.getDestinationIpv6()
+      );
+    }
+    {
+      // 22/TCP, 45-78/TCP -> 1:2:3:4:5:6:7:8
+      Service service2 = serviceIter.next();
+      assertEquals(
+          new HashSet<>(
+              Arrays.asList(
+                  (IPortRange) Port.valueOf(22, Protocol.TCP),
+                  PortRange.valueOf(45, 78, Protocol.TCP)
+              )
+          ),
+          service2.getPorts()
+      );
+      assertEquals(
+          Collections.emptySet(),
+          service2.getProtocols()
+      );
+      assertNull(
+          service2.getDestinationIpv4()
+      );
+      assertEquals(
+          InetAddressPrefix.valueOf("1:2:3:4:5:6:7:8"),
+          service2.getDestinationIpv6()
+      );
+    }
+    {
+      // 22-23/TCP, 45-78/TCP -> 1.2.3.4/31
+      Service service3 = serviceIter.next();
+      assertEquals(
+          new HashSet<>(
+              Arrays.asList(
+                  (IPortRange) PortRange.valueOf(22, 23, Protocol.TCP),
+                  PortRange.valueOf(45, 78, Protocol.TCP)
+              )
+          ),
+          service3.getPorts()
+      );
+      assertEquals(
+          Collections.emptySet(),
+          service3.getProtocols()
+      );
+      assertEquals(
+          InetAddressPrefix.valueOf("1.2.3.4/31"),
+          service3.getDestinationIpv4()
+      );
+      assertNull(
+          service3.getDestinationIpv6()
+      );
+    }
+    {
+      // 45-78/TCP -> 0.0.0.0/0
+      Service service4 = serviceIter.next();
+      assertEquals(
+          new HashSet<>(
+              Arrays.asList(
+                  (IPortRange) PortRange.valueOf(45, 78, Protocol.TCP)
+              )
+          ),
+          service4.getPorts()
+      );
+      assertEquals(
+          Collections.emptySet(),
+          service4.getProtocols()
+      );
+      assertEquals(
+          InetAddressPrefixes.UNSPECIFIED_IPV4,
+          service4.getDestinationIpv4()
+      );
+      assertNull(
+          service4.getDestinationIpv6()
+      );
+    }
   }
 }

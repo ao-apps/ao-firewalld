@@ -1,6 +1,6 @@
 /*
  * ao-firewalld - Java API for managing firewalld.
- * Copyright (C) 2017, 2019, 2020, 2021, 2022, 2023, 2024  AO Industries, Inc.
+ * Copyright (C) 2017, 2019, 2020, 2021, 2022, 2023, 2024, 2025  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -275,99 +275,99 @@ public class ServiceSet {
     }
     // Coalesce ports by destination
     SortedMap<InetAddressPrefix, SortedSet<ProtocolOrPortRange>> coalescedPortsByDestination = new TreeMap<>();
-      {
-        SortedSet<Target> toAdd = new TreeSet<>();
-        for (Target target : targets) {
-          toAdd.add(target);
-        }
-        if (logger.isLoggable(Level.FINE)) {
-          logger.fine("Combined into toAdd: " + template + "→" + toAdd);
-        }
-        while (!toAdd.isEmpty()) {
-          // Get and remove the first element
-          Target target;
-          {
-            Iterator<Target> toAddIter = toAdd.iterator();
-            target = toAddIter.next();
-            if (logger.isLoggable(Level.FINER)) {
-              logger.finer(toAdd.size() + " more to add: " + template + "→" + target);
-            }
-            toAddIter.remove();
+    {
+      SortedSet<Target> toAdd = new TreeSet<>();
+      for (Target target : targets) {
+        toAdd.add(target);
+      }
+      if (logger.isLoggable(Level.FINE)) {
+        logger.fine("Combined into toAdd: " + template + "→" + toAdd);
+      }
+      while (!toAdd.isEmpty()) {
+        // Get and remove the first element
+        Target target;
+        {
+          Iterator<Target> toAddIter = toAdd.iterator();
+          target = toAddIter.next();
+          if (logger.isLoggable(Level.FINER)) {
+            logger.finer(toAdd.size() + " more to add: " + template + "→" + target);
           }
-          InetAddressPrefix destination = target.getDestination();
-          SortedSet<ProtocolOrPortRange> coalescedPorts = coalescedPortsByDestination.get(destination);
-          if (coalescedPorts == null) {
-            coalescedPorts = new TreeSet<>();
-            coalescedPorts.add(target.protocolOrPortRange);
-            coalescedPortsByDestination.put(destination, coalescedPorts);
-          } else {
-            Iterator<ProtocolOrPortRange> coalescedIter = coalescedPorts.iterator();
-            boolean wasCoalesced = false;
-            while (coalescedIter.hasNext()) {
-              ProtocolOrPortRange coalesced = coalescedIter.next();
-              ProtocolOrPortRange newCoalesced = target.protocolOrPortRange.coalesce(coalesced);
-              if (newCoalesced != null) {
-                if (!toAdd.add(new Target(destination, newCoalesced))) {
-                  throw new AssertionError();
-                }
-                coalescedIter.remove();
-                wasCoalesced = true;
+          toAddIter.remove();
+        }
+        InetAddressPrefix destination = target.getDestination();
+        SortedSet<ProtocolOrPortRange> coalescedPorts = coalescedPortsByDestination.get(destination);
+        if (coalescedPorts == null) {
+          coalescedPorts = new TreeSet<>();
+          coalescedPorts.add(target.protocolOrPortRange);
+          coalescedPortsByDestination.put(destination, coalescedPorts);
+        } else {
+          Iterator<ProtocolOrPortRange> coalescedIter = coalescedPorts.iterator();
+          boolean wasCoalesced = false;
+          while (coalescedIter.hasNext()) {
+            ProtocolOrPortRange coalesced = coalescedIter.next();
+            ProtocolOrPortRange newCoalesced = target.protocolOrPortRange.coalesce(coalesced);
+            if (newCoalesced != null) {
+              if (!toAdd.add(new Target(destination, newCoalesced))) {
+                throw new AssertionError();
               }
+              coalescedIter.remove();
+              wasCoalesced = true;
             }
-            if (!wasCoalesced) {
-              coalescedPorts.add(target.protocolOrPortRange);
-            }
+          }
+          if (!wasCoalesced) {
+            coalescedPorts.add(target.protocolOrPortRange);
           }
         }
       }
+    }
     if (logger.isLoggable(Level.FINE)) {
       logger.fine("After coalesce port ranges: " + template + "→" + coalescedPortsByDestination);
     }
     // Coalesce destinations by protocol and ports
     SortedMap<SortedSet<ProtocolOrPortRange>, SortedSet<InetAddressPrefix>> coalescedDestinationsByPorts = new TreeMap<>(portSetComparator);
-      {
-        SortedMap<InetAddressPrefix, SortedSet<ProtocolOrPortRange>> toAdd = new TreeMap<>(coalescedPortsByDestination);
-        while (!toAdd.isEmpty()) {
-          // Get and remove the first element
-          InetAddressPrefix destinationToAdd;
-          SortedSet<ProtocolOrPortRange> portsToAdd;
-          {
-            Iterator<Map.Entry<InetAddressPrefix, SortedSet<ProtocolOrPortRange>>> toAddIter = toAdd.entrySet().iterator();
-            Map.Entry<InetAddressPrefix, SortedSet<ProtocolOrPortRange>> entry = toAddIter.next();
-            destinationToAdd = entry.getKey();
-            portsToAdd = entry.getValue();
-            if (logger.isLoggable(Level.FINER)) {
-              logger.finer(toAdd.size() + " more to add: " + template + "→" + destinationToAdd);
-            }
-            toAddIter.remove();
+    {
+      SortedMap<InetAddressPrefix, SortedSet<ProtocolOrPortRange>> toAdd = new TreeMap<>(coalescedPortsByDestination);
+      while (!toAdd.isEmpty()) {
+        // Get and remove the first element
+        InetAddressPrefix destinationToAdd;
+        SortedSet<ProtocolOrPortRange> portsToAdd;
+        {
+          Iterator<Map.Entry<InetAddressPrefix, SortedSet<ProtocolOrPortRange>>> toAddIter = toAdd.entrySet().iterator();
+          Map.Entry<InetAddressPrefix, SortedSet<ProtocolOrPortRange>> entry = toAddIter.next();
+          destinationToAdd = entry.getKey();
+          portsToAdd = entry.getValue();
+          if (logger.isLoggable(Level.FINER)) {
+            logger.finer(toAdd.size() + " more to add: " + template + "→" + destinationToAdd);
           }
-          SortedSet<InetAddressPrefix> coalescedDestinations = coalescedDestinationsByPorts.get(portsToAdd);
-          if (coalescedDestinations == null) {
-            coalescedDestinations = new TreeSet<>();
-            coalescedDestinations.add(destinationToAdd);
-            coalescedDestinationsByPorts.put(portsToAdd, coalescedDestinations);
-          } else {
-            Iterator<InetAddressPrefix> coalescedIter = coalescedDestinations.iterator();
-            boolean wasCoalesced = false;
-            while (coalescedIter.hasNext()) {
-              InetAddressPrefix coalesced = coalescedIter.next();
-              InetAddressPrefix newCoalesced = destinationToAdd.coalesce(coalesced);
-              if (newCoalesced != null) {
-                if (toAdd.put(newCoalesced, portsToAdd) != null) {
-                  throw new AssertionError();
-                }
-                coalescedIter.remove();
-                wasCoalesced = true;
-                // Can only coalesce with one existing destination per pass, break now
-                break;
+          toAddIter.remove();
+        }
+        SortedSet<InetAddressPrefix> coalescedDestinations = coalescedDestinationsByPorts.get(portsToAdd);
+        if (coalescedDestinations == null) {
+          coalescedDestinations = new TreeSet<>();
+          coalescedDestinations.add(destinationToAdd);
+          coalescedDestinationsByPorts.put(portsToAdd, coalescedDestinations);
+        } else {
+          Iterator<InetAddressPrefix> coalescedIter = coalescedDestinations.iterator();
+          boolean wasCoalesced = false;
+          while (coalescedIter.hasNext()) {
+            InetAddressPrefix coalesced = coalescedIter.next();
+            InetAddressPrefix newCoalesced = destinationToAdd.coalesce(coalesced);
+            if (newCoalesced != null) {
+              if (toAdd.put(newCoalesced, portsToAdd) != null) {
+                throw new AssertionError();
               }
+              coalescedIter.remove();
+              wasCoalesced = true;
+              // Can only coalesce with one existing destination per pass, break now
+              break;
             }
-            if (!wasCoalesced) {
-              coalescedDestinations.add(destinationToAdd);
-            }
+          }
+          if (!wasCoalesced) {
+            coalescedDestinations.add(destinationToAdd);
           }
         }
       }
+    }
     if (logger.isLoggable(Level.FINE)) {
       logger.fine("After coalesce destinations: " + template + "→" + coalescedDestinationsByPorts);
     }
@@ -404,17 +404,17 @@ public class ServiceSet {
       // Split protocols and ports
       SortedSet<IPortRange> ports = new TreeSet<>();
       SortedSet<Protocol> protocols = new TreeSet<>();
-        {
-          SortedSet<ProtocolOrPortRange> protocolsAndPorts = entry.getKey();
-          for (ProtocolOrPortRange protocolAndPort : protocolsAndPorts) {
-            IPortRange portRange = protocolAndPort.getPortRange();
-            if (portRange != null) {
-              ports.add(portRange);
-            } else {
-              protocols.add(protocolAndPort.getProtocol());
-            }
+      {
+        SortedSet<ProtocolOrPortRange> protocolsAndPorts = entry.getKey();
+        for (ProtocolOrPortRange protocolAndPort : protocolsAndPorts) {
+          IPortRange portRange = protocolAndPort.getPortRange();
+          if (portRange != null) {
+            ports.add(portRange);
+          } else {
+            protocols.add(protocolAndPort.getProtocol());
           }
         }
+      }
       Map<ProtocolFamily, SortedSet<InetAddressPrefix>> destinationsByFamily = entry.getValue();
       SortedSet<InetAddressPrefix> ipv4Destinations = destinationsByFamily.get(StandardProtocolFamily.INET);
       SortedSet<InetAddressPrefix> ipv6Destinations = destinationsByFamily.get(StandardProtocolFamily.INET6);
@@ -658,33 +658,33 @@ public class ServiceSet {
       }
       // Remove any extra local service files
       File localServicesDir = new File(Service.LOCAL_SERVICES_DIRECTORY);
-        {
-          String[] list = localServicesDir.list();
-          if (list != null) {
-            for (String filename : list) {
-              if (filename.endsWith(Service.EXTENSION)) {
-                String service = filename.substring(0, filename.length() - Service.EXTENSION.length());
-                if (!serviceNames.contains(service)) {
-                  boolean isInServiceSet = false;
-                  for (ServiceSet serviceSet : serviceSetsMap.values()) {
-                    if (serviceSet.isInThisServiceSet(service)) {
-                      isInServiceSet = true;
-                      break;
-                    }
+      {
+        String[] list = localServicesDir.list();
+        if (list != null) {
+          for (String filename : list) {
+            if (filename.endsWith(Service.EXTENSION)) {
+              String service = filename.substring(0, filename.length() - Service.EXTENSION.length());
+              if (!serviceNames.contains(service)) {
+                boolean isInServiceSet = false;
+                for (ServiceSet serviceSet : serviceSetsMap.values()) {
+                  if (serviceSet.isInThisServiceSet(service)) {
+                    isInServiceSet = true;
+                    break;
                   }
-                  if (isInServiceSet) {
-                    File serviceFile = new File(localServicesDir, filename);
-                    if (logger.isLoggable(Level.FINE)) {
-                      logger.fine("Deleting extra local service file: " + serviceFile);
-                    }
-                    Files.delete(serviceFile.toPath());
-                    needsReload = true;
+                }
+                if (isInServiceSet) {
+                  File serviceFile = new File(localServicesDir, filename);
+                  if (logger.isLoggable(Level.FINE)) {
+                    logger.fine("Deleting extra local service file: " + serviceFile);
                   }
+                  Files.delete(serviceFile.toPath());
+                  needsReload = true;
                 }
               }
             }
           }
         }
+      }
       // Rewrite any changed or missing service files
       for (Map.Entry<String, ServiceSet> serviceSetEntry : serviceSetsMap.entrySet()) {
         String templateName = serviceSetEntry.getKey();

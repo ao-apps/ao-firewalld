@@ -1,6 +1,6 @@
 /*
  * ao-firewalld - Java API for managing firewalld.
- * Copyright (C) 2017, 2019, 2020, 2021, 2022, 2023, 2024  AO Industries, Inc.
+ * Copyright (C) 2017, 2019, 2020, 2021, 2022, 2023, 2024, 2025  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -135,15 +135,15 @@ public class Service {
   static IPortRange parsePort(String port, Protocol protocol) throws NumberFormatException, ValidationException {
     int from;
     int to;
-      {
-        int hyphenPos = port.indexOf('-');
-        if (hyphenPos == -1) {
-          from = to = Integer.parseInt(port);
-        } else {
-          from = Integer.parseInt(port.substring(0, hyphenPos));
-          to = Integer.parseInt(port.substring(hyphenPos + 1));
-        }
+    {
+      int hyphenPos = port.indexOf('-');
+      if (hyphenPos == -1) {
+        from = to = Integer.parseInt(port);
+      } else {
+        from = Integer.parseInt(port.substring(0, hyphenPos));
+        to = Integer.parseInt(port.substring(hyphenPos + 1));
       }
+    }
     return IPortRange.valueOf(from, to, protocol);
   }
 
@@ -169,12 +169,12 @@ public class Service {
   public static Service loadService(String name, InputStream in) throws IOException {
     try {
       Element serviceElem = XmlUtils.parseXml(in).getDocumentElement();
-        {
-          String rootNodeName = serviceElem.getNodeName();
-          if (!rootNodeName.equals(SERVICE_ELEM)) {
-            throw new IOException("Root node is not a " + SERVICE_ELEM + ": " + rootNodeName);
-          }
+      {
+        String rootNodeName = serviceElem.getNodeName();
+        if (!rootNodeName.equals(SERVICE_ELEM)) {
+          throw new IOException("Root node is not a " + SERVICE_ELEM + ": " + rootNodeName);
         }
+      }
       Set<IPortRange> ports = new LinkedHashSet<>();
       Set<Protocol> protocols = new LinkedHashSet<>(); // Not using EnumSet to maintain source order
       for (Element portElem : XmlUtils.iterableChildElementsByTagName(serviceElem, PORT_ELEM)) {
