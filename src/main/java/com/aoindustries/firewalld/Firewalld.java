@@ -71,7 +71,7 @@ final class Firewalld {
    *
    * @throws  IOException  when I/O exception or non-zero exit value
    */
-  private static ProcessResult execFirewallCmd(String ... args) throws IOException {
+  private static ProcessResult execFirewallCmd(String... args) throws IOException {
     String[] command = new String[1 + args.length];
     command[0] = FIREWALL_CMD_EXE;
     System.arraycopy(args, 0, command, 1, args.length);

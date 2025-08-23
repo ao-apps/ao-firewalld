@@ -714,7 +714,7 @@ public class Service {
       Transformer transformer = transformerFactory.newTransformer();
       transformer.setOutputProperty(OutputKeys.VERSION, "1.0");
       transformer.setOutputProperty(OutputKeys.ENCODING, StandardCharsets.UTF_8.name());
-      //transformer.setOutputProperty(OutputKeys.STANDALONE, "no");
+      // transformer.setOutputProperty(OutputKeys.STANDALONE, "no");
       transformer.setOutputProperty(OutputKeys.INDENT, "yes");
       transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", Integer.toString(XmlUtils.INDENT_SPACES));
       DOMSource source = new DOMSource(document);
