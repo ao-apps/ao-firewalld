@@ -468,7 +468,6 @@ public class ServiceSetTest {
     );
   }
 
-
   @Test
   public void testCreateOptimizedServiceSet_finalCrazyCombo() throws IOException, ValidationException {
     Service sshTemplate = ServiceTest.loadCentos7TestService("ssh");
