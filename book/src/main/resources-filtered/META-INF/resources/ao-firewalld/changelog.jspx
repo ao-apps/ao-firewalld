@@ -37,7 +37,7 @@ along with ao-firewalld.  If not, see <https://www.gnu.org/licenses/>.
     shortTitle="Changelog"
     tocLevels="1"
     datePublished="2017-03-17T00:06:12-05:00"
-    dateModified="2025-07-02T23:05:45Z"
+    dateModified="2026-01-15T22:52:15Z"
   >
     <c:set var="latestRelease" value="1.2.0" />
     <c:if test="${
@@ -53,7 +53,7 @@ along with ao-firewalld.  If not, see <https://www.gnu.org/licenses/>.
         scmUrl="@{project.scm.url}"
       >
         <ul>
-          <li>Updated to <ao:a href="https://checkstyle.org/releasenotes.html#Release_10.21.1">Checkstyle 10.21.1</ao:a>.</li>
+          <li>Updated to <ao:a href="https://checkstyle.org/releasenotes.html#Release_13.0.0">Checkstyle 13.0.0</ao:a>.</li>
           <li>Minimum Java version changed from 1.8 to 11.</li>
         </ul>
       </changelog:release>
