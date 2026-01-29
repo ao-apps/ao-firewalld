@@ -296,7 +296,7 @@ public class Service {
   }
 
   /**
-   * Loads a local service from {@link #LOCAL_SERVICES_DIRECTORY}.
+   * Loads a local service from {@link Service#LOCAL_SERVICES_DIRECTORY}.
    *
    * @return  The {@link Service} or {@code null} if the service file does not exist.
    *
@@ -314,7 +314,7 @@ public class Service {
   }
 
   /**
-   * Loads a system service from {@link #SYSTEM_SERVICES_DIRECTORY}.
+   * Loads a system service from {@link Service#SYSTEM_SERVICES_DIRECTORY}.
    *
    * @return  The {@link Service} or {@code null} if the service file does not exist.
    *
@@ -522,7 +522,7 @@ public class Service {
    *
    * @return  the IPv4 address and prefix or {@code null} for no IPv4 destination.
    *
-   * @see  #getDestinationIpv6()  for IPv6
+   * @see  Service#getDestinationIpv6()  for IPv6
    */
   public InetAddressPrefix getDestinationIpv4() {
     return destinationIpv4;
@@ -533,9 +533,9 @@ public class Service {
    *
    * @return  the IPv4 address and prefix or {@code null} for no IPv4 destination.
    *
-   * @see  #getDestinationIpv6()  for IPv6
+   * @see  Service#getDestinationIpv6()  for IPv6
    *
-   * @deprecated  Please use {@link #getDestinationIpv4()} instead.
+   * @deprecated  Please use {@link Service#getDestinationIpv4()} instead.
    */
   // TODO: Remove in 6.0.0 release
   @Deprecated
@@ -548,7 +548,7 @@ public class Service {
    *
    * @return  the IPv6 address and prefix or {@code null} for no IPv6 destination.
    *
-   * @see  #getDestinationIpv4()  for IPv4
+   * @see  Service#getDestinationIpv4()  for IPv4
    */
   public InetAddressPrefix getDestinationIpv6() {
     return destinationIpv6;
@@ -559,9 +559,9 @@ public class Service {
    *
    * @return  the IPv6 address and prefix or {@code null} for no IPv6 destination.
    *
-   * @see  #getDestinationIpv4()  for IPv4
+   * @see  Service#getDestinationIpv4()  for IPv4
    *
-   * @deprecated  Please use {@link #getDestinationIpv6()} instead.
+   * @deprecated  Please use {@link Service#getDestinationIpv6()} instead.
    */
   // TODO: Remove in 6.0.0 release
   @Deprecated
@@ -572,7 +572,7 @@ public class Service {
   /**
    * Gets the destination for the given {@link com.aoapps.net.AddressFamily}.
    *
-   * @deprecated  Please use {@link #getDestination(java.net.ProtocolFamily)} as of Java 1.7.
+   * @deprecated  Please use {@link Service#getDestination(java.net.ProtocolFamily)} as of Java 1.7.
    */
   @Deprecated
   public InetAddressPrefix getDestination(com.aoapps.net.AddressFamily addressFamily) {

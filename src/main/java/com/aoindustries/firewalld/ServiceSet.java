@@ -72,7 +72,7 @@ public class ServiceSet {
    * The system service is used as the template.
    *
    * @see  Service#loadSystemService(java.lang.String)
-   * @see  #loadServiceSet(com.aoindustries.firewalld.Service)
+   * @see  ServiceSet#loadServiceSet(com.aoindustries.firewalld.Service)
    */
   public static ServiceSet loadServiceSet(String name) throws IOException {
     if (logger.isLoggable(Level.FINE)) {
@@ -126,7 +126,7 @@ public class ServiceSet {
   /**
    * Loads the currently configured service set for the given template.
    *
-   * @see #loadServiceSet(java.lang.String)
+   * @see ServiceSet#loadServiceSet(java.lang.String)
    */
   public static ServiceSet loadServiceSet(Service template) throws IOException {
     String templateName = template.getName();
@@ -206,11 +206,11 @@ public class ServiceSet {
   /**
    * Creates an optimized service set for the given name and targets.
    * The system service is used as the template.
-   * The service set is not {@link #commit(java.util.Set) committed}.
+   * The service set is not {@link ServiceSet#commit(java.util.Set) committed}.
    *
    * @see Service#loadSystemService(java.lang.String)
-   * @see #createOptimizedServiceSet(com.aoindustries.firewalld.Service, java.lang.Iterable)
-   * @see #optimize()
+   * @see ServiceSet#createOptimizedServiceSet(com.aoindustries.firewalld.Service, java.lang.Iterable)
+   * @see ServiceSet#optimize()
    */
   public static ServiceSet createOptimizedServiceSet(String name, Iterable<? extends Target> targets) throws IOException {
     if (logger.isLoggable(Level.FINE)) {
@@ -246,7 +246,7 @@ public class ServiceSet {
 
   /**
    * Creates an optimized service set for the given template and targets.
-   * The service set is not {@link #commit(java.util.Set) committed}.
+   * The service set is not {@link ServiceSet#commit(java.util.Set) committed}.
    *
    * <p>First, ports are coalesced into port ranges within matching destinations.
    * Protocol-only is considered to match all ports of that protocol.</p>
@@ -262,8 +262,8 @@ public class ServiceSet {
    * are copied from the template.  The template ports, protocols, and destinations
    * are not used.</p>
    *
-   * @see #createOptimizedServiceSet(java.lang.String, java.lang.Iterable)
-   * @see #optimize()
+   * @see ServiceSet#createOptimizedServiceSet(java.lang.String, java.lang.Iterable)
+   * @see ServiceSet#optimize()
    */
   // TODO: An initial coalesce pass on all targets could reduce this set further
   // TODO: And target-level coalesce needs to consider with *both* destination and ports are widening conversions
@@ -534,7 +534,7 @@ public class ServiceSet {
    * Gets the set of all targets represented by all services in this set.
    * This may be an empty set when a template has no existing configuration or is modules-only (like tftp-client).
    *
-   * <p>This may have overlapping destinations if the service set was not previously {@link #optimize() optimized}.</p>
+   * <p>This may have overlapping destinations if the service set was not previously {@link ServiceSet#optimize() optimized}.</p>
    *
    * @see  Target#compareTo(com.aoindustries.firewalld.Target)
    */
@@ -548,8 +548,8 @@ public class ServiceSet {
    *
    * @return  {@code this} when already optimized, or new {@link ServiceSet} when optimal form is different.
    *
-   * @see #createOptimizedServiceSet(java.lang.String, java.lang.Iterable)
-   * @see #createOptimizedServiceSet(com.aoindustries.firewalld.Service, java.lang.Iterable)
+   * @see ServiceSet#createOptimizedServiceSet(java.lang.String, java.lang.Iterable)
+   * @see ServiceSet#createOptimizedServiceSet(com.aoindustries.firewalld.Service, java.lang.Iterable)
    */
   public ServiceSet optimize() {
     ServiceSet optimized = createOptimizedServiceSet(template, targets);
@@ -581,11 +581,11 @@ public class ServiceSet {
    * Commits this service set to the system configuration, reconfiguring and
    * reloading the firewall as necessary.
    *
-   * <p>Probably worth {@link #optimize() optimizing} before committing.</p>
+   * <p>Probably worth {@link ServiceSet#optimize() optimizing} before committing.</p>
    *
    * @param  zones  the zones that that the service set should be activated in, this can generally be just "public"
    *
-   * @see #commit(java.lang.Iterable, java.util.Set)
+   * @see ServiceSet#commit(java.lang.Iterable, java.util.Set)
    */
   public void commit(Set<String> zones) throws IOException {
     commit(Collections.singleton(this), zones);
@@ -595,7 +595,7 @@ public class ServiceSet {
    * Commits multiple service sets to the system configuration, reconfiguring and
    * reloading the firewall as necessary.
    *
-   * <p>Probably worth {@link #optimize() optimizing} before committing.</p>
+   * <p>Probably worth {@link ServiceSet#optimize() optimizing} before committing.</p>
    *
    * <p>TODO: Should we use <code>firewall-cmd --permanent --new-service-from-file=filename [--name=service]</code>
    *       instead of manipulating service XML files directly?</p>
@@ -603,7 +603,7 @@ public class ServiceSet {
    * @param  serviceSets  the service sets to commit; iterated once; no duplicate service names allowed.
    * @param  zones  the zones that that the service set should be activated in, this can generally be just "public"
    *
-   * @see  #commit(java.util.Set)
+   * @see  ServiceSet#commit(java.util.Set)
    */
   public static void commit(Iterable<ServiceSet> serviceSets, Set<String> zones) throws IOException {
     Map<String, ServiceSet> serviceSetsMap = new LinkedHashMap<>();
