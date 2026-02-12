@@ -29,12 +29,12 @@ along with ao-firewalld.  If not, see <https://www.gnu.org/licenses/>.
     <relativePath>../oss/parent/pom.xml</relativePath>
   </parent>
 
-  <groupId>com.aoindustries</groupId><artifactId>ao-firewalld</artifactId><version>1.3.0-SNAPSHOT</version>
+  <groupId>com.aoindustries</groupId><artifactId>ao-firewalld</artifactId><version>1.3.0</version>
   <packaging>jar</packaging>
 
   <properties>
     <!-- Must be set to ${git.commit.time} for snapshots or ISO 8601 timestamp for releases. -->
-    <project.build.outputTimestamp>${git.commit.time}</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2026-02-12T06:18:47Z</project.build.outputTimestamp>
     <module.name>com.aoindustries.firewalld</module.name>
 
     <javadoc.breadcrumbs><![CDATA[<a target="${javadoc.target}" href="${project.url}">${project.name}</a>]]></javadoc.breadcrumbs>
@@ -76,7 +76,7 @@ along with ao-firewalld.  If not, see <https://www.gnu.org/licenses/>.
     <connection>scm:git:git://github.com/ao-apps/ao-firewalld.git</connection>
     <developerConnection>scm:git:git@github.com:ao-apps/ao-firewalld.git</developerConnection>
     <url>https://github.com/ao-apps/ao-firewalld</url>
-    <tag>HEAD</tag>
+    <tag>ao-firewalld-1.3.0</tag>
   </scm>
 
   <issueManagement>
