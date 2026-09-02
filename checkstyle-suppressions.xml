@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 ao-firewalld - Java API for managing firewalld.
-Copyright (C) 2022, 2024  AO Industries, Inc.
+Copyright (C) 2022, 2024, 2026  AO Industries, Inc.
     support@aoindustries.com
     7262 Bull Pen Cir
     Mobile, AL 36695
@@ -29,7 +29,7 @@ along with ao-firewalld.  If not, see <https://www.gnu.org/licenses/>.
 
   <!-- TODO: Remove in 6.0.0 release -->
   <suppress
-    checks="AbbreviationAsWordInName"
+    checks="(AbbreviationAsWordInName|GoogleMethodName)"
     files="[/\\]com[/\\]aoindustries[/\\]firewalld[/\\]Service\.java$"
     message="'(getDestinationIPv4|getDestinationIPv6)'"
   />
